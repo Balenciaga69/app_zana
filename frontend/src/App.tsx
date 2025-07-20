@@ -1,17 +1,7 @@
-import { Button, HStack } from '@chakra-ui/react'
-import { useState } from 'react'
+import ChatRoom from './features/chat/pages/ChatRoom'
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <HStack>
-        <Button onClick={() => setCount(count + 1)}>Click me</Button>
-        <Button>Click me \-\{count}</Button>
-      </HStack>
-    </>
-  )
+  return <ChatRoom />
 }
 
 export default App
