@@ -224,16 +224,6 @@ const theme = extendTheme({
       },
     },
 
-    // 頭像元件樣式
-    Avatar: {
-      variants: {
-        message: {
-          size: 'sm',
-          boxShadow: shadows.message,
-        },
-      },
-    },
-
     // 文字元件樣式
     Text: {
       variants: {

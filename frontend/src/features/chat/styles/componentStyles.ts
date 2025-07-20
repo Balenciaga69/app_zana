@@ -1,92 +1,155 @@
-// Chat 元件樣式配置
+// Chat 元件樣式配置 - 重構版本，引用主題配置
 import type { SystemStyleObject } from '@chakra-ui/react'
 
-// Header 樣式
+// 主題顏色常數 - 與 theme.ts 保持一致
+const THEME_COLORS = {
+  bg: {
+    light: '#f7f7f8',
+    dark: '#23272f',
+  },
+  card: {
+    light: '#fff',
+    dark: '#343541',
+  },
+  text: {
+    light: '#222222',
+    dark: '#ececf1',
+  },
+  gray: {
+    100: '#e3e3e3',
+    200: '#c8c8c8',
+    300: '#a0a0a0',
+    400: '#888888',
+    500: '#666666',
+    600: '#444444',
+    700: '#333333',
+    800: '#222222',
+  },
+} as const
+
+// 主題間距常數 - 與 theme.ts 保持一致
+const THEME_SPACING = {
+  message: { px: 6, py: 4 },
+  input: { px: 3, py: 2 },
+  header: { px: 4, py: 3 },
+} as const
+
+// 主題字體大小常數
+const THEME_FONT_SIZES = {
+  tiny: 'xs',
+  small: 'sm',
+  normal: 'md',
+  large: 'xl',
+  xlarge: '2xl',
+} as const
+
+// 工具函數：根據色彩模式選擇顏色
+const getModeColor = (colorMode: string, darkColor: string, lightColor: string) => 
+  colorMode === 'dark' ? darkColor : lightColor
+
+// 工具函數：根據色彩模式選擇主題顏色
+const getThemeColor = (colorMode: string, colorPath: 'bg' | 'card' | 'text') => 
+  getModeColor(colorMode, THEME_COLORS[colorPath].dark, THEME_COLORS[colorPath].light)
+
+// Header 樣式 - 引用主題配置
 export const headerStyles = (colorMode: string): SystemStyleObject => ({
   align: 'center',
   mb: 6,
-  px: 4,
-  py: 3,
-  bg: colorMode === 'dark' ? 'card.dark' : 'card.light',
+  ...THEME_SPACING.header,
+  bg: getThemeColor(colorMode, 'card'),
   borderBottomWidth: 1,
-  borderColor: colorMode === 'dark' ? 'gray.700' : 'gray.100',
+  borderColor: getModeColor(colorMode, THEME_COLORS.gray[700], THEME_COLORS.gray[100]),
   borderRadius: '2xl',
   boxShadow: 'sm',
 })
 
-// Header 標題樣式
+// Header 標題樣式 - 引用主題配置
 export const headerTitleStyles = (colorMode: string): SystemStyleObject => ({
   fontWeight: 700,
-  color: colorMode === 'dark' ? 'gray.100' : 'gray.800',
+  color: getModeColor(colorMode, THEME_COLORS.gray[100], THEME_COLORS.gray[800]),
   letterSpacing: 'wide',
-  fontSize: '2xl',
+  fontSize: THEME_FONT_SIZES.xlarge,
   mb: 0,
 })
 
-// Header 副標題樣式
+// Header 副標題樣式 - 引用主題配置
 export const headerSubtitleStyles = (colorMode: string): SystemStyleObject => ({
-  fontSize: 'xs',
-  color: colorMode === 'dark' ? 'gray.500' : 'gray.400',
+  fontSize: THEME_FONT_SIZES.tiny,
+  color: getModeColor(colorMode, THEME_COLORS.gray[500], THEME_COLORS.gray[400]),
   mt: -1,
   letterSpacing: 'wider',
   fontWeight: 400,
 })
 
-// 訊息輸入框樣式
+// 訊息輸入框樣式 - 引用主題配置
 export const messageInputContainerStyles = (colorMode: string): SystemStyleObject => ({
-  bg: colorMode === 'dark' ? 'gray.800' : 'gray.100',
+  bg: getModeColor(colorMode, THEME_COLORS.gray[800], THEME_COLORS.gray[100]),
   borderRadius: '2xl',
-  px: 3,
-  py: 2,
+  ...THEME_SPACING.input,
   boxShadow: 'md',
   gap: 2,
 })
 
 export const messageInputStyles = (colorMode: string): SystemStyleObject => ({
   variant: 'unstyled',
-  fontSize: 'md',
-  color: colorMode === 'dark' ? 'gray.100' : 'gray.800',
+  fontSize: THEME_FONT_SIZES.normal,
+  color: getModeColor(colorMode, THEME_COLORS.gray[100], THEME_COLORS.gray[800]),
   _placeholder: {
-    color: colorMode === 'dark' ? 'gray.500' : 'gray.400',
+    color: getModeColor(colorMode, THEME_COLORS.gray[500], THEME_COLORS.gray[400]),
   },
 })
 
-// 訊息氣泡樣式
+// 訊息氣泡樣式 - 保留漸層但統一管理
+const MESSAGE_GRADIENTS = {
+  userDark: 'linear-gradient(135deg, #4F8CFF 60%, #6CA8FF 100%)',
+  userLight: 'linear-gradient(135deg, #2563eb 60%, #60a5fa 100%)',
+  otherDark: 'linear-gradient(135deg, #23243a 60%, #35365a 100%)',
+  otherLight: 'linear-gradient(135deg, #f1f5f9 60%, #e0e7ef 100%)',
+} as const
+
+const MESSAGE_SHADOWS = {
+  user: '0 6px 24px 0 rgba(80,140,255,0.18), 0 1.5px 6px 0 rgba(80,140,255,0.10)',
+  other: '0 6px 24px 0 rgba(35,36,58,0.10), 0 1.5px 6px 0 rgba(35,36,58,0.06)',
+} as const
+
 export const messageBubbleStyles = (colorMode: string, isMe: boolean): SystemStyleObject => ({
   bg: isMe
-    ? colorMode === 'dark'
-      ? 'linear-gradient(135deg, #4F8CFF 60%, #6CA8FF 100%)'
-      : 'linear-gradient(135deg, #2563eb 60%, #60a5fa 100%)'
-    : colorMode === 'dark'
-      ? 'linear-gradient(135deg, #23243a 60%, #35365a 100%)'
-      : 'linear-gradient(135deg, #f1f5f9 60%, #e0e7ef 100%)',
-  color: isMe ? 'white' : colorMode === 'dark' ? 'gray.100' : 'gray.800',
-  px: 6,
-  py: 4,
+    ? getModeColor(colorMode, MESSAGE_GRADIENTS.userDark, MESSAGE_GRADIENTS.userLight)
+    : getModeColor(colorMode, MESSAGE_GRADIENTS.otherDark, MESSAGE_GRADIENTS.otherLight),
+  color: isMe ? 'white' : getModeColor(colorMode, THEME_COLORS.gray[100], THEME_COLORS.gray[800]),
+  ...THEME_SPACING.message,
   borderRadius: isMe ? '2.5em 2.5em 0.8em 2.5em' : '2.5em 2.5em 2.5em 0.8em',
-  boxShadow: isMe
-    ? '0 6px 24px 0 rgba(80,140,255,0.18), 0 1.5px 6px 0 rgba(80,140,255,0.10)'
-    : '0 6px 24px 0 rgba(35,36,58,0.10), 0 1.5px 6px 0 rgba(35,36,58,0.06)',
+  boxShadow: isMe ? MESSAGE_SHADOWS.user : MESSAGE_SHADOWS.other,
   position: 'relative',
   backdropFilter: 'blur(2px)',
 })
 
-// 用戶列表樣式
+// 用戶列表樣式 - 引用主題配置
 export const userListStyles = (colorMode: string): SystemStyleObject => ({
   mb: 2,
   '& .userCount': {
-    fontSize: 'sm',
-    color: colorMode === 'dark' ? 'gray.300' : 'gray.500',
+    fontSize: THEME_FONT_SIZES.small,
+    color: getModeColor(colorMode, THEME_COLORS.gray[300], THEME_COLORS.gray[500]),
   },
   '& .userTag': {
-    fontSize: 'xs',
-    bg: colorMode === 'dark' ? 'gray.700' : 'gray.200',
+    fontSize: THEME_FONT_SIZES.tiny,
+    bg: getModeColor(colorMode, THEME_COLORS.gray[700], THEME_COLORS.gray[200]),
     px: 2,
     borderRadius: 'md',
   },
 })
 
-// ChatRoom 外層 Flex 樣式
+// 訊息頭像樣式 - 引用主題配置
+export const messageAvatarStyles = (isMe: boolean): SystemStyleObject => ({
+  size: 'sm',
+  bg: isMe ? 'blue.400' : 'gray.400',
+  color: 'white',
+  boxShadow: '0 2px 8px 0 rgba(0,0,0,0.10)',
+  ml: isMe ? 2 : 0,
+  mr: !isMe ? 2 : 0,
+})
+
+// ChatRoom 外層 Flex 樣式 - 使用主題背景漸層
 export const chatRoomContainerStyles: SystemStyleObject = {
   minH: '100vh',
   alignItems: 'center',
@@ -95,13 +158,17 @@ export const chatRoomContainerStyles: SystemStyleObject = {
   p: 4,
 }
 
-// ChatRoom 主要 Box 樣式
+// ChatRoom 主要 Box 樣式 - 引用主題配置
 export const chatRoomBoxStyles = (colorMode: string): SystemStyleObject => ({
   w: { base: '100%', sm: '390px' },
   maxW: '100vw',
   h: { base: '100vh', sm: '700px' },
   maxH: '100vh',
-  bg: colorMode === 'dark' ? 'rgba(30,32,48,0.95)' : 'rgba(247,247,248,0.95)',
+  bg: getModeColor(
+    colorMode, 
+    'rgba(30,32,48,0.95)', 
+    'rgba(247,247,248,0.95)'
+  ),
   borderRadius: '2xl',
   boxShadow: '2xl',
   overflow: 'hidden',
@@ -135,8 +202,8 @@ export const chatRoomMessageListBoxStyles: SystemStyleObject = {
   mb: 2,
 }
 
-// 輸入區塊
+// 輸入區塊 - 引用主題間距
 export const chatRoomInputBoxStyles: SystemStyleObject = {
-  px: 3,
+  ...THEME_SPACING.input,
   pb: 3,
 }

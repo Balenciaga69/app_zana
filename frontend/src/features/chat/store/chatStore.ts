@@ -5,7 +5,7 @@ import type { Message } from '../models/Message'
 
 const users =["秦始皇","北極熊"]
 
-export const useChatStore = create<ChatStore>((set, get) => ({
+export const useChatStore = create<ChatStore>((set) => ({
   users: users,
   messages: [
     { user: users[0], text: `騎${users[1]}`, timestamp: Date.now() },

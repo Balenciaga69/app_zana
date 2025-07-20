@@ -17,16 +17,18 @@ public class ChatHub : Hub
         return Context.ConnectionId;
     }
 
+    // This method is called when a new client connects to the hub.
+    // It adds the client to a group called "MyGroup".
     public override async Task OnConnectedAsync()
     {
-        // 加入分組
         await Groups.AddToGroupAsync(Context.ConnectionId, "MyGroup");
         await base.OnConnectedAsync();
     }
 
+    // This method is called when a client disconnects from the hub.
+    // It removes the client from the group "MyGroup".
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        // 離開分組
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, "MyGroup");
         await base.OnDisconnectedAsync(exception);
     }
