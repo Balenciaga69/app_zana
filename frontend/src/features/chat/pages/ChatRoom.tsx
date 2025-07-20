@@ -2,6 +2,7 @@ import { Box, Flex } from '@chakra-ui/react'
 import MessageList from '../components/MessageList.tsx'
 import MessageInput from '../components/MessageInput.tsx'
 import Header from '../components/Header.tsx'
+import { useColorMode } from '@chakra-ui/react'
 import {
   chatRoomContainerStyles,
   chatRoomBoxStyles,
@@ -11,9 +12,10 @@ import {
 } from '../styles/componentStyles'
 
 const ChatRoom = () => {
+  const { colorMode } = useColorMode()
   return (
     <Flex sx={chatRoomContainerStyles}>
-      <Box sx={chatRoomBoxStyles}>
+      <Box sx={chatRoomBoxStyles(colorMode)}>
         <Header />
         <Box sx={chatRoomInnerBoxStyles}>
           <Box sx={chatRoomMessageListBoxStyles}>

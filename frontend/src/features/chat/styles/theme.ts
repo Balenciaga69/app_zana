@@ -4,7 +4,7 @@ import type { ThemeConfig } from '@chakra-ui/react'
 
 const config: ThemeConfig = {
   initialColorMode: 'light',
-  useSystemColorMode: true,
+  useSystemColorMode: false,
 }
 
 // 通用工具函數：根據色彩模式選擇顏色

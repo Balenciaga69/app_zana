@@ -11,9 +11,7 @@ const Header = () => {
         <Heading sx={headerTitleStyles(colorMode)}>
           <span>Messages</span>
         </Heading>
-        <Text sx={headerSubtitleStyles(colorMode)}>
-          LGBTQ+Chat
-        </Text>
+        <Text sx={headerSubtitleStyles(colorMode)}>LGBTQ+Chat</Text>
       </Box>
       <Spacer />
       <IconButton

@@ -96,12 +96,12 @@ export const chatRoomContainerStyles: SystemStyleObject = {
 }
 
 // ChatRoom 主要 Box 樣式
-export const chatRoomBoxStyles: SystemStyleObject = {
+export const chatRoomBoxStyles = (colorMode: string): SystemStyleObject => ({
   w: { base: '100%', sm: '390px' },
   maxW: '100vw',
   h: { base: '100vh', sm: '700px' },
   maxH: '100vh',
-  bg: 'rgba(30,32,48,0.95)',
+  bg: colorMode === 'dark' ? 'rgba(30,32,48,0.95)' : 'rgba(247,247,248,0.95)',
   borderRadius: '2xl',
   boxShadow: '2xl',
   overflow: 'hidden',
@@ -110,7 +110,7 @@ export const chatRoomBoxStyles: SystemStyleObject = {
   position: 'relative',
   // Chakra 沒有 backdropFilter 內建，需用 style 傳遞
   style: { backdropFilter: 'blur(8px)' },
-}
+})
 
 // ChatRoom 內層訊息區 Box 樣式
 export const chatRoomInnerBoxStyles: SystemStyleObject = {
