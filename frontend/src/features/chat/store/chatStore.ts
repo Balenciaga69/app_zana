@@ -3,11 +3,13 @@ import type { ChatStore } from '@/features/chat/models/ChatStore'
 import { create } from 'zustand'
 import type { Message } from '../models/Message'
 
+const users =["秦始皇","北極熊"]
+
 export const useChatStore = create<ChatStore>((set, get) => ({
-  users: ['Alice', 'Bob'],
+  users: users,
   messages: [
-    { user: 'Alice', text: '哈囉！', timestamp: Date.now() },
-    { user: 'Bob', text: '你好！', timestamp: Date.now() },
+    { user: users[0], text: `騎${users[1]}`, timestamp: Date.now() },
+    { user: users[1], text: `騎${users[0]}`, timestamp: Date.now() },
   ],
   sendMessage: (text: string) => {
     const user = '你'
