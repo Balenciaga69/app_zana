@@ -17,32 +17,27 @@ const Header = () => {
         <Text sx={headerSubtitleStyles(colorMode)}>LGBTQ+Chat</Text>
       </Box>
       <Spacer />
-      
+
       {/* 連線狀態與用戶資訊 */}
       <HStack spacing={3}>
         {currentUser && (
           <HStack spacing={2}>
-            <Avatar size="sm" name={currentUser} />
-            <Text fontSize="sm" fontWeight="medium">
+            <Avatar size='sm' name={currentUser} />
+            <Text fontSize='sm' fontWeight='medium'>
               {currentUser}
             </Text>
           </HStack>
         )}
-        
-        <Badge 
-          colorScheme={isConnected ? 'green' : 'red'} 
-          variant="subtle"
-          fontSize="xs"
-        >
+        <Badge colorScheme={isConnected ? 'green' : 'red'} variant='subtle' fontSize='xs'>
           {connectionStatus}
         </Badge>
-        
         <IconButton
           aria-label='切換深色/淺色模式'
           icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
           onClick={toggleColorMode}
           variant='themeToggle'
-        />      </HStack>
+        />
+      </HStack>
     </Flex>
   )
 }
