@@ -1,54 +1,28 @@
-// Chat 元件樣式配置 - 重構版本，引用主題配置
-import type { SystemStyleObject } from '@chakra-ui/react'
+// Chat 元件樣式配置 - 引用主題配置，避免重複定義
+import type { SystemStyleObject, ThemingProps } from '@chakra-ui/react'
+import theme from './theme'
 
-// 主題顏色常數 - 與 theme.ts 保持一致
-const THEME_COLORS = {
-  bg: {
-    light: '#f7f7f8',
-    dark: '#23272f',
-  },
-  card: {
-    light: '#fff',
-    dark: '#343541',
-  },
-  text: {
-    light: '#222222',
-    dark: '#ececf1',
-  },
-  gray: {
-    100: '#e3e3e3',
-    200: '#c8c8c8',
-    300: '#a0a0a0',
-    400: '#888888',
-    500: '#666666',
-    600: '#444444',
-    700: '#333333',
-    800: '#222222',
-  },
-} as const
+// 從主題中取得顏色配置
+const THEME_COLORS = theme.colors
 
-// 主題間距常數 - 與 theme.ts 保持一致
-const THEME_SPACING = {
-  message: { px: 6, py: 4 },
-  input: { px: 3, py: 2 },
-  header: { px: 4, py: 3 },
-} as const
+// 從主題中取得間距配置
+const THEME_SPACING = theme.spacing
 
-// 主題字體大小常數
+// 從主題中取得字體大小配置
 const THEME_FONT_SIZES = {
-  tiny: 'xs',
-  small: 'sm',
-  normal: 'md',
-  large: 'xl',
-  xlarge: '2xl',
+  ...theme.fontSizes,
 } as const
+
+// 從主題中取得圓角和陰影配置
+const THEME_RADII = theme.radii
+const THEME_SHADOWS = theme.shadows
 
 // 工具函數：根據色彩模式選擇顏色
-const getModeColor = (colorMode: string, darkColor: string, lightColor: string) => 
+const getModeColor = (colorMode: string, darkColor: string, lightColor: string) =>
   colorMode === 'dark' ? darkColor : lightColor
 
 // 工具函數：根據色彩模式選擇主題顏色
-const getThemeColor = (colorMode: string, colorPath: 'bg' | 'card' | 'text') => 
+const getThemeColor = (colorMode: string, colorPath: 'bg' | 'card' | 'text') =>
   getModeColor(colorMode, THEME_COLORS[colorPath].dark, THEME_COLORS[colorPath].light)
 
 // Header 樣式 - 引用主題配置
@@ -59,8 +33,8 @@ export const headerStyles = (colorMode: string): SystemStyleObject => ({
   bg: getThemeColor(colorMode, 'card'),
   borderBottomWidth: 1,
   borderColor: getModeColor(colorMode, THEME_COLORS.gray[700], THEME_COLORS.gray[100]),
-  borderRadius: '2xl',
-  boxShadow: 'sm',
+  borderRadius: THEME_RADII.message, // 使用主題中的圓角
+  boxShadow: THEME_SHADOWS.subtle,   // 使用主題中的陰影
 })
 
 // Header 標題樣式 - 引用主題配置
@@ -84,9 +58,9 @@ export const headerSubtitleStyles = (colorMode: string): SystemStyleObject => ({
 // 訊息輸入框樣式 - 引用主題配置
 export const messageInputContainerStyles = (colorMode: string): SystemStyleObject => ({
   bg: getModeColor(colorMode, THEME_COLORS.gray[800], THEME_COLORS.gray[100]),
-  borderRadius: '2xl',
+  borderRadius: THEME_RADII.message, // 使用主題中的圓角
   ...THEME_SPACING.input,
-  boxShadow: 'md',
+  boxShadow: THEME_SHADOWS.container, // 使用主題中的陰影
   gap: 2,
 })
 
@@ -135,16 +109,15 @@ export const userListStyles = (colorMode: string): SystemStyleObject => ({
     fontSize: THEME_FONT_SIZES.tiny,
     bg: getModeColor(colorMode, THEME_COLORS.gray[700], THEME_COLORS.gray[200]),
     px: 2,
-    borderRadius: 'md',
+    borderRadius: THEME_RADII.card, // 使用主題中的圓角
   },
 })
 
 // 訊息頭像樣式 - 引用主題配置
-export const messageAvatarStyles = (isMe: boolean): SystemStyleObject => ({
-  size: 'sm',
+export const messageAvatarStyles = (isMe: boolean): SystemStyleObject | ThemingProps<'Avatar'> => ({
   bg: isMe ? 'blue.400' : 'gray.400',
   color: 'white',
-  boxShadow: '0 2px 8px 0 rgba(0,0,0,0.10)',
+  boxShadow: THEME_SHADOWS.message, // 使用主題中的陰影
   ml: isMe ? 2 : 0,
   mr: !isMe ? 2 : 0,
 })
@@ -164,11 +137,7 @@ export const chatRoomBoxStyles = (colorMode: string): SystemStyleObject => ({
   maxW: '100vw',
   h: { base: '100vh', sm: '700px' },
   maxH: '100vh',
-  bg: getModeColor(
-    colorMode, 
-    'rgba(30,32,48,0.95)', 
-    'rgba(247,247,248,0.95)'
-  ),
+  bg: getModeColor(colorMode, 'rgba(30,32,48,0.95)', 'rgba(247,247,248,0.95)'),
   borderRadius: '2xl',
   boxShadow: '2xl',
   overflow: 'hidden',

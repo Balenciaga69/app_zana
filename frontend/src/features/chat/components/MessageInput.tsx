@@ -1,5 +1,5 @@
 // 訊息輸入元件
-import { HStack, Input, IconButton, useColorMode } from "@chakra-ui/react";
+import { HStack, Input, IconButton, useColorMode, useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import { useChatStore } from "../store/chatStore";
 import { FiSend, FiCamera } from "react-icons/fi";
@@ -7,13 +7,46 @@ import { messageInputContainerStyles, messageInputStyles } from "../styles/compo
 
 const MessageInput = () => {
   const [text, setText] = useState("");
-  const sendMessage = useChatStore((state) => state.sendMessage);
+  const { sendMessage, isConnected, currentUser } = useChatStore();
   const { colorMode } = useColorMode();
+  const toast = useToast();
 
-  const handleSend = () => {
-    if (text.trim()) {
-      sendMessage(text);
+  const handleSend = async () => {
+    if (!text.trim()) return;
+
+    if (!isConnected) {
+      toast({
+        title: "連線錯誤",
+        description: "SignalR 未連線，無法發送訊息",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (!currentUser) {
+      toast({
+        title: "使用者錯誤",
+        description: "請先設定使用者名稱",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      await sendMessage(text);
       setText("");
+    } catch (error) {
+      toast({
+        title: "發送失敗",
+        description: "訊息發送失敗，請重試",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
 
@@ -32,14 +65,14 @@ const MessageInput = () => {
         onKeyDown={(e) => e.key === "Enter" && handleSend()}
         sx={messageInputStyles(colorMode)}
         flex={1}
+        isDisabled={!isConnected || !currentUser}
       />
       <IconButton
         aria-label="發送"
         icon={<FiSend />}
         variant="messageAction"
-        colorScheme="brand"
         onClick={handleSend}
-      />
+        isDisabled={!isConnected || !currentUser || !text.trim()}      />
     </HStack>
   );
 };

@@ -2,6 +2,7 @@ using BasicApp.Chat.Hubs;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using System.Net;
 
 namespace BasicApp.Chat.Controllers
 {
@@ -22,9 +23,10 @@ namespace BasicApp.Chat.Controllers
 
         // Returns a greeting message for the given name
         [HttpGet("Hey/{name}")]
-        [EnableCors("DenyAll")]
         public GetResult Get(string name)
         {
+            IPAddress clientIpAddress = HttpContext.Connection.RemoteIpAddress;
+            _logger.LogInformation($"接收到來自 IP: {clientIpAddress?.ToString()} 的請求");
             _logger.LogInformation("Hi!, {Name}", name);
             return new($"Hey!, {name}");
         }
@@ -34,10 +36,8 @@ namespace BasicApp.Chat.Controllers
 
         // Sends a notification message to all connected clients.
         // This method can be called via a POST request to notify all clients.
-        [HttpPost("notify/{message}")]
-        [EnableCors("DenyAll")]
-        [HttpPost("notify")]
-        public async Task<IActionResult> NotifyAll([FromBody] string message)
+        [HttpGet("notify/{message}")]
+        public async Task<IActionResult> NotifyAll(string message)
         {
             await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Server", message);
             return Ok();
