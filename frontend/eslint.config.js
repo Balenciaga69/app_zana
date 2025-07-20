@@ -31,5 +31,11 @@ export default tseslint.config([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'off',
+      '@typescript-eslint/explicit-function-return-type': ['off'],
+      'lodash/import-scope': [2, 'full'],
+    },
   },
 ])
