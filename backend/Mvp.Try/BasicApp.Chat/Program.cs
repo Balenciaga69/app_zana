@@ -1,6 +1,5 @@
-using BasicApp.Chat;
+﻿using BasicApp.Chat.Extensions;
 using BasicApp.Chat.Hubs;
-using BasicApp.Chat.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();

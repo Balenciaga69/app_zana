@@ -1,4 +1,4 @@
-namespace BasicApp.Chat.Models.Connection;
+﻿namespace BasicApp.Chat.Models.Connection;
 
 /// <summary>
 /// 連線資訊模型，記錄每個 WebSocket 連線的詳細資訊

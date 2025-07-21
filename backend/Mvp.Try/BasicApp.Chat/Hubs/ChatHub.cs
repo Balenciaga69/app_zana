@@ -1,4 +1,4 @@
-using BasicApp.Chat.Services;
+﻿using BasicApp.Chat.Services;
 using Microsoft.AspNetCore.SignalR;
 
 namespace BasicApp.Chat.Hubs;

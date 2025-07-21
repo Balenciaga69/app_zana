@@ -1,4 +1,4 @@
-namespace BasicApp.Chat.Models.Connection;
+﻿namespace BasicApp.Chat.Models.Connection;
 
 /// <summary>
 /// 使用者連線狀態，追蹤單一使用者的所有連線
