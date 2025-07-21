@@ -3,7 +3,7 @@ import { HStack, Input, IconButton, useColorMode, useToast } from '@chakra-ui/re
 import { useState } from 'react'
 import { useChatStore } from '../store/chatStore'
 import { FiSend, FiCamera } from 'react-icons/fi'
-import { messageInputContainerStyles, messageInputStyles } from '../styles/componentStyles'
+import { messageInputContainerStyles, messageInputStyles } from '../../../styles/componentStyles'
 
 const MessageInput = () => {
   const [text, setText] = useState('')

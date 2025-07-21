@@ -1,5 +1,5 @@
 import { Box, Text, useColorMode } from '@chakra-ui/react'
-import { messageBubbleStyles } from '../../styles/componentStyles'
+import { messageBubbleStyles } from '../../../../styles/componentStyles'
 
 interface MessageBubbleProps {
   text: string

@@ -1,5 +1,5 @@
 import { Avatar } from '@chakra-ui/react'
-import { messageAvatarStyles } from '../../styles/componentStyles'
+import { messageAvatarStyles } from '../../../../styles/componentStyles'
 
 interface MessageAvatarProps {
   user: string

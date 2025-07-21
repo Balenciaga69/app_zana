@@ -1,11 +1,16 @@
 using BasicApp.Chat;
 using BasicApp.Chat.Hubs;
+using BasicApp.Chat.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
+
+// 註冊連線管理服務
+builder.Services.AddConnectionServices();
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>

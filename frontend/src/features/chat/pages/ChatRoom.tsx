@@ -12,7 +12,7 @@ import {
   chatRoomInnerBoxStyles,
   chatRoomMessageListBoxStyles,
   chatRoomInputBoxStyles,
-} from '../styles/componentStyles'
+} from '../../../styles/componentStyles.ts'
 
 const ChatRoom = () => {
   const { colorMode } = useColorMode()

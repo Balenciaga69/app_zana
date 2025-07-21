@@ -1,7 +1,7 @@
 // Header 元件，包含專案標題與深色/淺色模式，連線狀態與用戶資訊
 import { Flex, Heading, Spacer, IconButton, useColorMode, Box, Text, HStack, Badge, Avatar } from '@chakra-ui/react'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
-import { headerStyles, headerTitleStyles, headerSubtitleStyles } from '../styles/componentStyles'
+import { headerStyles, headerTitleStyles, headerSubtitleStyles } from '../../../styles/componentStyles'
 import { useChatStore } from '../store/chatStore'
 
 const Header = () => {
