@@ -17,7 +17,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
   sendMessage: async (text: string) => {
     const { currentUser, isConnected } = get()
-    
+
     if (!isConnected) {
       console.error('SignalR 未連線，無法發送訊息')
       return
@@ -37,11 +37,9 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   addMessage: (message: Message) => {
-    set((state) => ({ 
+    set((state) => ({
       messages: [...state.messages, message],
-      users: state.users.includes(message.user) 
-        ? state.users 
-        : [...state.users, message.user]
+      users: state.users.includes(message.user) ? state.users : [...state.users, message.user],
     }))
   },
 
@@ -51,7 +49,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 }))
 
 // 初始化 SignalR 連線和事件處理
-const initializeSignalR = async () => {
+export const initializeSignalR = async () => {
   const store = useChatStore.getState()
 
   // 設定訊息接收處理器
@@ -59,7 +57,7 @@ const initializeSignalR = async () => {
     const newMessage: Message = {
       user,
       text: message,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }
     store.addMessage(newMessage)
   })
@@ -76,4 +74,4 @@ const initializeSignalR = async () => {
 }
 
 // 啟動 SignalR 連線
-initializeSignalR()
+// initializeSignalR() // 已移除，改由 ChatRoom 組件控制

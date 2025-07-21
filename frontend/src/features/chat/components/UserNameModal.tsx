@@ -16,7 +16,7 @@ import {
   Text,
   useColorMode,
 } from '@chakra-ui/react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type ChangeEvent } from 'react'
 import { useChatStore } from '../store/chatStore'
 
 const UserNameModal = () => {
@@ -24,7 +24,7 @@ const UserNameModal = () => {
   const [username, setUsername] = useState('')
   const [error, setError] = useState('')
   const { colorMode } = useColorMode()
-  
+
   const { currentUser, setCurrentUser } = useChatStore()
 
   // 如果沒有設定使用者名稱，自動開啟彈窗
@@ -39,13 +39,13 @@ const UserNameModal = () => {
       setError('使用者名稱至少需要2個字元')
       return
     }
-    
+
     setCurrentUser(username.trim())
     setError('')
     onClose()
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value)
     if (error) setError('')
   }
@@ -57,20 +57,20 @@ const UserNameModal = () => {
         <ModalHeader>設定使用者名稱</ModalHeader>
         <ModalBody>
           <VStack spacing={4}>
-            <Text fontSize="sm" color="gray.600">
+            <Text fontSize='sm' color='gray.600'>
               請設定你在聊天室中要顯示的名稱
             </Text>
             <FormControl isInvalid={!!error}>
               <FormLabel>使用者名稱</FormLabel>
               <Input
-                placeholder="輸入你的名稱..."
+                placeholder='輸入你的名稱...'
                 value={username}
                 onChange={handleChange}
                 onKeyDown={(e) => e.key === 'Enter' && handleSave()}
                 autoFocus
               />
               {error && (
-                <Text color="red.500" fontSize="sm" mt={1}>
+                <Text color='red.500' fontSize='sm' mt={1}>
                   {error}
                 </Text>
               )}
@@ -78,7 +78,7 @@ const UserNameModal = () => {
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="blue" onClick={handleSave}>
+          <Button colorScheme='blue' onClick={handleSave}>
             確定
           </Button>
         </ModalFooter>

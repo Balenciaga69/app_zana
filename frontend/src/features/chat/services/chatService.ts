@@ -2,26 +2,36 @@
 import * as signalR from '@microsoft/signalr'
 import { config } from '@/config/config'
 
+// 事件名稱常數
+const SIGNALR_EVENTS = {
+  RECEIVE_MESSAGE: 'ReceiveMessage',
+  SEND_MESSAGE: 'SendMessage',
+  GET_CONNECTION_ID: 'GetConnectionId',
+}
+
+// 簡易 log utility
+const log = {
+  info: (...args: any[]) => console.log('[ChatService]', ...args),
+  error: (...args: any[]) => console.error('[ChatService]', ...args),
+}
+
 export class ChatService {
-  private connection: signalR.HubConnection | null = null
+  private readonly connection: signalR.HubConnection
   private onMessageReceived: ((user: string, message: string) => void) | null = null
+  private retryCount = 0
+  private readonly maxRetries = 5
+  private readonly retryDelay = 5000
 
   constructor() {
     // 建立 SignalR 連線
-    this.connection = new signalR.HubConnectionBuilder()
-      .withUrl(config.signalR.hubUrl)
-      .withAutomaticReconnect()
-      .build()
-
+    this.connection = new signalR.HubConnectionBuilder().withUrl(config.signalR.hubUrl).withAutomaticReconnect().build()
     this.setupEventHandlers()
   }
 
   private setupEventHandlers() {
-    if (!this.connection) return
-
     // 監聽來自後端的訊息
-    this.connection.on('ReceiveMessage', (user: string, message: string) => {
-      console.log('收到訊息:', user, message)
+    this.connection.on(SIGNALR_EVENTS.RECEIVE_MESSAGE, (user: string, message: string) => {
+      log.info('收到訊息:', user, message)
       if (this.onMessageReceived) {
         this.onMessageReceived(user, message)
       }
@@ -29,54 +39,61 @@ export class ChatService {
 
     // 連線狀態變更
     this.connection.onclose(() => {
-      console.log('SignalR 連線已關閉')
+      log.info('SignalR 連線已關閉')
     })
-
     this.connection.onreconnecting(() => {
-      console.log('SignalR 重新連線中...')
+      log.info('SignalR 重新連線中...')
     })
-
     this.connection.onreconnected(() => {
-      console.log('SignalR 已重新連線')
+      log.info('SignalR 已重新連線')
     })
+  }
+
+  // 解除事件綁定（避免記憶體洩漏）
+  private removeEventHandlers() {
+    this.connection.off(SIGNALR_EVENTS.RECEIVE_MESSAGE)
+    this.connection.off('close')
+    this.connection.off('reconnecting')
+    this.connection.off('reconnected')
   }
 
   // 開始連線
   public async start(): Promise<void> {
-    if (!this.connection) return
-
     try {
       await this.connection.start()
-      console.log('SignalR 連線已建立')
-
+      log.info('SignalR 連線已建立')
+      this.retryCount = 0
       // 取得連線ID（可選）
-      const connectionId = await this.connection.invoke('GetConnectionId')
-      console.log('連線ID:', connectionId)
+      const connectionId = await this.connection.invoke(SIGNALR_EVENTS.GET_CONNECTION_ID)
+      log.info('連線ID:', connectionId)
     } catch (error) {
-      console.error('SignalR 連線失敗:', error)
-      // 5秒後重試
-      setTimeout(() => this.start(), 5000)
+      log.error('SignalR 連線失敗:', error)
+      if (this.retryCount < this.maxRetries) {
+        this.retryCount++
+        setTimeout(() => this.start(), this.retryDelay)
+      } else {
+        log.error('已達最大重試次數，請檢查網路或伺服器狀態。')
+      }
     }
   }
 
   // 停止連線
   public async stop(): Promise<void> {
-    if (this.connection) {
-      await this.connection.stop()
-      console.log('SignalR 連線已停止')
-    }
+    await this.connection.stop()
+    this.removeEventHandlers()
+    log.info('SignalR 連線已停止')
   }
 
   // 發送訊息到後端
   public async sendMessage(user: string, message: string): Promise<void> {
-    if (this.connection?.state === signalR.HubConnectionState.Connected) {
+    if (this.connection.state === signalR.HubConnectionState.Connected) {
       try {
-        await this.connection.invoke('SendMessage', user, message)
+        await this.connection.invoke(SIGNALR_EVENTS.SEND_MESSAGE, user, message)
       } catch (error) {
-        console.error('發送訊息失敗:', error)
+        log.error('發送訊息失敗:', error)
       }
     } else {
-      console.error('SignalR 連線未建立')
+      log.error('SignalR 連線未建立')
     }
   }
 
@@ -86,13 +103,13 @@ export class ChatService {
   }
 
   // 取得連線狀態
-  public get connectionState(): signalR.HubConnectionState | undefined {
-    return this.connection?.state
+  public get connectionState(): signalR.HubConnectionState {
+    return this.connection.state
   }
 
   // 檢查是否已連線
   public get isConnected(): boolean {
-    return this.connection?.state === signalR.HubConnectionState.Connected
+    return this.connection.state === signalR.HubConnectionState.Connected
   }
 }
 

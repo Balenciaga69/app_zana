@@ -7,11 +7,7 @@ interface MessageAvatarProps {
 }
 
 const MessageAvatar = ({ user, isMe }: MessageAvatarProps) => (
-  <Avatar
-    name={user}
-    size={'sm'}
-    sx={messageAvatarStyles(isMe)}
-  />
+  <Avatar name={user} size='sm' sx={messageAvatarStyles(isMe)} />
 )
 
 export default MessageAvatar
