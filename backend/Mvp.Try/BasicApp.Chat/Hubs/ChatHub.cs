@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
 using BasicApp.Chat.Services;
-using System.Net;
+using Microsoft.AspNetCore.SignalR;
 
 namespace BasicApp.Chat.Hubs;
 

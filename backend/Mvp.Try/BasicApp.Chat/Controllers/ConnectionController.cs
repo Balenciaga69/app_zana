@@ -44,7 +44,7 @@ public class ConnectionController : ControllerBase
     public async Task<IActionResult> GetOnlineUsers()
     {
         var users = await _connectionService.GetAllOnlineUsersAsync();
-        
+
         var result = users.Select(user => new
         {
             user.UserId,
@@ -74,7 +74,7 @@ public class ConnectionController : ControllerBase
     public async Task<IActionResult> GetUserStatus(string userId)
     {
         var userStatus = await _connectionService.GetUserStatusAsync(userId);
-        
+
         if (userStatus == null)
         {
             return NotFound(new { Message = "使用者未找到或未連線" });
