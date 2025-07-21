@@ -1,4 +1,4 @@
-using BasicApp.Chat.Models.Connection;
+﻿using BasicApp.Chat.Models.Connection;
 
 namespace BasicApp.Chat.Services;
 

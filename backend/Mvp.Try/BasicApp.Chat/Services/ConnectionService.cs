@@ -1,4 +1,4 @@
-using BasicApp.Chat.Models.Connection;
+﻿using BasicApp.Chat.Models.Connection;
 using System.Collections.Concurrent;
 using ConnectionInfo = BasicApp.Chat.Models.Connection.ConnectionInfo;
 
