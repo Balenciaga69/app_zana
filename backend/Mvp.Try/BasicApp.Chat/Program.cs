@@ -7,33 +7,34 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
-// 註冊連線管理服務
 builder.Services.AddConnectionServices();
 
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy
-            .WithOrigins("http://localhost:7414", "http://172.20.10.1:7414", "http://172.20.10.1")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+        policy.WithOrigins("http://localhost:7414").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
     });
 });
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// 啟用 CORS（跨來源資源分享）
 app.UseCors();
+// 啟用 HTTPS 重新導向
 app.UseHttpsRedirection();
+// 啟用驗證
 app.UseAuthentication();
+// 啟用授權
 app.UseAuthorization();
+// 映射控制器路由
 app.MapControllers();
+// 映射 SignalR 聊天 Hub
 app.MapHub<ChatHub>("/chat");
+// 啟動應用程式
 app.Run();

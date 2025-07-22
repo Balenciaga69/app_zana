@@ -6,7 +6,7 @@ namespace BasicApp.Chat.Hubs;
 /// <summary>
 /// 聊天室 Hub，處理 WebSocket 連線和 UserId 管理
 /// </summary>
-public class ChatHub : Hub
+public class ChatHub : Hub, IChatHub
 {
     private readonly IConnectionService _connectionService;
     private readonly ILogger<ChatHub> _logger;
