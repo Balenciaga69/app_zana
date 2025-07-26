@@ -1,4 +1,3 @@
-// 自訂 Chakra UI 主題，仿 ChatGPT 風格
 import { extendTheme } from '@chakra-ui/react'
 import type { ThemeConfig } from '@chakra-ui/react'
 
@@ -7,7 +6,6 @@ const config: ThemeConfig = {
   useSystemColorMode: false,
 }
 
-// 通用工具函數：根據色彩模式選擇顏色
 const colorMode = (darkColor: string, lightColor: string) => (props: any) =>
   props.colorMode === 'dark' ? darkColor : lightColor
 
@@ -127,129 +125,7 @@ const theme = extendTheme({
       },
     }),
   },
-  components: {
-    // Layout 相關元件樣式
-    Box: {
-      variants: {
-        messageBubble: {
-          ...spacing.message,
-          position: 'relative',
-          style: { backdropFilter: 'blur(2px)' },
-        },
-        messageContainer: {
-          maxW: '75%',
-          display: 'flex',
-          flexDirection: 'column',
-        },
-      },
-    },
-
-    Flex: {
-      variants: {
-        header: (props: any) => ({
-          align: 'center',
-          mb: 6,
-          ...spacing.header,
-          bg: colorMode('card.dark', 'card.light')(props),
-          borderBottomWidth: 1,
-          borderColor: colorMode('gray.700', 'gray.100')(props),
-          borderRadius: radii.message,
-          boxShadow: shadows.subtle,
-        }),
-        messageRow: {
-          direction: 'row',
-          align: 'flex-end',
-          mb: 3,
-          ...spacing.compact,
-        },
-      },
-    },
-
-    // Stack 相關元件樣式
-    VStack: {
-      variants: {
-        messageList: {
-          align: 'stretch',
-          spacing: 2,
-          h: '100%',
-          overflowY: 'auto',
-          pb: 2,
-        },
-      },
-    },
-
-    HStack: {
-      variants: {
-        messageInput: (props: any) => ({
-          bg: colorMode('gray.800', 'gray.100')(props),
-          borderRadius: radii.message,
-          ...spacing.input,
-          boxShadow: shadows.container,
-          spacing: 2,
-        }),
-      },
-    },
-
-    // 表單元件樣式
-    Input: {
-      variants: {
-        messageInput: (props: any) => ({
-          field: {
-            variant: 'unstyled',
-            fontSize: fontSizes.normal,
-            color: colorMode('gray.100', 'gray.800')(props),
-            _placeholder: {
-              color: colorMode('gray.500', 'gray.400')(props),
-            },
-          },
-        }),
-      },
-    },
-
-    // 按鈕元件樣式
-    IconButton: {
-      variants: {
-        messageAction: {
-          borderRadius: radii.button,
-          fontSize: fontSizes.large,
-        },
-        themeToggle: (props: any) => ({
-          variant: 'ghost',
-          size: 'lg',
-          color: colorMode('gray.300', 'gray.600')(props),
-          _hover: {
-            bg: colorMode('gray.700', 'gray.200')(props),
-          },
-        }),
-      },
-    },
-
-    // 文字元件樣式
-    Text: {
-      variants: {
-        timestamp: {
-          ...textStyles.tinySubtle,
-          minW: '44px',
-          textAlign: 'center',
-        },
-        userName: {
-          ...textStyles.tinyMedium,
-          mb: 1,
-          px: 1,
-        },
-        userCount: (props: any) => ({
-          fontSize: fontSizes.small,
-          color: colorMode('gray.300', 'gray.500')(props),
-        }),
-        userTag: (props: any) => ({
-          fontSize: fontSizes.tiny,
-          bg: colorMode('gray.700', 'gray.200')(props),
-          px: 2,
-          borderRadius: radii.card,
-        }),
-      },
-    },
-  },
+  components: {},
 })
 
 export default theme
