@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>聊天室 - UserId 測試</title>
+    <meta charset="utf-8" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status-panel {
+            background: #e8f5e8;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #4caf50;
+        }
+        .error-panel {
+            background: #ffe8e8;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #f44336;
+            display: none;
+        }
+        .chat-area {
+            border: 1px solid #ddd;
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+            background: #fafafa;
+            margin-bottom: 20px;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 5px 10px;
+            border-radius: 15px;
+            max-width: 70%;
+        }
+        .message.own {
+            background: #007bff;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        .message.other {
+            background: #e9ecef;
+            color: black;
+        }
+        .system-message {
+            color: #666;
+            font-style: italic;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>聊天室 - UserId 功能測試</h1>
+        
+        <div id="status-panel" class="status-panel">
+            <strong>狀態:</strong> <span id="connection-status">未連線</span><br>
+            <strong>使用者ID:</strong> <span id="user-id">未分配</span><br>
+            <strong>連線ID:</strong> <span id="connection-id">未連線</span>
+        </div>
+
+        <div id="error-panel" class="error-panel">
+            <span id="error-message"></span>
+        </div>
+
+        <div class="stats">
+            <span>線上使用者: <span id="online-users">0</span></span>
+            <span>總連線數: <span id="total-connections">0</span></span>
+            <span id="last-update"></span>
+        </div>
+
+        <div id="chat-area" class="chat-area"></div>
+
+        <div class="input-group">
+            <input type="text" id="username" placeholder="顯示名稱" value="匿名使用者" />
+            <input type="text" id="message" placeholder="輸入訊息..." disabled />
+            <button id="send-button" onclick="sendMessage()" disabled>發送</button>
+        </div>
+
+        <div class="input-group">
+            <button id="connect-button" onclick="connectToChat()">連線</button>
+            <button id="disconnect-button" onclick="disconnectFromChat()" disabled>中斷連線</button>
+            <button onclick="clearChat()">清除聊天</button>
+            <button onclick="refreshStats()">重新整理統計</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <script>
+        let connection = null;
+        let currentUserId = null;
+
+        // 從 localStorage 取得或產生 UserId
+        function getUserId() {
+            let userId = localStorage.getItem('chatUserId');
+            if (!userId) {
+                userId = 'user-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('chatUserId', userId);
+            }
+            return userId;
+        }
+
+        // 更新狀態面板
+        function updateStatusPanel(status, userId = null, connectionId = null) {
+            document.getElementById('connection-status').textContent = status;
+            if (userId) {
+                document.getElementById('user-id').textContent = userId;
+                currentUserId = userId;
+            }
+            if (connectionId) {
+                document.getElementById('connection-id').textContent = connectionId;
+            }
+        }
+
+        // 顯示錯誤訊息
+        function showError(message) {
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error-panel').style.display = 'block';
+        }
+
+        // 隱藏錯誤訊息
+        function hideError() {
+            document.getElementById('error-panel').style.display = 'none';
+        }
+
+        // 連線到聊天室
+        async function connectToChat() {
+            if (connection && connection.state === signalR.HubConnectionState.Connected) {
+                addSystemMessage('已經連線中');
+                return;
+            }
+
+            hideError();
+            updateStatusPanel('連線中...');
+
+            try {
+                // 建立 SignalR 連線
+                connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/chat")
+                    .withAutomaticReconnect()
+                    .build();
+
+                // 設定事件處理程序
+                setupEventHandlers();
+
+                // 開始連線
+                await connection.start();
+                updateStatusPanel('已連線', null, connection.connectionId);
+
+                // 註冊使用者（使用儲存的 UserId）
+                const existingUserId = getUserId();
+                const assignedUserId = await connection.invoke("RegisterUser", existingUserId);
+                
+                // 更新 localStorage 中的 UserId（可能是伺服器新分配的）
+                localStorage.setItem('chatUserId', assignedUserId);
+                updateStatusPanel('已註冊', assignedUserId, connection.connectionId);
+
+                // 取得統計資訊
+                await refreshStats();
+
+                // 更新 UI 狀態
+                document.getElementById('connect-button').disabled = true;
+                document.getElementById('disconnect-button').disabled = false;
+                document.getElementById('message').disabled = false;
+                document.getElementById('send-button').disabled = false;
+
+                addSystemMessage(`歡迎！你的使用者ID是: ${assignedUserId}`);
+
+            } catch (err) {
+                console.error('連線失敗:', err);
+                showError('連線失敗: ' + err.toString());
+                updateStatusPanel('連線失敗');
+            }
+        }
+
+        // 設定 SignalR 事件處理程序
+        function setupEventHandlers() {
+            // 接收訊息
+            connection.on("ReceiveMessage", function (user, message, userId) {
+                addChatMessage(user, message, userId);
+            });
+
+            // 使用者註冊確認
+            connection.on("UserRegistered", function (userId) {
+                console.log('使用者註冊確認:', userId);
+                updateStatusPanel('已註冊', userId, connection.connectionId);
+            });
+
+            // 線上人數更新
+            connection.on("OnlineCountChanged", function (count) {
+                document.getElementById('online-users').textContent = count;
+                document.getElementById('last-update').textContent = '更新時間: ' + new Date().toLocaleTimeString();
+            });
+
+            // 錯誤訊息
+            connection.on("Error", function (message) {
+                showError(message);
+            });
+
+            // 連線狀態變更
+            connection.onreconnecting(() => {
+                updateStatusPanel('重新連線中...');
+                addSystemMessage('連線中斷，正在重新連線...');
+            });
+
+            connection.onreconnected(() => {
+                updateStatusPanel('已重新連線', currentUserId, connection.connectionId);
+                addSystemMessage('重新連線成功');
+                // 重新註冊使用者
+                const existingUserId = getUserId();
+                connection.invoke("RegisterUser", existingUserId);
+            });
+
+            connection.onclose(() => {
+                updateStatusPanel('連線已中斷');
+                document.getElementById('connect-button').disabled = false;
+                document.getElementById('disconnect-button').disabled = true;
+                document.getElementById('message').disabled = true;
+                document.getElementById('send-button').disabled = true;
+                addSystemMessage('連線已中斷');
+            });
+        }
+
+        // 中斷連線
+        async function disconnectFromChat() {
+            if (connection) {
+                try {
+                    await connection.stop();
+                    addSystemMessage('已中斷連線');
+                } catch (err) {
+                    console.error('中斷連線時發生錯誤:', err);
+                }
+            }
+        }
+
+        // 發送訊息
+        async function sendMessage() {
+            const username = document.getElementById('username').value || '匿名使用者';
+            const message = document.getElementById('message').value;
+
+            if (!message.trim()) {
+                return;
+            }
+
+            try {
+                await connection.invoke("SendMessage", username, message);
+                document.getElementById('message').value = '';
+            } catch (err) {
+                console.error('發送訊息失敗:', err);
+                showError('發送訊息失敗: ' + err.toString());
+            }
+        }
+
+        // 新增聊天訊息到畫面
+        function addChatMessage(user, message, userId) {
+            const chatArea = document.getElementById('chat-area');
+            const messageDiv = document.createElement('div');
+            
+            const isOwnMessage = userId === currentUserId;
+            messageDiv.className = 'message ' + (isOwnMessage ? 'own' : 'other');
+            
+            const timestamp = new Date().toLocaleTimeString();
+            if (isOwnMessage) {
+                messageDiv.innerHTML = `<strong>你</strong> (${timestamp})<br>${escapeHtml(message)}`;
+            } else {
+                messageDiv.innerHTML = `<strong>${escapeHtml(user)}</strong> (${timestamp})<br>${escapeHtml(message)}`;
+            }
+            
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        // 新增系統訊息
+        function addSystemMessage(message) {
+            const chatArea = document.getElementById('chat-area');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'system-message';
+            messageDiv.textContent = `[系統] ${message} (${new Date().toLocaleTimeString()})`;
+            chatArea.appendChild(messageDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        // 清除聊天記錄
+        function clearChat() {
+            document.getElementById('chat-area').innerHTML = '';
+        }
+
+        // 重新整理統計資訊
+        async function refreshStats() {
+            if (!connection || connection.state !== signalR.HubConnectionState.Connected) {
+                return;
+            }
+
+            try {
+                const stats = await connection.invoke("GetOnlineStats");
+                document.getElementById('online-users').textContent = stats.onlineUsers;
+                document.getElementById('total-connections').textContent = stats.totalConnections;
+                document.getElementById('last-update').textContent = '更新時間: ' + new Date().toLocaleTimeString();
+            } catch (err) {
+                console.error('取得統計資訊失敗:', err);
+            }
+        }
+
+        // HTML 跳脫
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Enter 鍵發送訊息
+        document.getElementById('message').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !document.getElementById('send-button').disabled) {
+                sendMessage();
+            }
+        });
+
+        // 頁面載入完成後自動取得使用者ID
+        document.addEventListener('DOMContentLoaded', function() {
+            const userId = getUserId();
+            updateStatusPanel('準備連線', userId);
+            addSystemMessage('頁面載入完成，使用者ID: ' + userId);
+        });
+
+        // 頁面卸載時中斷連線
+        window.addEventListener('beforeunload', function() {
+            if (connection) {
+                connection.stop();
+            }
+        });
+    </script>
+</body>
+</html>
