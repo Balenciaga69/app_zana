@@ -72,6 +72,3 @@ export const initializeSignalR = async () => {
     store.setConnectionStatus('連線失敗', false)
   }
 }
-
-// 啟動 SignalR 連線
-// initializeSignalR() // 已移除，改由 ChatRoom 組件控制

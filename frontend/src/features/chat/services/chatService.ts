@@ -7,6 +7,7 @@ const SIGNALR_EVENTS = {
   RECEIVE_MESSAGE: 'ReceiveMessage',
   SEND_MESSAGE: 'SendMessage',
   GET_CONNECTION_ID: 'GetConnectionId',
+  REGISTER_USER: 'RegisterUser',
 }
 
 // 簡易 log utility
@@ -86,14 +87,13 @@ export class ChatService {
 
   // 發送訊息到後端
   public async sendMessage(user: string, message: string): Promise<void> {
-    if (this.connection.state === signalR.HubConnectionState.Connected) {
-      try {
-        await this.connection.invoke(SIGNALR_EVENTS.SEND_MESSAGE, user, message)
-      } catch (error) {
-        log.error('發送訊息失敗:', error)
-      }
-    } else {
-      log.error('SignalR 連線未建立')
+    if (this.connection.state !== signalR.HubConnectionState.Connected) {
+      return log.error('SignalR 連線未建立')
+    }
+    try {
+      await this.connection.invoke(SIGNALR_EVENTS.SEND_MESSAGE, user, message)
+    } catch (error) {
+      log.error('發送訊息失敗:', error)
     }
   }
 
