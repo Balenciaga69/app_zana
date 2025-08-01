@@ -1,8 +1,10 @@
-import { Box, Button, Flex, Text, useColorMode } from '@chakra-ui/react'
-import { type FC, useState } from 'react'
+import { Box, Flex } from '@chakra-ui/react'
+import { useState } from 'react'
 import { ChatMessage } from '../components/molecules/ChatMessage'
 import ChatWindow from '../components/organisms/ChatWindow'
 import MessageInputBar from '../components/molecules/MessageInputBar'
+import ChatRoomHeader from '../components/organisms/ChatRoomHeader'
+import DateSeparator from '../components/atoms/DateSeparator'
 
 const mockMessages = [
   {
@@ -28,18 +30,6 @@ const mockMessages = [
   },
 ]
 
-const ExampleHeader: FC = () => {
-  const { colorMode, toggleColorMode } = useColorMode()
-
-  return (
-    <Flex p='4' borderBottomWidth='1px' justifyContent='space-between' alignItems='center'>
-      <Text fontWeight='bold'>聊天室標題</Text>
-      <Button size='sm' onClick={toggleColorMode}>
-        {colorMode}
-      </Button>
-    </Flex>
-  )
-}
 const ExampleChatRoomPage = () => {
   const [messages, setMessages] = useState([...mockMessages, ...mockMessages, ...mockMessages])
 
@@ -58,12 +48,12 @@ const ExampleChatRoomPage = () => {
 
   return (
     <ChatWindow>
-      {/* 這裡是未來放置 ChatHeader, ChatHistory, MessageInputBar 的地方 */}
-      <ExampleHeader></ExampleHeader>
+      <ChatRoomHeader />
       <Flex direction='column' flex='1' p='4' overflowY='auto'>
         {messages.map((msg, idx) => (
           <ChatMessage key={idx} {...msg} />
         ))}
+        <DateSeparator date='2025-08-02' />
       </Flex>
       <Box p='4' borderTopWidth='1px'>
         <MessageInputBar onSend={handleSend} />

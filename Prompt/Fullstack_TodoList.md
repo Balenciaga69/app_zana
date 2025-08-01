@@ -4,12 +4,12 @@
 - [x]  Atoms - Create MessageInput, SendButton, DateSeparator Components
 - [x]  Molecules - Create MessageInputBar.tsx with Atoms
 - [x]  Organisms - Modify ChatWindow.tsx with MessageInputBar
-- [ ]  寫 ExampleChatRoomPage.tsx Components
-- [ ]  補上 React-Router
+- [x]  寫 ExampleChatRoomPage.tsx Components
+- [x]  補上 React-Router
 
 加上TODO
 
-- [ ]  保留 ChatRoomPage.tsx 未來作為實際串接實際功能的 Page
+- [x]  保留 ChatRoomPage.tsx 未來作為實際串接實際功能的 Page
 
 清理TODO
 

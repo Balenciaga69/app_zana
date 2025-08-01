@@ -4,8 +4,8 @@ export const sendButtonStyles: { button: SystemStyleObject } = {
   button: {
     padding: '8px 16px',
     fontSize: '1rem',
-    background: '#1976d2',
-    color: '#fff',
+    bg: 'brand.primary',
+    color: 'white',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',

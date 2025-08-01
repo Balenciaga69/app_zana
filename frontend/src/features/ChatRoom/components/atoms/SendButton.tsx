@@ -10,12 +10,7 @@ interface SendButtonProps {
 
 const SendButton: React.FC<SendButtonProps> = ({ onClick, disabled, children }) => {
   return (
-    <Button
-      onClick={onClick}
-      isDisabled={disabled}
-      sx={sendButtonStyles.button}
-      data-testid='SendButton'
-    >
+    <Button onClick={onClick} isDisabled={disabled} sx={sendButtonStyles.button} data-testid='SendButton'>
       {children ?? 'Send'}
     </Button>
   )
