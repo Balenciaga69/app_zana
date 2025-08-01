@@ -1,9 +1,9 @@
 ﻿### Frontend(該階段無任何串接後端與狀態功能)
 開發
 
-- [ ]  Atoms - Create MessageInput, SendButton, DateSeparator Components
-- [ ]  Molecules - Create MessageInputBar.tsx with Atoms
-- [ ]  Organisms - Modify ChatWindow.tsx with MessageInputBar
+- [x]  Atoms - Create MessageInput, SendButton, DateSeparator Components
+- [x]  Molecules - Create MessageInputBar.tsx with Atoms
+- [x]  Organisms - Modify ChatWindow.tsx with MessageInputBar
 - [ ]  寫 ExampleChatRoomPage.tsx Components
 - [ ]  補上 React-Router
 

@@ -1,7 +1,9 @@
 import { Box, Button, Flex, Text, useColorMode } from '@chakra-ui/react'
-import { type FC } from 'react'
+import { type FC, useState } from 'react'
 import { ChatMessage } from '../components/molecules/ChatMessage'
 import ChatWindow from '../components/organisms/ChatWindow'
+import MessageInputBar from '../components/molecules/MessageInputBar'
+
 const mockMessages = [
   {
     username: 'Bruce Wayne',
@@ -38,27 +40,36 @@ const ExampleHeader: FC = () => {
     </Flex>
   )
 }
-const ChatRoomPage = () => {
+const ExampleChatRoomPage = () => {
+  const [messages, setMessages] = useState([...mockMessages, ...mockMessages, ...mockMessages])
+
+  const handleSend = (message: string) => {
+    setMessages([
+      ...messages,
+      {
+        username: 'You',
+        avatarUrl: '',
+        message,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        isOwn: true,
+      },
+    ])
+  }
+
   return (
     <ChatWindow>
       {/* 這裡是未來放置 ChatHeader, ChatHistory, MessageInputBar 的地方 */}
-
-      {/* 臨時的 Header 用於展示 */}
       <ExampleHeader></ExampleHeader>
-
-      {/* TODO:臨時的內容區域 */}
       <Flex direction='column' flex='1' p='4' overflowY='auto'>
-        {[...mockMessages, ...mockMessages, ...mockMessages].map((msg, idx) => (
+        {messages.map((msg, idx) => (
           <ChatMessage key={idx} {...msg} />
         ))}
       </Flex>
-
-      {/* 臨時的 Footer */}
       <Box p='4' borderTopWidth='1px'>
-        <Text>訊息輸入框會放在這裡...</Text>
+        <MessageInputBar onSend={handleSend} />
       </Box>
     </ChatWindow>
   )
 }
 
-export default ChatRoomPage
+export default ExampleChatRoomPage
