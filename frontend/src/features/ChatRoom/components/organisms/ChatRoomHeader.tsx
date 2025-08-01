@@ -9,7 +9,7 @@ const ChatRoomHeader = () => {
   return (
     <Box sx={sx.container}>
       <Flex sx={sx.flex}>
-          <IconButton aria-label={sx.backBtn.ariaLabel} icon={<ArrowBackIcon />} sx={sx.backBtn} />
+        <IconButton aria-label={sx.backBtn.ariaLabel} icon={<ArrowBackIcon />} sx={sx.backBtn} />
         <Box sx={sx.leftBox}></Box>
         <Text sx={sx.title}>房間名稱</Text>
         <Flex sx={sx.rightFlex}>
