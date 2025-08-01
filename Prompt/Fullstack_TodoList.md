@@ -1,27 +1,24 @@
 ﻿### Frontend(該階段無任何串接後端與狀態功能)
-開發
-
-- [x]  Atoms - Create MessageInput, SendButton, DateSeparator Components
-- [x]  Molecules - Create MessageInputBar.tsx with Atoms
-- [x]  Organisms - Modify ChatWindow.tsx with MessageInputBar
-- [x]  寫 ExampleChatRoomPage.tsx Components
-- [x]  補上 React-Router
-
-加上TODO
-
-- [x]  保留 ChatRoomPage.tsx 未來作為實際串接實際功能的 Page
-
-清理TODO
-
-- [x]  ChatRoomPage的Mock資料記得清掉
-
-### Frontend(該階段無任何串接後端與狀態功能)
-
 開發規劃 問Gemini (附上圖片等等)
-
-- [ ]  討論並重構 ChatRoomPage 頂端列要有房間名字、離開房間等功能
-- [ ]  討論首頁、建立房間、加入其他房間的UI/UX該怎麼發想(是否拆成多頁 or 一頁搞定?)
+- 討論首頁、建立房間、加入其他房間的UI/UX該怎麼發想(是否拆成多頁 or 一頁搞定?)
+    - 依據 MVP 需求，採用多頁設計（React Router 分頁）
+        - 首頁：極簡僅有兩個按鈕、建立房間、加入房間按鈕
+        - 建立房間頁：房間名稱、人數上限、密碼設定
+        - 加入房間頁：輸入房間網址/代碼、密碼
+        - (Done)聊天室頁：訊息顯示區、輸入框、參與者名單(未完成)、離開按鈕
+    - 每頁獨立元件，單一職責，易於維護與擴展
+    - Chakra UI 主題令牌統一管理，原子元件拆分
+    - 先用 TODO/Comment 標註骨架，逐步填充
 
 實際開發
 
-- [ ]  遵循規格 動手開發房間首頁、建立房間、加入其他房間頁
+- 遵循規格 動手開發房間首頁、建立房間、加入其他房間頁
+    - 規劃路由結構 `/` `/create` `/join` `/room/:id`
+    - 首頁元件骨架
+    - 建立房間頁元件骨架
+    - 加入房間頁元件骨架
+    - 聊天室頁元件骨架
+    - 拆分原子元件（Button/Input/MessageBubble）
+    - 主題令牌集中管理
+    - Mock 狀態與資料，確保 UI 流程完整
+    - 按照工程原則逐步完善元件職責與樣式
