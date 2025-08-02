@@ -1,7 +1,7 @@
 import { HStack, VStack } from '@chakra-ui/react'
-import UserAvatar from '../atoms/UserAvatar'
-import MessageBubble from '../atoms/MessageBubble'
-import Timestamp from '../atoms/Timestamp'
+import UserAvatar from '../atoms/ChatMessage/UserAvatar'
+import MessageBubble from '../atoms/ChatMessage/MessageBubble'
+import Timestamp from '../atoms/ChatMessage/Timestamp'
 export interface MessageContentProps {
   message: string
   time: string

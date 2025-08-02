@@ -1,7 +1,21 @@
-import ChatRoomPage from './features/ChatRoom/pages/ChatRoomPage'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import ExampleChatRoomPage from './features/ChatRoom/pages/ExampleChatRoomPage'
+import HomePage from './features/Room/pages/HomePage'
+import CreateRoomPage from './features/Room/pages/CreateRoomPage'
+import JoinRoomPage from './features/Room/pages/JoinRoomPage'
 
 function App() {
-  return <ChatRoomPage />
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<HomePage />} />
+        <Route path='/create' element={<CreateRoomPage />} />
+        <Route path='/join' element={<JoinRoomPage />} />
+        {/* <Route path="/chat" element={<ChatRoomPage />} /> */}
+        <Route path='/example' element={<ExampleChatRoomPage />} />
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default App

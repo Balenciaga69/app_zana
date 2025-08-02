@@ -9,8 +9,8 @@ export const chatWindowStyles: ChatWindowStyles = {
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    bg: 'gray.100',
-    _dark: { bg: 'gray.800' },
+    bg: 'ui.background',
+    _dark: { bg: 'ui.background' },
     minH: '100vh',
     p: { base: 0, md: 4 },
   },
