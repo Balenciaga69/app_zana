@@ -1,10 +1,13 @@
-name: Code Quality
+name: Auto Format on PR to Main
 
 on:
   pull_request:
     branches: [ main, develop ]
   push:
     branches: [ main, develop ]
+
+permissions:
+  contents: write
 
 jobs:
   frontend-auto-format:
