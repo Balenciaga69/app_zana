@@ -7,10 +7,10 @@ export interface HeaderSx {
   title: TextProps
   rightFlex: FlexProps
   themeBtn: ButtonProps
-  backBtn: Partial<IconButtonProps> & { ariaLabel: string }
+  backBtn: Partial<IconButtonProps>
 }
 
-export const headerSx = (colorMode: 'light' | 'dark'): HeaderSx => ({
+export const headerSx: HeaderSx = {
   container: {
     w: '100%',
     boxShadow: 'md',
@@ -54,11 +54,10 @@ export const headerSx = (colorMode: 'light' | 'dark'): HeaderSx => ({
     px: 3,
   },
   backBtn: {
-    ariaLabel: '離開房間',
     minW: '32px',
     fontSize: 'xl',
     borderRadius: 'md',
     bg: 'transparent',
     color: 'text.primary',
   },
-})
+}
