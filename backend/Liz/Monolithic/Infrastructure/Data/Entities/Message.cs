@@ -11,10 +11,6 @@ public enum MessageType
 
 public class Message : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
-
     [Required]
     [ForeignKey("Room")]
     public Guid RoomId { get; set; }

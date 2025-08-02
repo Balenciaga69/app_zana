@@ -19,6 +19,9 @@ namespace Liz.Monolithic
         public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection("Jwt");
+            var key = jwtSettings["Key"]
+                ?? throw new ArgumentException("JWT Key is not configured in app settings.json");
+
             services
                 .AddAuthentication(options =>
                 {
@@ -35,7 +38,7 @@ namespace Liz.Monolithic
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = jwtSettings["Issuer"],
                         ValidAudience = jwtSettings["Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? string.Empty)),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
                     };
                 });
         }

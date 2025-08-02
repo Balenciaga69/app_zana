@@ -5,10 +5,6 @@ namespace Monolithic.Infrastructure.Data.Entities;
 
 public class Connection : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
-
     [Required]
     [ForeignKey("User")]
     public Guid UserId { get; set; }
