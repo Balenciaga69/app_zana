@@ -1,8 +1,8 @@
 import { Box } from '@chakra-ui/react'
 import { messageInputBarStyles } from './MessageInputBar.style'
 import React, { useState } from 'react'
-import MessageInput from '../atoms/MessageInput'
-import SendButton from '../atoms/SendButton'
+import MessageInput from '../atoms/MessageInputBar/MessageInput'
+import SendButton from '../atoms/MessageInputBar/SendButton'
 
 interface MessageInputBarProps {
   onSend: (message: string) => void

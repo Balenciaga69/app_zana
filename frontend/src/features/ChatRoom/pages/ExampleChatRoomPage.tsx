@@ -4,7 +4,7 @@ import { ChatMessage } from '../components/molecules/ChatMessage'
 import ChatWindow from '../components/organisms/ChatWindow'
 import MessageInputBar from '../components/molecules/MessageInputBar'
 import ChatRoomHeader from '../components/organisms/ChatRoomHeader'
-import DateSeparator from '../components/atoms/DateSeparator'
+import DateSeparator from '../components/atoms/ChatMessage/DateSeparator'
 
 const mockMessages = [
   {
