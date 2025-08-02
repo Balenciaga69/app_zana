@@ -6,6 +6,7 @@ dotnet ef migrations add "2025-05-02-1" `
  */
 
 using Liz.Monolithic;
+using Liz.Monolithic.Infrastructure.Extensions;
 using Monolithic.Infrastructure.Data;
 using Serilog;
 
