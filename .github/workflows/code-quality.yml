@@ -40,6 +40,6 @@ jobs:
       - name: Install CSharpier
         run: dotnet tool restore
       - name: Run CSharpier
-        run: dotnet csharpier . --config-path "./.csharpierrc"
+        run: dotnet csharpier . --config-path "../.csharpierrc"
       - name: Run dotnet format
         run: dotnet format --verify-no-changes
