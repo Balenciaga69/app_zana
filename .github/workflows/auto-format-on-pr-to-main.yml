@@ -1,0 +1,66 @@
+name: Auto Format on PR to Main
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
+
+permissions:
+  contents: write
+
+jobs:
+  frontend-auto-format:
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    name: Frontend Auto Format & Commit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run Prettier (write)
+        run: pnpm run format
+      - name: Run ESLint (fix)
+        run: pnpm run lint -- --fix || true
+      - name: Commit & Push changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'chore: auto format code before merge to main'
+          add: '.'
+          cwd: frontend
+
+  backend-auto-format:
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    name: Backend Auto Format & Commit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/Liz/Monolithic
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Install CSharpier
+        run: dotnet tool restore
+      - name: Run CSharpier (write)
+        run: dotnet csharpier . --config-path "../.csharpierrc"
+      - name: Run dotnet format (write)
+        run: dotnet format .
+      - name: Commit & Push changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'chore: auto format backend code before merge to main'
+          add: '.'
+          cwd: backend/Liz/Monolithic

@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    name: Build & Test (預留)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # TODO: 這裡可依前後端分開 build/test，日後擴充
+      - name: 預留 build 步驟
+        run: echo "Build 步驟待補"
