@@ -12,10 +12,10 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Monolithic/Monolithic.csproj", "Monolithic/"]
-RUN dotnet restore "./Monolithic/Monolithic.csproj"
+COPY ["Monolithic.csproj", "./Monolithic/"]
+WORKDIR /src/Monolithic
+RUN dotnet restore "./Monolithic.csproj"
 COPY . .
-WORKDIR "/src/Monolithic"
 RUN dotnet build "./Monolithic.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
