@@ -1,4 +1,5 @@
-﻿ChatRoomApp.Api/
+﻿### 純粹參考，實際專案結構可能會有所不同
+ChatRoomApp.Api/
 ├── Features/                         # 功能導向資料夾
 │   ├── Identity/                     # UserId 生成與管理
 │   │   ├── Models/

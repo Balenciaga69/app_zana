@@ -1,4 +1,12 @@
-﻿using Liz.Monolithic;
+﻿/** Most Common Command
+dotnet ef migrations add "2025-05-02-1" `
+  --project .\UserService\UserService.Infra\UserService.Infra.csproj `
+  --startup-project .\UserService\UserService.API\UserService.API.csproj
+ dotnet csharpier . --config-path "./.csharpierrc"
+ */
+
+using Liz.Monolithic;
+using Monolithic.Infrastructure.Data;
 using Serilog;
 
 // 讀取 Serilog 設定
@@ -23,6 +31,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// 自動遷移資料庫
+app.Services.MigrateDatabase();
 
 if (app.Environment.IsDevelopment())
 {

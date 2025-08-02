@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Monolithic.Infrastructure.Data.Entities;
 
-public class RoomParticipant
+public class RoomParticipant : BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

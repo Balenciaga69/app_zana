@@ -9,7 +9,7 @@ public enum MessageType
     System,
 }
 
-public class Message
+public class Message : BaseEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
