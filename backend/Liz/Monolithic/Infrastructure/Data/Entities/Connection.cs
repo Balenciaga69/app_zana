@@ -3,12 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Monolithic.Infrastructure.Data.Entities;
 
-public class Connection
+public class Connection : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
-
     [Required]
     [ForeignKey("User")]
     public Guid UserId { get; set; }
@@ -29,8 +25,5 @@ public class Connection
 
     // Navigation properties
     public User User { get; set; } = null!;
-    public Room? Room
-    {
-        get; set;
-    }
+    public Room? Room { get; set; }
 }
