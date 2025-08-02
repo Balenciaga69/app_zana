@@ -1,0 +1,45 @@
+name: Code Quality
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  frontend-lint-format:
+    name: Frontend Lint & Format
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run ESLint
+        run: pnpm run lint
+      - name: Run Prettier (check only)
+        run: pnpm run format -- --check
+
+  backend-format:
+    name: Backend Format & Clean
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/Liz/Monolithic
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Install CSharpier
+        run: dotnet tool restore
+      - name: Run CSharpier
+        run: dotnet csharpier . --config-path "./.csharpierrc"
+      - name: Run dotnet format
+        run: dotnet format --verify-no-changes
