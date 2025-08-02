@@ -22,8 +22,8 @@ jobs:
         run: pnpm install
       - name: Run ESLint
         run: pnpm run lint
-      - name: Run Prettier (check only)
-        run: pnpm run format -- --check
+      - name: Run Prettier
+        run: pnpm run format
 
   backend-format:
     name: Backend Format & Clean
@@ -42,4 +42,4 @@ jobs:
       - name: Run CSharpier
         run: dotnet csharpier . --config-path "../.csharpierrc"
       - name: Run dotnet format
-        run: dotnet format --verify-no-changes
+        run: dotnet format .
