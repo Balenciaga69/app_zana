@@ -10,7 +10,7 @@ public static partial class ServiceCollectionExtensions
     public static IServiceCollection AddAppLogging(this IServiceCollection services)
     {
         // 註冊統一 Logger 作為 Singleton
-        services.AddSingleton(typeof(IAppLogger<>), typeof(AppLogger<>));
+        services.AddTransient(typeof(IAppLogger<>), typeof(AppLogger<>));
 
         return services;
     }

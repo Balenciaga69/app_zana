@@ -148,6 +148,7 @@ public class AppLogger<T> : IAppLogger<T>
 
     private static string GetTraceId()
     {
+        // 取得目前的 Activity Id，如果沒有則產生新的 Guid 並 取前 8 個字元
         return Activity.Current?.Id ?? Guid.NewGuid().ToString("N")[..8];
     }
 }
