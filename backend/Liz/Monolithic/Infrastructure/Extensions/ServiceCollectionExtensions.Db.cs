@@ -1,7 +1,5 @@
 ﻿// PostgreSQL DbContext DI 註冊擴充
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Monolithic.Infrastructure.Data;
 
 namespace Liz.Monolithic.Infrastructure.Extensions;

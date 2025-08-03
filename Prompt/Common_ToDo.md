@@ -8,13 +8,14 @@
 - 建立後端單元測試專案
 - 建立統一的 ApiResponse 格式 並且實作了 Middleware 與 Filter 統一處理
 - 進度 30% 建立 Identity 服務與瀏覽器指紋功能
+- 新增統一 Logger 服務
 ## 維運
 - 建立 GitHub Actions，自動格式化 PR 的 YAML
 
 # 未完成事項
 
 ## 後端開發 TODO
-- [ ] IdentityService：建立 UserId 生成與管理邏輯
+- [ ] (正在處理) IdentityService：建立 UserId 生成與管理邏輯
 - [ ] RoomService：實作房間的 CRUD（建立、查詢、加入、離開、銷毀）
 - [ ] ChatService：訊息儲存、查詢、推送
 - [ ] ConnectionService：SignalR 連線管理與狀態追蹤

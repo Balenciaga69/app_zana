@@ -106,16 +106,6 @@
 ##### Jackson 階段 服務拆分 (後端):
 
 - IdentityService: 負責匿名 UserId 的生成與管理，並維護與用戶相關的最基本狀態。
-  - 功能 
-      - 產生唯一 UserId（通常為 Guid，後端生成，前端儲存於 localStorage）
-      - 提供 UserId 註冊/查詢 API（前端斷線重連時可找回身份）
-      - 管理用戶基本資訊（如最後活動時間、是否在線）
-      - 查詢用戶狀態（如是否在線、活躍時間）
-    - 交互 
-      - ConnectionService：用於連線建立/斷線時，查詢與更新用戶狀態（如 IsOnline、LastActiveAt）
-      - RoomService：用戶建立/加入/離開房間時，驗證 UserId 合法性
-      - ChatService：訊息發送時，關聯 UserId 與訊息 Sender
-      - 前端：註冊/查詢 UserId，斷線重連時找回身份
 - RoomService: 房間的 CRUD 與相關功能
 - ChatService: 把聊天內容存到 DB、推送訊息回去前端、查聊天紀錄
 - ConnectionService: SignalR 連線管理、把資料傳遞給其他微服務，不負責任和業務邏輯

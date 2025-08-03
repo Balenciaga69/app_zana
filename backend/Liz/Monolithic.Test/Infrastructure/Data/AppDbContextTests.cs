@@ -2,7 +2,7 @@
 using Monolithic.Infrastructure.Data;
 using Monolithic.Infrastructure.Data.Entities;
 
-namespace Monolithic.Test
+namespace Monolithic.Test.Infrastructure.Data
 {
     public class AppDbContextTests
     {

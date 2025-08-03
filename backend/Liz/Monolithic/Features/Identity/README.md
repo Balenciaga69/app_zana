@@ -1,56 +1,19 @@
-﻿# Identity 功能 Entity 與架構修改總結
+﻿# IdentityService 說明文件
 
-## 已完成的修改
+## 目標與定位
 
-### 1. Entity 修改
+IdentityService 為本專案 Jackson 階段的核心後端服務之一，負責匿名用戶識別、UserId 生成與管理，並維護與用戶相關的最基本狀態。其設計需符合高可用、低耦合、易擴展原則，並預留未來多服務協作的擴展點。
 
-#### User Entity 擴展
-- 新增瀏覽器指紋相關欄位：
-  - `BrowserFingerprint` - 瀏覽器指紋（255字元）
-  - `UserAgent` - 用戶代理字串（500字元）
-  - `IpAddress` - IP 位址（45字元，支援 IPv6）
-  - `DeviceType` - 設備類型（50字元）
-  - `OperatingSystem` - 作業系統（100字元）
-  - `Browser` - 瀏覽器名稱（100字元）
-  - `BrowserVersion` - 瀏覽器版本（50字元）
-  - `Platform` - 平台資訊（100字元）
+---
 
-#### Connection Entity 擴展
-- 新增連線時的設備資訊快照：
-  - `UserAgent` - 連線時的用戶代理（500字元）
-  - `IpAddress` - 連線時的 IP 位址（45字元）
-  - `BrowserFingerprint` - 連線時的瀏覽器指紋（255字元）
+## 目前進度
 
-### 2. EF Core 配置更新
+- 已建立 Identity 服務雛型，具備瀏覽器指紋結合 LocalStorage 的 UserId 生成邏輯（進度約 30%）。
+- UserId 生成與驗證流程已初步串接前端，支援斷線重連與對話找回。
+- 已有 Entity/Repository 基礎結構，並與 DbContext 整合。
+- 已納入統一 ApiResponse 格式與錯誤處理中介層。
 
-#### UserConfiguration
-- 新增 `BrowserFingerprint` 索引，用於快速查找用戶
-- 設定所有新增欄位的最大長度限制
-- 設定 `IsOnline` 預設值為 false
-
-#### ConnectionConfiguration
-- 設定設備資訊欄位的最大長度限制
-
-### 3. Feature 架構建立
-
-#### Identity Feature Models
-- `CreateUserRequest` - 建立用戶請求模型
-- `UserSession` - 用戶會話資訊模型
-- `ValidateUserRequest` - 驗證用戶請求模型
-- `FindUserByFingerprintRequest` - 根據指紋查找用戶請求模型
-
-#### Identity Service
-- `IIdentityService` 介面定義
-- `IdentityService` 實作類別（含 TODO 架構規劃）
-
-#### Identity Controller
-- RESTful API 端點設計
-- 統一的 `ApiResponse` 回應格式
-- 完整的錯誤處理與日誌記錄
-
-### 4. 服務註冊
-- 建立 `ServiceCollectionExtensions.Identity.cs` 擴展方法
-- 在 `Program.cs` 中註冊 Identity 相關服務
+---
 
 ## 支援的功能需求
 
@@ -69,6 +32,8 @@
 - Connection Entity 記錄每次連線的設備快照
 - 支援多種設備資訊類型的儲存
 
+---
+
 ## 身份識別流程
 
 1. **首次進入**：前端生成 UserId + 收集指紋 → 後端建立新 User
@@ -76,15 +41,59 @@
 3. **輔助找回**：localStorage 遺失時，透過指紋嘗試找回用戶
 4. **設備記錄**：每次連線更新用戶與連線的設備資訊
 
+---
+
+## 未來功能規劃
+
+- UserId 生成：結合瀏覽器指紋、隨機種子，確保匿名且唯一。
+- User 狀態管理：追蹤用戶連線、離線、活躍狀態。
+- 斷線重連：用戶斷線後可憑 UserId 找回房間與對話紀錄。
+- 連線數監控：統計當前活躍用戶數，支援最大連線數限制。
+- 事件流整合：用戶進出房間、離線等狀態變更需有事件通知（預留 MediatR）。
+- 擴展點：預留與其他服務（如 RoomService、ChatService）協作的介面與事件。
+
+---
+
+## 交互設計
+
+- 前端首次進入時，若無 UserId，則由後端生成並回傳，前端儲存於 LocalStorage。
+- 後續請求均帶上 UserId，後端驗證其有效性，並維護用戶狀態。
+- 斷線重連時，前端自動帶上 UserId，後端查詢並恢復對應狀態。
+- 房間服務、聊天服務等需透過 UserId 進行用戶識別與權限驗證。
+- 所有狀態變更（如離線、房間退出）皆需記錄日誌並發送事件。
+
+---
+
+## 技術細節與設計原則
+
+- 採用 Repository Pattern，資料存取與業務邏輯分離。
+- 服務介面抽象，方便單元測試與未來替換。
+- 預留 MediatR、AutoMapper、FluentValidation、Serilog 等橫切面整合點。
+- 僅處理與用戶識別、狀態相關的最小責任，避免與房間、聊天等業務耦合。
+- 所有 API 回應皆包裝為統一格式，便於前端處理與日誌追蹤。
+
+---
+
+## 相關檔案與目錄
+
+- `Features/Identity/`：Identity 相關功能實作
+- `Infrastructure/Data/`：資料存取層
+- `Shared/Common/`：共用物件與介面
+- `Middleware/`：統一回應與錯誤處理
+
+---
+
+## 測試與驗證
+
+- 已建立單元測試專案，後續將針對 UserId 生成、狀態管理等核心流程補齊測試案例。
+- 所有功能皆需通過 xUnit/Moq 驗證，確保穩定性與可維護性。
+
+---
+
 ## 下一步開發重點
 
-### 需要實作的功能
 1. `IdentityService` 的具體實作邏輯
 2. 瀏覽器指紋比對演算法
 3. 用戶身份驗證機制
 4. 斷線重連邏輯
 5. 設備資訊更新機制
-
-### 需要的資料庫遷移
-- 執行 `dotnet ef migrations add "AddUserDeviceInfo"` 來產生遷移檔案
-- 執行 `dotnet ef database update` 來更新資料庫結構

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Monolithic.Shared.Common;
 
@@ -12,7 +10,7 @@ namespace Monolithic.Shared.Middleware
         {
             if (
                 context.Result is ObjectResult objectResult
-                && objectResult.Value is not ApiResponse<object>
+                && !IsApiResponse(objectResult.Value)
                 && objectResult.StatusCode >= 200
                 && objectResult.StatusCode < 300
             )
@@ -34,6 +32,14 @@ namespace Monolithic.Shared.Middleware
                 }
             }
             await next();
+        }
+
+        private static bool IsApiResponse(object? value)
+        {
+            if (value == null)
+                return false;
+            var type = value.GetType();
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ApiResponse<>);
         }
     }
 }
