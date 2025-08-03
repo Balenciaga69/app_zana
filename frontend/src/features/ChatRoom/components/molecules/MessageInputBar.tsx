@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react'
+﻿import { Box } from '@chakra-ui/react'
 import { messageInputBarStyles } from './MessageInputBar.style'
 import React, { useState } from 'react'
 import MessageInput from '../atoms/MessageInputBar/MessageInput'

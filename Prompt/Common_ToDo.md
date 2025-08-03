@@ -38,4 +38,4 @@
 建立 ErrorHandlingMiddleware，捕捉所有未處理例外，統一回傳 ApiResponse。
 Controller 只需回傳資料，包裝交由 Filter/Middleware 處理。可用 ActionFilter 或 ResultFilter 統一包裝成功回應。
 
-我想知道 ApiResponse 為何 Errors 是種Object 這是業界最佳實踐嗎?
+

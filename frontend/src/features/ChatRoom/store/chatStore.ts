@@ -1,4 +1,4 @@
-// Zustand 聊天室 store，整合 SignalR 即時通訊
+﻿// Zustand 聊天室 store，整合 SignalR 即時通訊
 import type { ChatStore } from '@/features/ChatRoom/models/ChatStore'
 import { create } from 'zustand'
 import type { Message } from '../models/Message'

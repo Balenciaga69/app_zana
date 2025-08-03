@@ -1,4 +1,4 @@
-import { HStack, VStack } from '@chakra-ui/react'
+﻿import { HStack, VStack } from '@chakra-ui/react'
 import UserAvatar from '../atoms/ChatMessage/UserAvatar'
 import MessageBubble from '../atoms/ChatMessage/MessageBubble'
 import Timestamp from '../atoms/ChatMessage/Timestamp'

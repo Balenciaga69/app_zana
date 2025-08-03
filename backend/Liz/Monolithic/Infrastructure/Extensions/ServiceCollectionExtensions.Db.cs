@@ -1,4 +1,4 @@
-// PostgreSQL DbContext DI 註冊擴充
+﻿// PostgreSQL DbContext DI 註冊擴充
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

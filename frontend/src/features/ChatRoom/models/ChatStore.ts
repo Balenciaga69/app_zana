@@ -1,4 +1,4 @@
-import type { Message } from './Message'
+﻿import type { Message } from './Message'
 
 export interface ChatStore {
   users: string[]
