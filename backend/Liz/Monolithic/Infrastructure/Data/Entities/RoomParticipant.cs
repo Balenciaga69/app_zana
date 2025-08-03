@@ -15,8 +15,11 @@ public class RoomParticipant : BaseEntity
 
     [Required]
     public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
-
     public DateTime? LeftAt { get; set; }
+
+    [Required]
+    [MaxLength(50)]
+    public string DisplayName { get; set; } = string.Empty;
 
     public bool IsActive { get; set; } = true;
 
