@@ -64,3 +64,31 @@ jobs:
           message: "chore: auto format backend code before merge to main" # 提交訊息
           add: "." # 添加所有變更過的檔案
           cwd: backend/Liz/Monolithic # 提交的工作目錄
+
+  backend-test-auto-format:
+    if: github.event_name == 'pull_request' && github.base_ref == 'main' # 只有當 PR 的目標分支是 main 時才執行
+    name: Backend Test Auto Format & Commit # 後端測試格式化工作名稱
+    runs-on: ubuntu-latest # 使用最新版的 Ubuntu 運行環境
+    defaults:
+      run:
+        working-directory: backend/Liz/Monolithic.Test # 設定預設工作目錄
+    steps:
+      - uses: actions/checkout@v4 # 檢查程式碼
+        with:
+          ref: ${{ github.head_ref }} # 檢出 PR 的分支
+      - name: Setup .NET # 設定 .NET 環境
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Install CSharpier # 安裝 CSharpier 格式化工具
+        run: dotnet tool restore
+      - name: Run CSharpier (write) # 執行 CSharpier 格式化
+        run: dotnet csharpier . --config-path "../.csharpierrc"
+      - name: Run dotnet format (write) # 執行 dotnet format 格式化
+        run: dotnet format .
+      - name: Commit & Push changes # 提交並推送格式化後的變更
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "chore: auto format backend test code before merge to main" # 提交訊息
+          add: "." # 添加所有變更過的檔案
+          cwd: backend/Liz/Monolithic.Test # 提交的工作目錄

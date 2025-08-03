@@ -1,5 +1,5 @@
 ﻿/** Most Common Command
-dotnet ef migrations add "2025-05-02-1" `
+dotnet ef migrations add "250803_1" `
   --project .\UserService\UserService.Infra\UserService.Infra.csproj `
   --startup-project .\UserService\UserService.API\UserService.API.csproj
  dotnet csharpier . --config-path "./.csharpierrc"
@@ -15,6 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Serilog 設定
 builder.AddSerilogLogging();
+
+// 註冊 PostgreSQL DbContext
+builder.Services.AddPostgresDbContext(builder.Configuration);
 
 // 連線字串注入
 var connectionString = builder.Configuration.GetConnectionString("UserDbConnection");
