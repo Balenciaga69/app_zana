@@ -1,66 +1,66 @@
-name: Auto Format on PR to Main
+name: Auto Format on PR to Main # 工作流程名稱，顯示在 Actions 頁面
 
 on:
-  pull_request:
-    branches: [ main, develop ]
-  push:
-    branches: [ main, develop ]
+  pull_request: # 當有 Pull Request 發生時觸發
+    branches: [main, develop] # 針對 main 和 develop 分支
+  push: # 當有程式碼推送到遠端時觸發
+    branches: [main, develop] # 針對 main 和 develop 分支
 
 permissions:
-  contents: write
+  contents: write # 授予工作流程寫入權限，以便它可以提交變更
 
 jobs:
   frontend-auto-format:
-    if: github.event_name == 'pull_request' && github.base_ref == 'main'
-    name: Frontend Auto Format & Commit
-    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.base_ref == 'main' # 只有當 PR 的目標分支是 main 時才執行
+    name: Frontend Auto Format & Commit # 前端格式化工作名稱
+    runs-on: ubuntu-latest # 使用最新版的 Ubuntu 運行環境
     defaults:
       run:
-        working-directory: frontend
+        working-directory: frontend # 設定所有步驟的預設工作目錄為 frontend
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4 # 檢查程式碼
         with:
-          ref: ${{ github.head_ref }}
-      - uses: pnpm/action-setup@v3
+          ref: ${{ github.head_ref }} # 檢出 PR 的分支
+      - uses: pnpm/action-setup@v3 # 設定 pnpm
         with:
           version: 9
-      - name: Install dependencies
+      - name: Install dependencies # 安裝專案依賴
         run: pnpm install
-      - name: Run Prettier (write)
+      - name: Run Prettier (write) # 執行 Prettier 格式化
         run: pnpm run format
-      - name: Run ESLint (fix)
+      - name: Run ESLint (fix) # 執行 ESLint 自動修復
         run: pnpm run lint -- --fix || true
-      - name: Commit & Push changes
+      - name: Commit & Push changes # 提交並推送格式化後的變更
         uses: EndBug/add-and-commit@v9
         with:
-          message: 'chore: auto format code before merge to main'
-          add: '.'
-          cwd: frontend
+          message: "chore: auto format code before merge to main" # 提交訊息
+          add: "." # 添加所有變更過的檔案
+          cwd: frontend # 提交的工作目錄
 
   backend-auto-format:
-    if: github.event_name == 'pull_request' && github.base_ref == 'main'
-    name: Backend Auto Format & Commit
-    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.base_ref == 'main' # 只有當 PR 的目標分支是 main 時才執行
+    name: Backend Auto Format & Commit # 後端格式化工作名稱
+    runs-on: ubuntu-latest # 使用最新版的 Ubuntu 運行環境
     defaults:
       run:
-        working-directory: backend/Liz/Monolithic
+        working-directory: backend/Liz/Monolithic # 設定預設工作目錄
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4 # 檢查程式碼
         with:
-          ref: ${{ github.head_ref }}
-      - name: Setup .NET
+          ref: ${{ github.head_ref }} # 檢出 PR 的分支
+      - name: Setup .NET # 設定 .NET 環境
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
-      - name: Install CSharpier
+          dotnet-version: "8.0.x"
+      - name: Install CSharpier # 安裝 CSharpier 格式化工具
         run: dotnet tool restore
-      - name: Run CSharpier (write)
+      - name: Run CSharpier (write) # 執行 CSharpier 格式化
         run: dotnet csharpier . --config-path "../.csharpierrc"
-      - name: Run dotnet format (write)
+      - name: Run dotnet format (write) # 執行 dotnet format 格式化
         run: dotnet format .
-      - name: Commit & Push changes
+      - name: Commit & Push changes # 提交並推送格式化後的變更
         uses: EndBug/add-and-commit@v9
         with:
-          message: 'chore: auto format backend code before merge to main'
-          add: '.'
-          cwd: backend/Liz/Monolithic
+          message: "chore: auto format backend code before merge to main" # 提交訊息
+          add: "." # 添加所有變更過的檔案
+          cwd: backend/Liz/Monolithic # 提交的工作目錄
