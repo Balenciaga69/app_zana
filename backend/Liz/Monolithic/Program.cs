@@ -1,11 +1,8 @@
 ﻿/** Most Common Command
-dotnet ef migrations add "250803_1" `
-  --project .\UserService\UserService.Infra\UserService.Infra.csproj `
-  --startup-project .\UserService\UserService.API\UserService.API.csproj
- dotnet csharpier . --config-path "./.csharpierrc"
+dotnet ef migrations add "250803_2"
+dotnet csharpier . --config-path "../.csharpierrc"
  */
 
-using Liz.Monolithic;
 using Liz.Monolithic.Infrastructure.Extensions;
 using Monolithic.Infrastructure.Data;
 using Monolithic.Shared.Middleware;

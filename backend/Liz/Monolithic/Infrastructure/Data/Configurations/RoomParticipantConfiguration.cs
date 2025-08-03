@@ -21,5 +21,16 @@ public class RoomParticipantConfiguration : IEntityTypeConfiguration<RoomPartici
         builder.HasIndex(e => e.RoomId);
         builder.HasIndex(e => e.UserId);
         builder.HasIndex(e => e.IsActive);
+
+        // 確保同一房間內不能有重複的 DisplayName（在活躍狀態下）
+        builder
+            .HasIndex(e => new
+            {
+                e.RoomId,
+                e.DisplayName,
+                e.IsActive,
+            })
+            .IsUnique()
+            .HasFilter("\"IsActive\" = true");
     }
 }
