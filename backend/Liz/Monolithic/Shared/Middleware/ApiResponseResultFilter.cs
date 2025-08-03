@@ -10,9 +10,12 @@ namespace Monolithic.Shared.Middleware
     {
         public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
         {
-            if (context.Result is ObjectResult objectResult &&
-                objectResult.Value is not ApiResponse<object> &&
-                objectResult.StatusCode >= 200 && objectResult.StatusCode < 300)
+            if (
+                context.Result is ObjectResult objectResult
+                && objectResult.Value is not ApiResponse<object>
+                && objectResult.StatusCode >= 200
+                && objectResult.StatusCode < 300
+            )
             {
                 var valueType = objectResult.Value?.GetType() ?? typeof(object);
                 var apiResponseType = typeof(ApiResponse<>).MakeGenericType(valueType);
@@ -27,10 +30,7 @@ namespace Monolithic.Shared.Middleware
                     // 取得 TraceId
                     var traceId = context.HttpContext.TraceIdentifier;
                     apiResponseType.GetProperty("TraceId")?.SetValue(wrapped, traceId);
-                    context.Result = new ObjectResult(wrapped)
-                    {
-                        StatusCode = objectResult.StatusCode
-                    };
+                    context.Result = new ObjectResult(wrapped) { StatusCode = objectResult.StatusCode };
                 }
             }
             await next();
