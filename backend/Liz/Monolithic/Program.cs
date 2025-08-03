@@ -16,6 +16,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Serilog 設定
 builder.AddSerilogLogging();
 
+// 註冊 PostgreSQL DbContext
+builder.Services.AddPostgresDbContext(builder.Configuration);
+
 // 連線字串注入
 var connectionString = builder.Configuration.GetConnectionString("UserDbConnection");
 var redisConnection = builder.Configuration.GetConnectionString("UserRedis");
