@@ -36,7 +36,8 @@ namespace Monolithic.Shared.Middleware
 
         private static bool IsApiResponse(object? value)
         {
-            if (value == null) return false;
+            if (value == null)
+                return false;
             var type = value.GetType();
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ApiResponse<>);
         }
