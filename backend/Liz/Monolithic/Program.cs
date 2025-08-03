@@ -1,5 +1,5 @@
 ﻿/** Most Common Command
-dotnet ef migrations add "2025-05-02-1" `
+dotnet ef migrations add "250803_1" `
   --project .\UserService\UserService.Infra\UserService.Infra.csproj `
   --startup-project .\UserService\UserService.API\UserService.API.csproj
  dotnet csharpier . --config-path "./.csharpierrc"
