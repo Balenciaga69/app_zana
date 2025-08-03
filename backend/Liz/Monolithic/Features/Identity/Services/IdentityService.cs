@@ -1,19 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Monolithic.Features.Identity.Models;
+﻿using Monolithic.Features.Identity.Models;
 using Monolithic.Infrastructure.Data;
-using Monolithic.Infrastructure.Data.Entities;
+using Monolithic.Shared.Logging;
 
 namespace Monolithic.Features.Identity.Services;
 
 public class IdentityService : IIdentityService
 {
     private readonly AppDbContext _context;
-    private readonly ILogger<IdentityService> _logger;
+    private readonly IAppLogger<IdentityService> _appLogger;
 
-    public IdentityService(AppDbContext context, ILogger<IdentityService> logger)
+    public IdentityService(AppDbContext context, IAppLogger<IdentityService> appLogger)
     {
         _context = context;
-        _logger = logger;
+        _appLogger = appLogger;
     }
 
     public async Task<UserSession> CreateOrRetrieveUserAsync(CreateUserRequest request)
@@ -24,8 +23,8 @@ public class IdentityService : IIdentityService
         // 3. 更新設備資訊
         // 4. 回傳 UserSession
 
-        _logger.LogInformation("嘗試創建或找回用戶，指紋: {Fingerprint}", request.BrowserFingerprint);
-
+        _appLogger.LogBusinessInfo(LogOperations.UserRetrieved, new { request.BrowserFingerprint, request.IpAddress });
+        await Task.CompletedTask; // 暫時避免編譯警告
         throw new NotImplementedException("CreateOrRetrieveUserAsync 尚未實作");
     }
 
@@ -35,8 +34,9 @@ public class IdentityService : IIdentityService
         // 1. 從資料庫查詢用戶
         // 2. 轉換為 UserSession 回傳
 
-        _logger.LogInformation("查詢用戶: {UserId}", userId);
+        _appLogger.LogBusinessInfo(LogOperations.UserRetrieved, new { UserId = userId });
 
+        await Task.CompletedTask; // 暫時避免編譯警告
         throw new NotImplementedException("GetUserByIdAsync 尚未實作");
     }
 
@@ -47,8 +47,9 @@ public class IdentityService : IIdentityService
         // 2. 可能需要模糊比對（IP、UserAgent 等）
         // 3. 轉換為 UserSession 回傳
 
-        _logger.LogInformation("根據指紋查找用戶: {Fingerprint}", request.BrowserFingerprint);
+        _appLogger.LogBusinessInfo(LogOperations.FingerprintMatched, new { request.BrowserFingerprint, request.IpAddress });
 
+        await Task.CompletedTask; // 暫時避免編譯警告
         throw new NotImplementedException("FindUserByFingerprintAsync 尚未實作");
     }
 
@@ -59,8 +60,9 @@ public class IdentityService : IIdentityService
         // 2. 比對指紋是否一致
         // 3. 記錄可疑的身份變更
 
-        _logger.LogInformation("驗證用戶身份: {UserId}", request.UserId);
+        _appLogger.LogBusinessInfo(LogOperations.UserValidated, new { request.UserId, request.BrowserFingerprint });
 
+        await Task.CompletedTask; // 暫時避免編譯警告
         throw new NotImplementedException("ValidateUserAsync 尚未實作");
     }
 
@@ -71,8 +73,9 @@ public class IdentityService : IIdentityService
         // 2. 更新 LastActiveAt
         // 3. 若有提供設備資訊，則更新相關欄位
 
-        _logger.LogInformation("更新用戶活動: {UserId}", userId);
+        _appLogger.LogUserAction(userId, LogOperations.UserActivityUpdated, deviceInfo);
 
+        await Task.CompletedTask; // 暫時避免編譯警告
         throw new NotImplementedException("UpdateUserActivityAsync 尚未實作");
     }
 
@@ -83,8 +86,9 @@ public class IdentityService : IIdentityService
         // 2. 更新 IsOnline 狀態
         // 3. 更新 LastActiveAt（如果上線）
 
-        _logger.LogInformation("設定用戶上線狀態: {UserId} -> {IsOnline}", userId, isOnline);
+        _appLogger.LogUserAction(userId, LogOperations.UserStatusChanged, new { IsOnline = isOnline });
 
+        await Task.CompletedTask; // 暫時避免編譯警告
         throw new NotImplementedException("SetUserOnlineStatusAsync 尚未實作");
     }
 

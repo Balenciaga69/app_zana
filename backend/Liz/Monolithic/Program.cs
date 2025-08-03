@@ -31,6 +31,9 @@ builder.Services.AddRabbitMqOptions(builder.Configuration);
 // Identity 服務註冊
 builder.Services.AddIdentityServices();
 
+// 統一 Logger 服務註冊
+builder.Services.AddAppLogging();
+
 // .NET Core 原生註冊
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

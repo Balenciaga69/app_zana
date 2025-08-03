@@ -1,10 +1,6 @@
-﻿using System;
+﻿using Monolithic.Shared.Common;
 using System.Net;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Monolithic.Shared.Common;
 
 namespace Monolithic.Shared.Middleware
 {

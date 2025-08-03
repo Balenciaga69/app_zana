@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Monolithic.Shared.Common
+﻿namespace Monolithic.Shared.Common
 {
     public class ApiResponse<T>
     {

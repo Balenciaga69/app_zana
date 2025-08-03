@@ -1,5 +1,4 @@
 ﻿using Monolithic.Features.Identity.Models;
-using Monolithic.Infrastructure.Data.Entities;
 
 namespace Monolithic.Features.Identity.Services;
 

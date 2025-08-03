@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Monolithic.Shared.Common;
 
 namespace Liz.Monolithic.Features.Health.Controllers
 {
