@@ -5,6 +5,7 @@ dotnet csharpier . --config-path "../.csharpierrc"
 
 using Liz.Monolithic.Infrastructure.Extensions;
 using Monolithic.Infrastructure.Data;
+using Monolithic.Infrastructure.Extensions;
 using Monolithic.Shared.Middleware;
 using Serilog;
 
@@ -26,6 +27,9 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 
 // RabbitMQ 設定注入
 builder.Services.AddRabbitMqOptions(builder.Configuration);
+
+// Identity 服務註冊
+builder.Services.AddIdentityServices();
 
 // .NET Core 原生註冊
 builder.Services.AddControllers();

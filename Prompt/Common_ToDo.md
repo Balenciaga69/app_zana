@@ -5,6 +5,8 @@
 - 建立 `DbContext`
 - Migrate 資料庫完成
 - 建立後端單元測試專案
+- 建立統一的 ApiResponse 格式 並且實作了 Middleware 與 Filter 統一處理
+- 
 ## 維運
 - 建立 GitHub Actions，自動格式化 PR 的 YAML
 
@@ -23,19 +25,5 @@
 - [ ] 日誌與錯誤處理（Serilog、Middleware）
 - [ ] 撰寫單元測試（xUnit/Moq）
 - [ ] 撰寫 API 文件（Swagger）
-
-
----
-- 製作統一個 ApiResponse 2xx/4xx/5xx 都會使用該格式回傳
-   - 我們來討論格式
-   - 橫切面該怎麼處理他
-- 製作各種Exception
-   - 我們來討論格式
-   - 橫切面該怎麼處理他
-   - 每種錯誤都該有甚麼特點或不可替代性
-
-好的 我希望你在 在 Shared/Common/ApiResponse.cs 建立上述類別。
-建立 ErrorHandlingMiddleware，捕捉所有未處理例外，統一回傳 ApiResponse。
-Controller 只需回傳資料，包裝交由 Filter/Middleware 處理。可用 ActionFilter 或 ResultFilter 統一包裝成功回應。
 
 
