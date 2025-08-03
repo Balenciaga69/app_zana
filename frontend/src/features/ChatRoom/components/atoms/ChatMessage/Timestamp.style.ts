@@ -1,4 +1,4 @@
-import type { SystemStyleObject } from '@chakra-ui/react'
+﻿import type { SystemStyleObject } from '@chakra-ui/react'
 
 export const timestampStyles: { text: SystemStyleObject } = {
   text: {

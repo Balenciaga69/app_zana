@@ -8,6 +8,7 @@ dotnet ef migrations add "250803_1" `
 using Liz.Monolithic;
 using Liz.Monolithic.Infrastructure.Extensions;
 using Monolithic.Infrastructure.Data;
+using Monolithic.Shared.Middleware;
 using Serilog;
 
 // 讀取 Serilog 設定
@@ -34,7 +35,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// 註冊全域 Filter
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ApiResponseResultFilter>();
+});
+
 var app = builder.Build();
+
+// 註冊全域 Middleware
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 // 自動遷移資料庫
 app.Services.MigrateDatabase();

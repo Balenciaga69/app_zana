@@ -1,4 +1,4 @@
-import { Text, type TextProps } from '@chakra-ui/react'
+﻿import { Text, type TextProps } from '@chakra-ui/react'
 import { timestampStyles } from './Timestamp.style'
 
 export interface TimestampProps extends TextProps {

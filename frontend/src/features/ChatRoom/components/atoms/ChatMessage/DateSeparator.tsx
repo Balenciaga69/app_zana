@@ -1,4 +1,4 @@
-import { Flex, Text } from '@chakra-ui/react'
+﻿import { Flex, Text } from '@chakra-ui/react'
 import type { FC } from 'react'
 import { dateSeparatorStyles } from './DateSeparator.style'
 

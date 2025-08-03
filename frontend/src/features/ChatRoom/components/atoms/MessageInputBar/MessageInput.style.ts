@@ -1,4 +1,4 @@
-export const messageInputStyles = {
+﻿export const messageInputStyles = {
   input: {
     width: '100%',
     padding: '8px',
