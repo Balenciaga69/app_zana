@@ -19,7 +19,8 @@ public class Connection : BaseEntity
     [Required]
     public DateTime ConnectedAt { get; set; } = DateTime.UtcNow;
 
-    public DateTime? DisconnectedAt { get; set; }    public bool IsActive { get; set; } = true;
+    public DateTime? DisconnectedAt { get; set; }
+    public bool IsActive { get; set; } = true;
 
     // 連線時的設備資訊快照（用於日誌與分析）
     [MaxLength(500)]

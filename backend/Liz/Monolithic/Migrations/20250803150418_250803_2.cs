@@ -16,26 +16,24 @@ namespace Monolithic.Migrations
                 type: "character varying(50)",
                 maxLength: 50,
                 nullable: false,
-                defaultValue: "");
+                defaultValue: ""
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoomParticipants_RoomId_DisplayName_IsActive",
                 table: "RoomParticipants",
                 columns: new[] { "RoomId", "DisplayName", "IsActive" },
                 unique: true,
-                filter: "\"IsActive\" = true");
+                filter: "\"IsActive\" = true"
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_RoomParticipants_RoomId_DisplayName_IsActive",
-                table: "RoomParticipants");
+            migrationBuilder.DropIndex(name: "IX_RoomParticipants_RoomId_DisplayName_IsActive", table: "RoomParticipants");
 
-            migrationBuilder.DropColumn(
-                name: "DisplayName",
-                table: "RoomParticipants");
+            migrationBuilder.DropColumn(name: "DisplayName", table: "RoomParticipants");
         }
     }
 }
