@@ -22,11 +22,16 @@ public class ApiResponseResultFilterTests
         var httpContext = new DefaultHttpContext();
         httpContext.TraceIdentifier = traceId;
 
-        var actionContext = new ActionContext(httpContext, new Microsoft.AspNetCore.Routing.RouteData(), new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor());
+        var actionContext = new ActionContext(
+            httpContext,
+            new Microsoft.AspNetCore.Routing.RouteData(),
+            new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor()
+        );
         var filters = new List<IFilterMetadata>();
 
         return new ResultExecutingContext(actionContext, filters, result, new object());
     }
+
     [Fact]
     public async Task OnResultExecutionAsync_WhenObjectResultWith200Status_ShouldWrapInApiResponse()
     {
@@ -58,6 +63,7 @@ public class ApiResponseResultFilterTests
 
         mockNext.Verify(x => x(), Times.Once);
     }
+
     [Fact]
     public async Task OnResultExecutionAsync_WhenObjectResultWith201Status_ShouldWrapInApiResponse()
     {

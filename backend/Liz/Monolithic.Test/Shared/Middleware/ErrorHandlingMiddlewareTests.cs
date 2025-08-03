@@ -1,11 +1,11 @@
-﻿using FluentAssertions;
+﻿using System.Net;
+using System.Text.Json;
+using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Monolithic.Shared.Common;
 using Monolithic.Shared.Middleware;
 using Moq;
-using System.Net;
-using System.Text.Json;
 
 namespace Monolithic.Test.Shared.Middleware;
 
@@ -13,7 +13,8 @@ public class ErrorHandlingMiddlewareTests
 {
     private readonly Mock<RequestDelegate> _mockNext;
     private readonly Mock<ILogger<ErrorHandlingMiddleware>> _mockLogger;
-    private readonly ErrorHandlingMiddleware _middleware; private readonly DefaultHttpContext _httpContext;
+    private readonly ErrorHandlingMiddleware _middleware;
+    private readonly DefaultHttpContext _httpContext;
 
     public ErrorHandlingMiddlewareTests()
     {
@@ -39,6 +40,7 @@ public class ErrorHandlingMiddlewareTests
         _mockNext.Verify(x => x(_httpContext), Times.Once);
         _httpContext.Response.StatusCode.Should().Be(200); // 預設值
     }
+
     [Fact]
     public async Task Invoke_WhenExceptionOccurs_ShouldReturnApiResponseFailFormat()
     {
@@ -62,10 +64,10 @@ public class ErrorHandlingMiddlewareTests
 
         responseContent.Should().NotBeEmpty();
 
-        var apiResponse = JsonSerializer.Deserialize<ApiResponse<object>>(responseContent, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
+        var apiResponse = JsonSerializer.Deserialize<ApiResponse<object>>(
+            responseContent,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+        );
 
         apiResponse.Should().NotBeNull();
         apiResponse!.Success.Should().BeFalse();
@@ -87,14 +89,18 @@ public class ErrorHandlingMiddlewareTests
 
         // Assert
         _mockLogger.Verify(
-            x => x.Log(
-                LogLevel.Error,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("Unhandled exception")),
-                testException,
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
+            x =>
+                x.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("Unhandled exception")),
+                    testException,
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()
+                ),
+            Times.Once
+        );
     }
+
     [Fact]
     public async Task Invoke_WhenExceptionOccurs_ShouldIncludeStackTraceInErrors()
     {
@@ -133,10 +139,10 @@ public class ErrorHandlingMiddlewareTests
 
         responseContent.Should().NotBeEmpty();
 
-        var apiResponse = JsonSerializer.Deserialize<ApiResponse<object>>(responseContent, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        });
+        var apiResponse = JsonSerializer.Deserialize<ApiResponse<object>>(
+            responseContent,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+        );
 
         apiResponse!.Timestamp.Should().BeOnOrAfter(beforeInvoke).And.BeOnOrBefore(afterInvoke);
     }
