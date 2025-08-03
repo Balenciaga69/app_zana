@@ -1,12 +1,13 @@
 ﻿# 已完成事項
 ## 前端開發
 - 新增四個基本頁面： | 首頁 | 加入房間頁 | 建立房間頁 | 聊天室頁
+- 前端寫個小功能實驗後端要求的瀏覽器指紋跟Localstorage能不能做到
 ## 後端開發
 - 建立 `DbContext`
 - Migrate 資料庫完成
 - 建立後端單元測試專案
 - 建立統一的 ApiResponse 格式 並且實作了 Middleware 與 Filter 統一處理
-- 
+- 進度 30% 建立 Identity 服務與瀏覽器指紋功能
 ## 維運
 - 建立 GitHub Actions，自動格式化 PR 的 YAML
 
