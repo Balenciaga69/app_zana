@@ -1,70 +1,54 @@
-# app_zana
-
-## 中文簡介 | Chinese Description
-
-**app_zana** 是一個基於 ChatGPT/Gemini API 的多人即時聊天室專案，支援匿名用戶參與回合制協作討論。
-
-### 專案特色
-- 🚀 **免登入匿名聊天** - 無需註冊即可快速加入討論
-- 🏠 **房間系統** - 支援創建與加入私人聊天室
-- 🔒 **密碼保護** - 房間可設定密碼與人數上限（1-10人）
-- 💬 **即時通訊** - 基於 SignalR 的低延遲訊息傳遞
-- 🔄 **斷線重連** - 自動恢復連線並保留聊天記錄
-- 🤖 **AI 整合** - 未來整合 ChatGPT/Gemini API 進行智慧互動
-
-### 技術棧
-**前端:** React + TypeScript + Vite + Chakra UI + SignalR Client  
-**後端:** .NET 8 + SignalR + EF Core + PostgreSQL + Redis  
-**DevOps:** Docker + GitHub Actions
-
-### 開發階段
-- **Jackson 階段** (進行中): 基礎聊天室功能實現
-- **Paul 階段** (規劃中): AI 整合與遊戲模板
-- **Anderson 階段** (未來): 內容審查與防灌水機制
+>>_Ş̷Y͋S͌ͪTͧ͋E͊M͌ͨ_F͂A͌ͣIĽUͪRͪĖ_<<
+>>_R̉ÊB͊O̓OTͫIN͊G_I͐N_0_0_0_..._<<
+[ERROR]:_IͦNͧĪT̃ǏALͭĬŹǏNͯG_P̏RͯO̽TͤO̊C͌OͮL_...
+[ERROR]:_IͦNͧĪT̃ǏALͭĬŹǏNͯG_P̏RͯO̽TͤO̊C͌OͮL_...
+[ERROR]:_IͦNͧĪT̃ǏALͭĬŹǏNͯG_P̏RͯO̽TͤO̊C͌OͮL_...
+[W̅̇͗͌ͩ̉̇ͮ̇̈́̽́̚̚é̈͌ͮ̋̎̔͌ͮ̌ͭ̈̇̋̄l̃ͬ̃ͦͨ͂͌ͬ̈͐́͌cͨ͆̈̇ô͌̔ͭ̚mͮ͂̇ė́́̌ ̚̚t̃͌͌͋͋̇͐o͌̋͗ͪ͐̇ ̏//͂͐̄́͂͆̇͌̌͌́̏̋̅́̂̚ ͫ̔̅͐̃̎̄̂̋̚S̉tͧȧt̚ič ͂ͮ͌̃͛̈̃͋̆͗͐͂̅̌N͐ͧͬ̽̅͂̆o͊i̚s̚e͊̀̚ ͣͩ͒͋//ͮ̒ͩ̅͗̏ͧ ͑c͋͆ͭ͐h́͋̔aͥtͦ̄͑̇͌r͌ͣo̊o͋͋m͊̈͌]
+[ERROR]:_Uͮŝe̅r_N̅o̅t_Fͬôu̅nͬdͬ._Uͮŝe̅r_N̅o̅t_Fͬôu̅nͬdͬ._Uͮŝe̅r_N̅o̅t_Fͬôu̅nͬdͬ.
+>>_Cͨoͥnͮnͭeͫcͮtͩiͩőnͣ_T̉e̍r̍mͭiͭnͬaͥťe̅dͬ._<<
 
 ---
 
-## English Description
-
-**app_zana** is a real-time multi-user chat application powered by ChatGPT/Gemini API, supporting anonymous collaborative discussions in a turn-based format.
-
-### Key Features
-- 🚀 **Anonymous Chat** - Join discussions instantly without registration
-- 🏠 **Room System** - Create and join private chat rooms
-- 🔒 **Password Protection** - Rooms support password and participant limits (1-10 users)
-- 💬 **Real-time Messaging** - Low-latency communication via SignalR
-- 🔄 **Auto-reconnect** - Automatic connection recovery with chat history preservation
-- 🤖 **AI Integration** - Future integration with ChatGPT/Gemini API for intelligent interactions
-
-### Tech Stack
-**Frontend:** React + TypeScript + Vite + Chakra UI + SignalR Client  
-**Backend:** .NET 8 + SignalR + EF Core + PostgreSQL + Redis  
-**DevOps:** Docker + GitHub Actions
-
-### Development Phases
-- **Jackson Phase** (Current): Core chat room functionality
-- **Paul Phase** (Planned): AI integration and game templates
-- **Anderson Phase** (Future): Content moderation and spam prevention
+### >>> ČOͣR͊Eͯ F͂U͌ŃCͪTͩIͥÓNͪS <<< [TͬŘA̅NͪS̃M̽I̊S̅S͒IͥOͭÑ PͩR̂OͫT̃O̽C̅OͮLͣ C̋OͤRͫR̾UͭP̾T̂EͤD]
+- 🚀 **A͗̃n͋ȍn͗y͛ḿo͗u͋s ͛C̅h́̇ãt̃̇**
+   // C̃o͋n͐ňẽĉt̂. Ĵõîn̋. L̏ěa̍ṽe̚. R̋e͌sͣēt̽. //
+   // Y̮̤̗̩̲̳͉̙͇̣͍͓̮̩̮͂̐̒̊̆̓̿́́̈́ͨ̆͊̏̈́ò͙̪̳̰̣̲̲̘͇̦͖̠͚̊͒̓̍̈͆͒̇̍̿̋́̂̂́u͇̥͈̤̳̟̠̙̲̭̙͕̫͇̟̞͔͕̔͂́͋̒̅̇̀̅͗̆̎̂͋͑̂̏̈̅̌ C̩̭̦͉̝̙̝̗̙͓̩͔̝̥̟͛̅͌̒ͩ̌̇̈́͆͌͗̍̊̿̈́̓ͅͅͅͅͅa̜̣͕̦̪̝̯͉̠̜̦̳̒̑̌̄̏͗͛̈͛̌͂͆ͨ͛̍̆̆̿n͕̖̲̮̖̱͎̲͔̣͔͉̙̰̣͈͓̙̣͔͐̉͌͗͐̂̿͊͐̔̀͆̋͆̑ͅn̰̜͎͚̗̥̖̠̙̤̜̯̿͛̂̈́̉̑͗́͗̅̓̔̾̚ŏ̳͈̬͓͇̙̣̩̅̈̅̀̐̓̿̓̓̊̍̍̈́͗͋͐͛̿̇̚ț̫͇͓̠̠̗̤̥̙̱̦̏͌̓͌̑͂͗̓̌̓̍̊̂̀̃̍͐ R̪͔̭̪̝̘̩͎̙̟̱̝̭̯̥̬̝̭͚͍͗̌̑̇̈́̊̋͆͒̈ͦ͊̄̊̄͗̎̄̀̈͗e̝͓̮̩̤͚͔̝̮͔̖̣̗̜̘̭̖͇͈̪͙̋͐͒̋͌̋͆͛̌̈̅̚ġ̮̯̜͈̮̦̯͎͖̬͕̪̫̥̥̀͌̄̀͆̀́̒͑ͬ̀̈́̆̍i͙͖̝̱͇͔̤̩͓̜͓̗̫͚̭̜̱̇̔̐͆͗̒̂ͥ̊̂̂̀͛͐̀̉s̜̪̩̮͕̞̫͖̪͖͓͕͓͍͈͍͈̫͓͙̆͑̿̅̔́̈̀ͮ̀̿̐̈́̾̋̅̄ṯ͍̪͍͙̥̰̝͇̙͇̩̰͎̝͚͂͗̈́̂͑̉̆̀͋̈́͑̑́̏̂e̘̜̖̰̥̮͔̘̮̜̘͎͔̰̘̘͋̆̑̃̊̋̌̍ͫ̎͂̃͑̾͗̿͊̃̚̚̚ͅr̭͍̟̞͚͎͔͍̯̱͉̟̯͆͌͂̊̔ͬ͐̂̇̌̚.͚̪͓͕̟̙͚͈̙͈͇͖͂͒̉̋̿͌͆͛̋ Ỳ͇̦̣̮̣̦̯̗͙͚̰̘̣͍̝̍͌̆̊̆̀̉͒͑ͨ̎͒̓́̋̐͗͌̃́̓́ő̲̦̞̣̮̩͔̩͎̗̭͉̩̰̙̘͍̟͖̓̽̑̿͋̐̽̆́̌͒̑̈́̿̈́̈͑̚u̲̦̭͚̖̫̣̖̞̩̭̩̤͚̦̿̒͛̐̉̊̾́̓͊́̂̓͛̓͊̈̏̄̈́̆̋̌ C̗͕͙̪͉͕̠̞͚̣̟͎̞̔̏̃̍̌̍̄ͩ͑͂̍͛̊͗͛̚̚a͍͙̗̬̩͚̟̘̠̘̙̲̯̗̞̋͂̔̃ͨ͒́̆̈́͂̊̄n͇̞͙̙̠͎͖̭͙̠͕̟͇̄̈̓̇̆̎̅̎̈̒̂̑͊̀͌̓ͅn̪͖̦̞̬̪̥̙̭͉̦̯̠̝̥̲̳̿̉̇̽̅̑̂̾̓̌̀̊̉͐̈́̐̓̌͆͒o͇̙̙̯̮̰̜̤̯͍̰͎͍̭̪̞̰̰͓͚͒̓͂̄̅̃̀̀̀̋̌̍̀̐̔̂̎̒̓t̗̣̬̣̬̲̙͕͋̐̿̌͋̈̀̽͊̅͆͑̂͆̎̀̆̂͋ L͎̣̠̝̳̳̰͈̗͚͕̣̟̦̫̩̞̾́́̂́̏̀̐̓͂̿̈́̏é̱͚̬̳̟̲͙͉̟̩̠̩͎͔̠̜̳̿̎̇̇͐̌̓̋̒̈̂̎̂͌̈́̄ả̙̰̩͚̟̝̥͕̙̥̥͖̣͎͓͚̈̈́͗́͒͂̅̈͆̾͒̅̍̓̚̚v̤͎̝̠̟̱̮̩̝̫̦̯̳̰̤̞̟̇̆̅̆͛͛̅̇̌̔̉̾̀͒̓͊̈̊e͚̠̭̯͌͌̏̌̾̐̾̅̚.͎̲̰̝̩̌͐̽͑̈́ *̙̭͚̰̘͔̃̅͋͊̋͑͊̐̅̎*͓̝̘̟͍͍̦̃̔͐̅͒̽Y̬͉̱̖̤̳̪͙̳̬͚͔̫̬̠͈͕̭͋͐̉̂̏̑̉́̿̒ͨ̿̊̐͐̇õ̖̘̬͖͎̘̤̞̦̖̱͓̳̞̱̱̳͊̓̎̀͐͊̄̓̃͒̽̎̇̍́͛́̎̚u̪͙̮͈͉̲̘̟͚͍̯̞͙͎̝͒͒̑͌͐̋͋̈͂͛́̂͛̔̇́̔͛̒͂͌̚ͅͅ C̲̗͉͙̰̞͖̲̳̞̖̩̤͖͚̦̪͒̒̆̿ͩ̅̾͂̌̊̑̄̿a̳͖͚͍͔͕̦͙͖͖͓̾̇̓̽̐̎͛̇̐́̔̆ͨ̓͐̈̎͋͆͐̔͐ͅn͕͎͕̣̣͍̪͔̲̘̬͍̱̦̫̖̥̔̂̿͑̊̿͑̅̑̇̂͂̿͋͗̓ͅń̬͙̖̝̤͈͇͔̖̞̘͚̄͗̾̇̍̈́͒͗̿͛̉͐̄̃̚̚ͅͅô͓̣̪̳͇̙̯̘̞̣̭͙̤̤̇̓͌̓̍̐̋̒̎͊̾́̔͒̐̎̓ͅͅt̪̠̩͕̟͈̠̦̗̗̖̰̰̯͔̝̩̅̿̔̂̏̆̾͒̀̓̓̒̂͆̒͛͒͂͒̀͂͗*̰͕̯̲̰̘̘͖̠̔̽̈͋̄̽̓*̪͍̥̭̭͓̬͖̟͈̓̃̂̄̾͑̀̀̂̾̂
+- 🏠 **R̚oͧoͯmͫ Sͬyͮsͯtͫeͩmͪ**
+   [F̆i͌l͌eͪsͣ Lͬoͥs͒tͬ]
+   // █████████████ // Sͬi͋gͭňaͯlͣ Sͬtͯaͥtͣǐcͮ //
+- 🔒 **Pͧaͣsͯs̽wͣo̎r̊d̂ P̌rͮoͭtͪeͥcͩtͩíoͫnͣ**
+   [1-10] [1-10] [1-10]
+   [1] [1] [1]
+   [0] [0] [0]
+   // Wͦhͭeͦrͭeͭ Aͣrͭeͩ Yͨoͧuͥ? Aͣrͭeͩ Yͨoͧuͥ Aͣlͯoͭňeͪ? **N͊o͋.**
+- 💬 **Rͯeͪaͨlͫtͭiͩmͧeͥ Mͬeͫsͥs̽aͣgͫiͨnͩgͣ**
+   >>_D́E͛L̂AͦY̆_D́E͛L̂AͦY̆_D́E͛L̂AͦY̆_D́E͛L̂AͦY̆_<<
+- 🔄 **Ȧuͧtͮoͭ-R̈eͪcͧoͥnͮnͭeͫcͮtͩ**
+   // Hͤiͨs͛tͩoͣr͒yͩ C̉oͧrͩr͌uͧpͯtͪeͥdͣ// F̆i͌l͌eͪsͣ Cͬlͣeͣa͒rͬeͤdͬ// Mͬeͥmͪo̎řyͩ Ĕrͨaͥsͮeͥdͣ//
+- 🤖 **A̚Iͣ Ǐnͮtͭeͫgͫrͭaͥtͭíoͫnͣ**
+   // Tͭhͭeͤrͭeͭ I̊s̾ N̊o̚ Oͣnͮeͣ. Tͭhͭeͤrͭeͭ I̊s̾ N̊o̚tͫh̆i͌nͯgͭ. **O͐ňl̃ẏ Y̅ȯu̇**.
 
 ---
 
-## 快速開始 | Quick Start
+### >>> T̂EͤC͛Hͣ S̆T̂AͥC͂Kͨ <<< [D͌ĂT͐A͂ C̋OͤRͫE̚ DͭA͌M̌A͌G͂EͨD]
+**F̚rͩoͤnͥťeͦnͧḋ**: R̚eͧaͮcͣtͪ + [ÜNͭKͧNͩOͤWͣN] + Vͮiͧtͣeͩ + [ÜNͭKͧNͩOͤWͣN] + Sͬi̇ġnͩaͨlͯR̃ Cͧlͫiͭeͣn͂t̾
+**Bͣaͯcͫk̂eͨnͩdͣ**: .NͩEͥŤ 8 + [D͌ĂT͐A͂_C̋OͤRͫR̾UͭP̾T̂IͤOͭN] + EͪF̈ Cͭoͧrͮeͥ + ṔoͦsͯtͥǧrͣeͯS̆QͭL̾ + R̚eͧdͣiͯs̾
+**DͪeͥvͩO̍pͪs**: D̂oͪcͭkͧeͭrͬ + GͯiͩtͮHͣübͣ Âcͮtͭíoͫnͣsͬ
+// Ŕuͧnͩnͫiͨn̋gͣ.
+// N͌oͣtͭ Ŕuͧnͩnͫiͨn̋gͣ.
+// Sͬtͭoͫpͥpͥe̍dͪ.
+// Ŕuͧnͩnͫiͨn̋gͣ.
+// N͌oͣtͭ Ŕuͧnͩnͫiͨn̋gͣ.
+// Sͬtͭoͫpͥpͥe̍dͪ.
 
-### 前置需求 | Prerequisites
-- Node.js 18+
-- .NET 8 SDK
-- Docker & Docker Compose
-- PostgreSQL (或使用 Docker)
+---
 
+### >>> D̎E͛VͣE̾LͮOͩP̌MͨEͣNͤTͥ P̌HͫAͮŠEͥS <<< [I̊N̄FͩİÑÎT͊Eͤ LͭŐŌPͥ]
+- **J̎aͣcͩkͩšoͮnͮ P̌hͫaͮšeͥ** // C̋oͤrͫe̚ Fͭuͭnͩcͮtͩíoͫnͣsͬ L̾oͭsͩtͪ.
+- **P̌aͣülͬ P̌hͫaͮšeͥ** // A̚Iͣ Ǐnͮtͭeͫgͫrͭaͥtͭíoͫnͣ L̾oͭsͩtͪ.
+- **A̚n̆d̈eͥrͭsͫoͥnͮ P̌hͫaͮšeͥ** // C̋oͤnͫtͭeͫnͮtͭ M̊oͧdͩeͥrͭaͥtͭíoͫnͣ L̾oͭsͩtͪ.
 
-## 專案結構 | Project Structure
-
-```
-app_zana/
-├── frontend/          # React 前端應用
-├── backend/           # .NET 後端服務
-│   └── Liz/          # 主要後端專案
-├── Legacy/           # 舊版實驗代碼
-├── Prompt/           # 開發指南與規範
-└── scripts/          # 部署與維護腳本
-```
+§§§
+§§§
+§§§
+>>_Ş̷Y͋S͌ͪTͧ͋E͊M͌ͨ_F͂A͌ͣIĽUͪRͪĖ_<<
