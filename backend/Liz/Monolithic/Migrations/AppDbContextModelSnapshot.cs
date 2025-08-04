@@ -28,10 +28,6 @@ namespace Monolithic.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("BrowserFingerprint")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
                     b.Property<DateTime>("ConnectedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -42,6 +38,9 @@ namespace Monolithic.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("DeviceFingerprintId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("DisconnectedAt")
                         .HasColumnType("timestamp with time zone");
@@ -71,6 +70,8 @@ namespace Monolithic.Migrations
                     b.HasIndex("ConnectionId")
                         .IsUnique();
 
+                    b.HasIndex("DeviceFingerprintId");
+
                     b.HasIndex("IsActive");
 
                     b.HasIndex("RoomId");
@@ -78,6 +79,82 @@ namespace Monolithic.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Connections");
+                });
+
+            modelBuilder.Entity("Monolithic.Infrastructure.Data.Entities.DeviceFingerprint", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Browser")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("BrowserFingerprint")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("BrowserVersion")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DeviceName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("DeviceType")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("FirstSeenAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsTrusted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime>("LastActiveAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("OperatingSystem")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Platform")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrowserFingerprint")
+                        .IsUnique();
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("LastActiveAt");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId", "IsActive");
+
+                    b.ToTable("DeviceFingerprints");
                 });
 
             modelBuilder.Entity("Monolithic.Infrastructure.Data.Entities.Message", b =>
@@ -224,28 +301,8 @@ namespace Monolithic.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Browser")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("BrowserFingerprint")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<string>("BrowserVersion")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("DeviceType")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("IpAddress")
-                        .HasMaxLength(45)
-                        .HasColumnType("character varying(45)");
 
                     b.Property<bool>("IsOnline")
                         .ValueGeneratedOnAdd()
@@ -255,25 +312,10 @@ namespace Monolithic.Migrations
                     b.Property<DateTime>("LastActiveAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("OperatingSystem")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Platform")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("UserAgent")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("BrowserFingerprint")
-                        .HasDatabaseName("IX_Users_BrowserFingerprint");
 
                     b.HasIndex("IsOnline");
 
@@ -284,6 +326,11 @@ namespace Monolithic.Migrations
 
             modelBuilder.Entity("Monolithic.Infrastructure.Data.Entities.Connection", b =>
                 {
+                    b.HasOne("Monolithic.Infrastructure.Data.Entities.DeviceFingerprint", "DeviceFingerprint")
+                        .WithMany("Connections")
+                        .HasForeignKey("DeviceFingerprintId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Monolithic.Infrastructure.Data.Entities.Room", "Room")
                         .WithMany("Connections")
                         .HasForeignKey("RoomId")
@@ -295,7 +342,20 @@ namespace Monolithic.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("DeviceFingerprint");
+
                     b.Navigation("Room");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Monolithic.Infrastructure.Data.Entities.DeviceFingerprint", b =>
+                {
+                    b.HasOne("Monolithic.Infrastructure.Data.Entities.User", "User")
+                        .WithMany("DeviceFingerprints")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -349,6 +409,11 @@ namespace Monolithic.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Monolithic.Infrastructure.Data.Entities.DeviceFingerprint", b =>
+                {
+                    b.Navigation("Connections");
+                });
+
             modelBuilder.Entity("Monolithic.Infrastructure.Data.Entities.Room", b =>
                 {
                     b.Navigation("Connections");
@@ -363,6 +428,8 @@ namespace Monolithic.Migrations
                     b.Navigation("Connections");
 
                     b.Navigation("CreatedRooms");
+
+                    b.Navigation("DeviceFingerprints");
 
                     b.Navigation("Messages");
 

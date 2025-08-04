@@ -1,13 +1,13 @@
 ﻿/** Most Common Command
-dotnet ef migrations add "250803_2"
+dotnet ef migrations add "250805_01"
 dotnet csharpier . --config-path "../.csharpierrc"
  */
 
 using Liz.Monolithic.Infrastructure.Extensions;
 using Monolithic.Infrastructure.Data;
 using Monolithic.Infrastructure.Extensions;
-using Monolithic.Shared.Middleware;
 using Monolithic.Shared.Logging;
+using Monolithic.Shared.Middleware;
 using Serilog;
 
 // 讀取 Serilog 設定

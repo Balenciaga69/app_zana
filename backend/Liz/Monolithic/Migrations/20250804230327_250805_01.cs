@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Monolithic.Migrations
 {
     /// <inheritdoc />
-    public partial class _250803_1 : Migration
+    public partial class _250805_01 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,13 +17,46 @@ namespace Monolithic.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     LastActiveAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsOnline = table.Column<bool>(type: "boolean", nullable: false),
+                    IsOnline = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                }
+            );
+
+            migrationBuilder.CreateTable(
+                name: "DeviceFingerprints",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    BrowserFingerprint = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    DeviceName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    DeviceType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    OperatingSystem = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Browser = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    BrowserVersion = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Platform = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    LastActiveAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    FirstSeenAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsTrusted = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DeviceFingerprints", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DeviceFingerprints_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade
+                    );
                 }
             );
 
@@ -59,17 +93,27 @@ namespace Monolithic.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DeviceFingerprintId = table.Column<Guid>(type: "uuid", nullable: true),
                     ConnectionId = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     RoomId = table.Column<Guid>(type: "uuid", nullable: true),
                     ConnectedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DisconnectedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    IpAddress = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
+                    UserAgent = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Connections", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Connections_DeviceFingerprints_DeviceFingerprintId",
+                        column: x => x.DeviceFingerprintId,
+                        principalTable: "DeviceFingerprints",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull
+                    );
                     table.ForeignKey(
                         name: "FK_Connections_Rooms_RoomId",
                         column: x => x.RoomId,
@@ -129,6 +173,7 @@ namespace Monolithic.Migrations
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     JoinedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LeftAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DisplayName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -155,11 +200,32 @@ namespace Monolithic.Migrations
 
             migrationBuilder.CreateIndex(name: "IX_Connections_ConnectionId", table: "Connections", column: "ConnectionId", unique: true);
 
+            migrationBuilder.CreateIndex(name: "IX_Connections_DeviceFingerprintId", table: "Connections", column: "DeviceFingerprintId");
+
             migrationBuilder.CreateIndex(name: "IX_Connections_IsActive", table: "Connections", column: "IsActive");
 
             migrationBuilder.CreateIndex(name: "IX_Connections_RoomId", table: "Connections", column: "RoomId");
 
             migrationBuilder.CreateIndex(name: "IX_Connections_UserId", table: "Connections", column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeviceFingerprints_BrowserFingerprint",
+                table: "DeviceFingerprints",
+                column: "BrowserFingerprint",
+                unique: true
+            );
+
+            migrationBuilder.CreateIndex(name: "IX_DeviceFingerprints_IsActive", table: "DeviceFingerprints", column: "IsActive");
+
+            migrationBuilder.CreateIndex(name: "IX_DeviceFingerprints_LastActiveAt", table: "DeviceFingerprints", column: "LastActiveAt");
+
+            migrationBuilder.CreateIndex(name: "IX_DeviceFingerprints_UserId", table: "DeviceFingerprints", column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DeviceFingerprints_UserId_IsActive",
+                table: "DeviceFingerprints",
+                columns: new[] { "UserId", "IsActive" }
+            );
 
             migrationBuilder.CreateIndex(name: "IX_Messages_RoomId", table: "Messages", column: "RoomId");
 
@@ -177,6 +243,14 @@ namespace Monolithic.Migrations
             migrationBuilder.CreateIndex(name: "IX_RoomParticipants_IsActive", table: "RoomParticipants", column: "IsActive");
 
             migrationBuilder.CreateIndex(name: "IX_RoomParticipants_RoomId", table: "RoomParticipants", column: "RoomId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoomParticipants_RoomId_DisplayName_IsActive",
+                table: "RoomParticipants",
+                columns: new[] { "RoomId", "DisplayName", "IsActive" },
+                unique: true,
+                filter: "\"IsActive\" = true"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoomParticipants_RoomId_UserId_IsActive",
@@ -207,6 +281,8 @@ namespace Monolithic.Migrations
             migrationBuilder.DropTable(name: "Messages");
 
             migrationBuilder.DropTable(name: "RoomParticipants");
+
+            migrationBuilder.DropTable(name: "DeviceFingerprints");
 
             migrationBuilder.DropTable(name: "Rooms");
 

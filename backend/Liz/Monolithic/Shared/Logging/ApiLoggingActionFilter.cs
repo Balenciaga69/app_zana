@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System.Diagnostics;
 
 namespace Monolithic.Shared.Logging;
 
@@ -9,15 +8,16 @@ namespace Monolithic.Shared.Logging;
 /// </summary>
 public class ApiLoggingActionFilter : ActionFilterAttribute
 {
-    private readonly ILogger<ApiLoggingActionFilter> _logger;
+    private readonly IAppLogger<ApiLoggingActionFilter> _logger;
     private Stopwatch? _stopwatch;
     private string? _traceId;
 
-    public ApiLoggingActionFilter(ILogger<ApiLoggingActionFilter> logger)
+    public ApiLoggingActionFilter(IAppLogger<ApiLoggingActionFilter> logger)
     {
         _logger = logger;
     }
 
+    /// 用於記錄 Action 執行開始前的資訊
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         _stopwatch = Stopwatch.StartNew();
@@ -30,32 +30,25 @@ public class ApiLoggingActionFilter : ActionFilterAttribute
 
         // 收集請求參數
         var requestData = new Dictionary<string, object?>();
-
-        // Route parameters
         foreach (var param in context.ActionArguments)
         {
             requestData[param.Key] = param.Value;
         }
-
-        // Query parameters
         if (context.HttpContext.Request.Query.Any())
         {
             requestData["QueryParams"] = context.HttpContext.Request.Query.ToDictionary(q => q.Key, q => q.Value.ToString());
         }
 
-        _logger.LogInformation(
-            "[API請求] {ControllerName} | {Method} {Path} | Action: {ActionName} | Data: {@RequestData} | Trace: {TraceId}",
-            controllerName,
-            method,
-            path,
-            actionName,
-            requestData,
+        _logger.LogInfo(
+            $"[API請求] {controllerName} | {method} {path} | Action: {actionName}",
+            new { Action = actionName, Data = requestData },
             _traceId
         );
 
         base.OnActionExecuting(context);
     }
 
+    // 用於記錄 Action 執行結束後的資訊
     public override void OnActionExecuted(ActionExecutedContext context)
     {
         _stopwatch?.Stop();
@@ -66,36 +59,23 @@ public class ApiLoggingActionFilter : ActionFilterAttribute
         var path = context.HttpContext.Request.Path;
         var statusCode = context.HttpContext.Response.StatusCode;
 
-        var logLevel = statusCode >= 400 ? LogLevel.Warning : LogLevel.Information;
-
-        // 如果有例外，記錄錯誤日誌
         if (context.Exception != null)
         {
             _logger.LogError(
+                $"[API錯誤] {controllerName} | {method} {path} | Status: {statusCode} | Duration: {duration?.TotalMilliseconds}ms",
                 context.Exception,
-                "[API錯誤] {ControllerName} | {Method} {Path} | Status: {StatusCode} | Duration: {Duration}ms | Trace: {TraceId}",
-                controllerName,
-                method,
-                path,
-                statusCode,
-                duration?.TotalMilliseconds,
+                null,
                 _traceId
             );
         }
         else
         {
-            _logger.Log(
-                logLevel,
-                "[API回應] {ControllerName} | {Method} {Path} | Status: {StatusCode} | Duration: {Duration}ms | Trace: {TraceId}",
-                controllerName,
-                method,
-                path,
-                statusCode,
-                duration?.TotalMilliseconds,
+            _logger.LogInfo(
+                $"[API回應] {controllerName} | {method} {path} | Status: {statusCode} | Duration: {duration?.TotalMilliseconds}ms",
+                null,
                 _traceId
             );
         }
-
         base.OnActionExecuted(context);
     }
 }

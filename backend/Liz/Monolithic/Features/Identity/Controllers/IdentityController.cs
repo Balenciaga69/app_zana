@@ -21,7 +21,8 @@ public class IdentityController : ControllerBase
 
     /// <summary>
     /// 建立新用戶或找回現有用戶
-    /// </summary>    [HttpPost("create-or-retrieve")]
+    /// </summary>
+    [HttpPost("create-or-retrieve")]
     public async Task<ActionResult<ApiResponse<UserSession>>> CreateOrRetrieveUser([FromBody] CreateUserRequest request)
     {
         try
@@ -37,7 +38,8 @@ public class IdentityController : ControllerBase
 
     /// <summary>
     /// 根據 UserId 取得用戶資訊
-    /// </summary>    [HttpGet("{userId:guid}")]
+    /// </summary>
+    [HttpGet("{userId:guid}")]
     public async Task<ActionResult<ApiResponse<UserSession>>> GetUser(Guid userId)
     {
         try
@@ -58,7 +60,8 @@ public class IdentityController : ControllerBase
 
     /// <summary>
     /// 根據瀏覽器指紋查找用戶
-    /// </summary>    [HttpPost("find-by-fingerprint")]
+    /// </summary>
+    [HttpPost("find-by-fingerprint")]
     public async Task<ActionResult<ApiResponse<UserSession>>> FindByFingerprint([FromBody] FindUserByFingerprintRequest request)
     {
         try
@@ -79,7 +82,8 @@ public class IdentityController : ControllerBase
 
     /// <summary>
     /// 驗證用戶身份
-    /// </summary>    [HttpPost("validate")]
+    /// </summary>
+    [HttpPost("validate")]
     public async Task<ActionResult<ApiResponse<bool>>> ValidateUser([FromBody] ValidateUserRequest request)
     {
         try
@@ -95,7 +99,8 @@ public class IdentityController : ControllerBase
 
     /// <summary>
     /// 更新用戶活動時間
-    /// </summary>    [HttpPut("{userId:guid}/activity")]
+    /// </summary>
+    [HttpPut("{userId:guid}/activity")]
     public async Task<ActionResult<ApiResponse<object>>> UpdateActivity(Guid userId, [FromBody] CreateUserRequest? deviceInfo = null)
     {
         try
@@ -111,7 +116,8 @@ public class IdentityController : ControllerBase
 
     /// <summary>
     /// 設定用戶上線狀態
-    /// </summary>    [HttpPut("{userId:guid}/online-status")]
+    /// </summary>
+    [HttpPut("{userId:guid}/online-status")]
     public async Task<ActionResult<ApiResponse<object>>> SetOnlineStatus(Guid userId, [FromBody] bool isOnline)
     {
         try
