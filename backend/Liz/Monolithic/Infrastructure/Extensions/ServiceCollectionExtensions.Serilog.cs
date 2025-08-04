@@ -14,17 +14,36 @@ public static partial class ServiceCollectionExtensions
         // 敏感資料欄位，會被遮罩
         var sensitiveDataKeys = new string[]
         {
-            "Password", "Token", "Secret", "AccessToken", "ApiKey",
-            "ClientSecret", "Key", "AuthorizationCode", "RefreshToken",
-            "SessionId", "Cookie", "Authorization"
+            "Password",
+            "Token",
+            "Secret",
+            "AccessToken",
+            "ApiKey",
+            "ClientSecret",
+            "Key",
+            "AuthorizationCode",
+            "RefreshToken",
+            "SessionId",
+            "Cookie",
+            "Authorization",
         };
 
         // 過長資料欄位，會被遮罩
         var tooLongDataKeys = new string[]
         {
-            "AvatarUrl", "Url", "Picture", "Image", "Photo", "Content",
-            "Description", "Body", "Html", "Xml", "Json"
-        };        Log.Logger = new LoggerConfiguration()
+            "AvatarUrl",
+            "Url",
+            "Picture",
+            "Image",
+            "Photo",
+            "Content",
+            "Description",
+            "Body",
+            "Html",
+            "Xml",
+            "Json",
+        };
+        Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)
             .Enrich.FromLogContext()
             .Enrich.WithThreadId()
