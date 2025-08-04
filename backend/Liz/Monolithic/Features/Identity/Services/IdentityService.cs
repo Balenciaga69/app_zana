@@ -17,78 +17,43 @@ public class IdentityService : IIdentityService
 
     public async Task<UserSession> CreateOrRetrieveUserAsync(CreateUserRequest request)
     {
-        // TODO: 實作身份創建或找回邏輯
-        // 1. 先嘗試根據瀏覽器指紋找現有用戶
-        // 2. 若找不到，建立新用戶
-        // 3. 更新設備資訊
-        // 4. 回傳 UserSession
-
-        _appLogger.LogBusinessInfo(LogOperations.UserRetrieved, new { request.BrowserFingerprint, request.IpAddress });
-        await Task.CompletedTask; // 暫時避免編譯警告
+        _appLogger.LogInfo($"嘗試建立或找回用戶", new { request.BrowserFingerprint, request.IpAddress });
+        await Task.CompletedTask;
         throw new NotImplementedException("CreateOrRetrieveUserAsync 尚未實作");
     }
 
     public async Task<UserSession?> GetUserByIdAsync(Guid userId)
     {
-        // TODO: 根據 UserId 查詢用戶
-        // 1. 從資料庫查詢用戶
-        // 2. 轉換為 UserSession 回傳
-
-        _appLogger.LogBusinessInfo(LogOperations.UserRetrieved, new { UserId = userId });
-
-        await Task.CompletedTask; // 暫時避免編譯警告
+        _appLogger.LogInfo($"查詢用戶資訊", new { UserId = userId });
+        await Task.CompletedTask;
         throw new NotImplementedException("GetUserByIdAsync 尚未實作");
     }
 
     public async Task<UserSession?> FindUserByFingerprintAsync(FindUserByFingerprintRequest request)
     {
-        // TODO: 根據瀏覽器指紋查找用戶
-        // 1. 查詢具有相同指紋的用戶
-        // 2. 可能需要模糊比對（IP、UserAgent 等）
-        // 3. 轉換為 UserSession 回傳
-
-        _appLogger.LogBusinessInfo(LogOperations.FingerprintMatched, new { request.BrowserFingerprint, request.IpAddress });
-
-        await Task.CompletedTask; // 暫時避免編譯警告
+        _appLogger.LogInfo($"依指紋查找用戶", new { request.BrowserFingerprint, request.IpAddress });
+        await Task.CompletedTask;
         throw new NotImplementedException("FindUserByFingerprintAsync 尚未實作");
     }
 
     public async Task<bool> ValidateUserAsync(ValidateUserRequest request)
     {
-        // TODO: 驗證用戶身份
-        // 1. 查詢用戶是否存在
-        // 2. 比對指紋是否一致
-        // 3. 記錄可疑的身份變更
-
-        _appLogger.LogBusinessInfo(LogOperations.UserValidated, new { request.UserId, request.BrowserFingerprint });
-
-        await Task.CompletedTask; // 暫時避免編譯警告
+        _appLogger.LogInfo($"驗證用戶身份", new { request.UserId, request.BrowserFingerprint });
+        await Task.CompletedTask;
         throw new NotImplementedException("ValidateUserAsync 尚未實作");
     }
 
     public async Task UpdateUserActivityAsync(Guid userId, CreateUserRequest? deviceInfo = null)
     {
-        // TODO: 更新用戶活動時間與設備資訊
-        // 1. 查詢用戶
-        // 2. 更新 LastActiveAt
-        // 3. 若有提供設備資訊，則更新相關欄位
-
-        _appLogger.LogUserAction(userId, LogOperations.UserActivityUpdated, deviceInfo);
-
-        await Task.CompletedTask; // 暫時避免編譯警告
+        _appLogger.LogInfo($"更新用戶活動時間", new { UserId = userId, DeviceInfo = deviceInfo });
+        await Task.CompletedTask;
         throw new NotImplementedException("UpdateUserActivityAsync 尚未實作");
     }
 
     public async Task SetUserOnlineStatusAsync(Guid userId, bool isOnline)
     {
-        // TODO: 設定用戶上線狀態
-        // 1. 查詢用戶
-        // 2. 更新 IsOnline 狀態
-        // 3. 更新 LastActiveAt（如果上線）
-
-        _appLogger.LogUserAction(userId, LogOperations.UserStatusChanged, new { IsOnline = isOnline });
-
-        await Task.CompletedTask; // 暫時避免編譯警告
+        _appLogger.LogInfo($"設定用戶上線狀態", new { UserId = userId, IsOnline = isOnline });
+        await Task.CompletedTask;
         throw new NotImplementedException("SetUserOnlineStatusAsync 尚未實作");
     }
 
