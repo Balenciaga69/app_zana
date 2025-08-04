@@ -15,11 +15,15 @@ namespace Monolithic.Shared.Middleware
                 && objectResult.StatusCode < 300
             )
             {
+                // 包裝 ObjectResult 的值為 ApiResponse
                 var valueType = objectResult.Value?.GetType() ?? typeof(object);
+                // 取得值的類型，並建立 ApiResponse 的實例
                 var apiResponseType = typeof(ApiResponse<>).MakeGenericType(valueType);
+                // 使用反射建立 ApiResponse 的實例
                 var wrapped = Activator.CreateInstance(apiResponseType);
                 if (wrapped != null)
                 {
+                    // 設置 ApiResponse 的屬性
                     apiResponseType.GetProperty("Success")?.SetValue(wrapped, true);
                     apiResponseType.GetProperty("Code")?.SetValue(wrapped, "OK");
                     apiResponseType.GetProperty("Message")?.SetValue(wrapped, "OK");
@@ -34,6 +38,7 @@ namespace Monolithic.Shared.Middleware
             await next();
         }
 
+        // 檢查是否已經是 ApiResponse 的實例
         private static bool IsApiResponse(object? value)
         {
             if (value == null)

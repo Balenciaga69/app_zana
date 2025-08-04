@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System.Diagnostics;
 
 namespace Monolithic.Shared.Logging;
 
@@ -18,6 +18,7 @@ public class ApiLoggingActionFilter : ActionFilterAttribute
         _logger = logger;
     }
 
+    /// 用於記錄 Action 執行開始前的資訊
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         _stopwatch = Stopwatch.StartNew();
@@ -56,6 +57,7 @@ public class ApiLoggingActionFilter : ActionFilterAttribute
         base.OnActionExecuting(context);
     }
 
+    // 用於記錄 Action 執行結束後的資訊
     public override void OnActionExecuted(ActionExecutedContext context)
     {
         _stopwatch?.Stop();

@@ -1,5 +1,5 @@
 ﻿/** Most Common Command
-dotnet ef migrations add "250803_2"
+dotnet ef migrations add "250805_01"
 dotnet csharpier . --config-path "../.csharpierrc"
  */
 
