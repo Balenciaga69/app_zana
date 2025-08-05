@@ -16,4 +16,3 @@ public class GetHealthStatusQuery : IRequest<object>
         IncludeDetails = includeDetails;
     }
 }
-

@@ -21,7 +21,15 @@ public class GetHealthStatusHandler : IRequestHandler<GetHealthStatusQuery, obje
 
     public async Task<object> Handle(GetHealthStatusQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInfo("處理健康檢查狀態請求", new { request.IncludeDetails, request.Tag, request.PropertyName });
+        _logger.LogInfo(
+            "處理健康檢查狀態請求",
+            new
+            {
+                request.IncludeDetails,
+                request.Tag,
+                request.PropertyName,
+            }
+        );
 
         // 標籤健康檢查
         if (!string.IsNullOrWhiteSpace(request.Tag) && !string.IsNullOrWhiteSpace(request.PropertyName))
@@ -39,7 +47,7 @@ public class GetHealthStatusHandler : IRequestHandler<GetHealthStatusQuery, obje
                     status = entry.Value.Status.ToString(),
                     duration = entry.Value.Duration.TotalMilliseconds,
                     description = entry.Value.Description,
-                })
+                }),
             };
             return response;
         }
