@@ -42,7 +42,11 @@ namespace Monolithic.Shared.Middleware
         // 檢查是否已經是 ApiResponse 的實例
         private static bool IsApiResponse(object? value)
         {
-            if (value == null) return false;
+            if (value == null)
+            {
+                return false;
+            }
+
             // 取得值的類型
             var type = value.GetType();
             // 檢查是否為 ApiResponse<T> 的實例
