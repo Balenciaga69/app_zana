@@ -2,7 +2,7 @@
 using Serilog;
 using Serilog.Enrichers.Sensitive;
 
-namespace Liz.Monolithic.Infrastructure.Extensions;
+namespace Monolithic.Infrastructure.Extensions;
 
 public static partial class ServiceCollectionExtensions
 {

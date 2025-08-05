@@ -43,8 +43,9 @@
 - 防灌水 & 洗版面
 
 ---
+### 技術選型與架構
 
-### 必要技術棧
+#### 必要技術棧
 
 - 前端: React,Typescript,Vite,ChakraUI,Zustand,SignalR Client,React Hook Form,React Router Dom,Axios
 - 後端: C# .NET 8+, SignalR, gRPC, EF Core, PostgreSQL, Redis, RabbitMQ, YARP, MediatR, AutoMapper, Polly, FluentValidation, Serilog, MassTransit
@@ -53,26 +54,6 @@
 - 輔助工具: Eslint, Prettier,Swagger, Postman
 - 其他工具: ChatGPT, Github Copilot, Gemini API/OpenAi API
 - 開發概念: 測試驅動(CRUD 不用)、事件驅動(少部分)、儲存庫模式(Repository Pattern)
-
----
-
-### 開發策略與注意事項
-
-- 初期架構：從單體架構開始（Controller/Service/Models），並預留 MediatR、AutoMapper、FluentValidation、Serilog、MassTransit 等橫切面功能的整合點。
-- 後端結構：初期採用 Feature Folder 結構，避免過早拆分導致複雜度。
-- 逐步開發：先專注於各服務的核心功能與獨立運行，再導入 RabbitMQ、gRPC 等通訊機制。
-- 簡化前期：延後雲端部署（K8s）與完整 CI/CD 流程，以利專注於核心功能開發。
-- 功能聚焦：MVP 階段不考慮登入、金流、好友、會員等功能。
-- 專案性質：此為個人專案，無團隊協作。
-- 上雲時機：待 MVP 在地端驗證可行後再上雲。
-- 部署環境：優先以地端分散式架構進行開發。
-- 專案結構：初期不拆分多個 csproj，僅透過資料夾與命名空間區隔服務。
-- 通用模組：非必要不預先開發 BuildingBlock；僅當多個模組需要時才建立，或於 MVP 結束後再整理。
-- 低耦合：確保模組間鬆散耦合，例如房間模組不應處理登入或金流相關邏輯。
-
----
-
-### 後端
 
 #### 後期可選用技術棧(後端篇)
 
@@ -95,6 +76,25 @@
 - 指標蒐集 Prometheus Exporter + Grafana
 - 訊息代理程式互動 : MassTransit
 
+---
+
+### 開發策略與注意事項
+
+- 初期架構：從單體架構開始（Controller/Service/Models），並預留 MediatR、AutoMapper、FluentValidation、Serilog、MassTransit 等橫切面功能的整合點。
+- 後端結構：初期採用 Feature Folder 結構，避免過早拆分導致複雜度。
+- 逐步開發：先專注於各服務的核心功能與獨立運行，再導入 RabbitMQ、gRPC 等通訊機制。
+- 簡化前期：延後雲端部署（K8s）與完整 CI/CD 流程，以利專注於核心功能開發。
+- 功能聚焦：MVP 階段不考慮登入、金流、好友、會員等功能。
+- 專案性質：此為個人專案，無團隊協作。
+- 上雲時機：待 MVP 在地端驗證可行後再上雲。
+- 部署環境：優先以地端分散式架構進行開發。
+- 專案結構：初期不拆分多個 csproj，僅透過資料夾與命名空間區隔服務。
+- 通用模組：非必要不預先開發 BuildingBlock；僅當多個模組需要時才建立，或於 MVP 結束後再整理。
+- 低耦合：確保模組間鬆散耦合，例如房間模組不應處理登入或金流相關邏輯。
+---
+
+### 後端
+
 #### Jackson 階段 (後端)：
 
 - 此階段核心目標是建立一個免登入、無帳號機制、具備房間、密碼、人數上限、匿名聊天、斷線重連(需要保留聊天記錄)、資料庫存取能力，且能承受 100 人同時在線的聊天室服務。
@@ -110,6 +110,20 @@
 - ChatService: 把聊天內容存到 DB、推送訊息回去前端、查聊天紀錄
 - ConnectionService: SignalR 連線管理、把資料傳遞給其他微服務，不負責任和業務邏輯
 - 最後再導入 YARP
+##### Jackson 階段 最低限度所需套件 (後端):
+- C# .NET 8+（主框架）
+- SignalR（即時通訊）
+- EF Core（ORM）
+- PostgreSQL（資料庫）
+- Redis（快取/Session，建議先裝好）
+- Serilog（結構化日誌，先本地輸出即可）
+- FluentValidation（參數驗證）
+- MediatR（CQRS/解耦，建議一開始就導入）
+- Docker（本地開發與部署）
+- Health Checks（.NET 內建即可）
+- xUnit、Moq、FluentAssertions（單元測試）
+- Git（版本控管）
+- Swagger（API 文件）
 
 ---
 

@@ -1,6 +1,6 @@
-﻿using System.Net;
+﻿using Monolithic.Shared.Common;
+using System.Net;
 using System.Text.Json;
-using Monolithic.Shared.Common;
 
 namespace Monolithic.Shared.Middleware
 {
