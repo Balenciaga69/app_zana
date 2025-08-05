@@ -69,16 +69,5 @@ namespace Monolithic.Features.Health.Controllers
             var result = await _mediator.Send(query);
             return Ok(result);
         }
-
-        /// <summary>
-        /// 健康檢查 (MediatR, 可選詳細)
-        /// </summary>
-        [HttpGet("mediatr")]
-        public async Task<IActionResult> GetHealthWithMediatR([FromQuery] bool includeDetails = false)
-        {
-            var query = new GetHealthStatusQuery(includeDetails);
-            var result = await _mediator.Send(query);
-            return Ok(result);
-        }
     }
 }

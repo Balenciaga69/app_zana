@@ -19,6 +19,32 @@ public class GetHealthStatusHandler : IRequestHandler<GetHealthStatusQuery, obje
         _logger = logger;
     }
 
+    private IEnumerable<object> MapHealthEntries(IEnumerable<KeyValuePair<string, HealthReportEntry>> entries, bool includeExceptionAndTags = false)
+    {
+        if (includeExceptionAndTags)
+        {
+            return entries.Select(entry => new
+            {
+                name = entry.Key,
+                status = entry.Value.Status.ToString(),
+                duration = entry.Value.Duration.TotalMilliseconds,
+                description = entry.Value.Description,
+                exception = entry.Value.Exception?.Message,
+                tags = entry.Value.Tags,
+            });
+        }
+        else
+        {
+            return entries.Select(entry => new
+            {
+                name = entry.Key,
+                status = entry.Value.Status.ToString(),
+                duration = entry.Value.Duration.TotalMilliseconds,
+                description = entry.Value.Description,
+            });
+        }
+    }
+
     public async Task<object> Handle(GetHealthStatusQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInfo(
@@ -41,13 +67,7 @@ public class GetHealthStatusHandler : IRequestHandler<GetHealthStatusQuery, obje
             {
                 ["status"] = healthReport.Status.ToString(),
                 ["timestamp"] = DateTime.UtcNow,
-                [request.PropertyName] = taggedChecks.Select(entry => new
-                {
-                    name = entry.Key,
-                    status = entry.Value.Status.ToString(),
-                    duration = entry.Value.Duration.TotalMilliseconds,
-                    description = entry.Value.Description,
-                }),
+                [request.PropertyName] = MapHealthEntries(taggedChecks),
             };
             return response;
         }
@@ -61,15 +81,7 @@ public class GetHealthStatusHandler : IRequestHandler<GetHealthStatusQuery, obje
                 status = report.Status.ToString(),
                 totalDuration = report.TotalDuration.TotalMilliseconds,
                 timestamp = DateTime.UtcNow,
-                entries = report.Entries.Select(entry => new
-                {
-                    name = entry.Key,
-                    status = entry.Value.Status.ToString(),
-                    duration = entry.Value.Duration.TotalMilliseconds,
-                    description = entry.Value.Description,
-                    exception = entry.Value.Exception?.Message,
-                    tags = entry.Value.Tags,
-                }),
+                entries = MapHealthEntries(report.Entries, true),
             };
         }
         return new { status = report.Status.ToString(), timestamp = DateTime.UtcNow };
