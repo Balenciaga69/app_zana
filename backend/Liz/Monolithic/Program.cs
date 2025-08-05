@@ -3,7 +3,6 @@ dotnet ef migrations add "250805_01"
 dotnet csharpier . --config-path "../.csharpierrc"
  */
 
-using Liz.Monolithic.Infrastructure.Extensions;
 using Monolithic.Infrastructure.Data;
 using Monolithic.Infrastructure.Extensions;
 using Monolithic.Shared.Logging;
@@ -26,14 +25,20 @@ var redisConnection = builder.Configuration.GetConnectionString("UserRedis");
 // JWT 驗證
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
-// RabbitMQ 設定注入
-builder.Services.AddRabbitMqOptions(builder.Configuration);
+// Redis 服務註冊
+builder.Services.AddRedisServices(builder.Configuration);
+
+// MassTransit 服務註冊
+builder.Services.AddMassTransitServices(builder.Configuration);
 
 // Identity 服務註冊
 builder.Services.AddIdentityServices();
 
 // 統一 Logger 服務註冊
 builder.Services.AddAppLogging();
+
+// 註冊健康檢查
+builder.Services.AddAppHealthChecks(builder.Configuration);
 
 // .NET Core 原生註冊
 builder.Services.AddControllers();
@@ -65,5 +70,14 @@ app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+// 健康檢查端點
+app.MapHealthChecks("/health");
+app.MapHealthChecks(
+    "/health/ready",
+    new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") }
+);
+app.MapHealthChecks("/health/live", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions { Predicate = _ => false });
+
 app.MapControllers();
 app.Run();

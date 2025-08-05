@@ -1,6 +1,6 @@
 ﻿using Monolithic.Shared.Logging;
 
-namespace Liz.Monolithic.Infrastructure.Extensions;
+namespace Monolithic.Infrastructure.Extensions;
 
 public static partial class ServiceCollectionExtensions
 {

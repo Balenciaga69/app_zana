@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Monolithic.Shared.Logging;
+using System.Diagnostics;
 
 namespace Monolithic.Features.Test.Controllers;
 

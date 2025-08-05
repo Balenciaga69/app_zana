@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Monolithic.Infrastructure.Data;
 
-namespace Liz.Monolithic.Infrastructure.Extensions;
+namespace Monolithic.Infrastructure.Extensions;
 
 public static partial class ServiceCollectionExtensions
 {

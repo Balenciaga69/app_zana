@@ -8,7 +8,8 @@
 - 建立後端單元測試專案
 - 建立統一的 ApiResponse 格式 並且實作了 Middleware 與 Filter 統一處理
 - 進度 30% 建立 Identity 服務與瀏覽器指紋功能
-- 新增統一 Logger 服務
+- 新增統一 Logger 服務 (強化 +1)
+- 新增健康檢查 (強化 +3)
 ## 維運
 - 建立 GitHub Actions，自動格式化 PR 的 YAML
 
@@ -24,7 +25,6 @@
 - [ ] 實作房間人數上限與密碼驗證
 - [ ] 斷線重連與對話找回機制
 - [ ] 房間無人自動銷毀與訊息清除
-- [ ] 日誌與錯誤處理（Serilog、Middleware）
 - [ ] 撰寫單元測試（xUnit/Moq）
 - [ ] 撰寫 API 文件（Swagger）
 
