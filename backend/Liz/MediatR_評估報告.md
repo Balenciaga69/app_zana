@@ -62,3 +62,16 @@ MediatR 是 .NET 生態系常用的中介者模式（Mediator Pattern）實現�
 ---
 
 > **結論：本專案高度建議導入 MediatR，並以漸進式方式推動，兼顧工程品質與開發效率。**
+
+
+## 導入 MediatR 步驟
+- 於專案根目錄執行 NuGet 安裝 MediatR 及 MediatR.Extensions.Microsoft.- DependencyInjection 套件。
+- 在 Startup/Program.cs 內註冊 MediatR，指定 Handler 掃描的組件。
+- 於 Feature Folder 下建立 Requests（Command/Query）與 Handlers 資料夾。
+- 為每個複雜業務建立 Command/Query 類別（繼承 IRequest<T>）。
+- 為每個 Command/Query 建立對應 Handler（實作 IRequestHandler<TRequest, TResponse>）。
+- Controller 只注入 IMediator，將請求包裝成 Command/Query，呼叫 mediator.Send()。
+- Handler 內注入 Service/Repository，實作實際業務邏輯。
+- 若需橫切面（如驗證、日誌），可實作 Pipeline Behavior。
+- 撰寫單元測試，直接測 Handler。
+- 逐步將現有 Service 呼叫遷移至 MediatR，保留原有 Service 以利平滑過渡。

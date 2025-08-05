@@ -1,5 +1,4 @@
-﻿// MassTransit 相關 ServiceCollection 擴充
-using MassTransit;
+﻿using MassTransit;
 
 namespace Monolithic.Infrastructure.Extensions;
 

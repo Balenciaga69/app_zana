@@ -1,5 +1,4 @@
-﻿// Serilog 相關 ServiceCollection 擴充
-using Serilog;
+﻿using Serilog;
 using Serilog.Enrichers.Sensitive;
 
 namespace Monolithic.Infrastructure.Extensions;

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Monolithic.Features.Identity.Models;
+using Monolithic.Features.Identity.Requests;
 using Monolithic.Features.Identity.Services;
 using Monolithic.Shared.Common;
 using Monolithic.Shared.Logging;
@@ -11,11 +13,13 @@ namespace Monolithic.Features.Identity.Controllers;
 public class IdentityController : ControllerBase
 {
     private readonly IIdentityService _identityService;
+    private readonly IMediator _mediator;
     private readonly IAppLogger<IdentityController> _appLogger;
 
-    public IdentityController(IIdentityService identityService, IAppLogger<IdentityController> appLogger)
+    public IdentityController(IIdentityService identityService, IMediator mediator, IAppLogger<IdentityController> appLogger)
     {
         _identityService = identityService;
+        _mediator = mediator;
         _appLogger = appLogger;
     }
 
@@ -37,14 +41,16 @@ public class IdentityController : ControllerBase
     }
 
     /// <summary>
-    /// 根據 UserId 取得用戶資訊
+    /// 根據 UserId 取得用戶資訊 (使用 MediatR)
     /// </summary>
     [HttpGet("{userId:guid}")]
     public async Task<ActionResult<ApiResponse<UserSession>>> GetUser(Guid userId)
     {
         try
         {
-            var userSession = await _identityService.GetUserByIdAsync(userId);
+            var query = new GetUserByIdQuery(userId);
+            var userSession = await _mediator.Send(query);
+
             if (userSession == null)
             {
                 _appLogger.LogWarn("用戶不存在", new { UserId = userId });
@@ -55,6 +61,35 @@ public class IdentityController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(500, ApiResponse<UserSession>.Fail("取得用戶資訊失敗", ex.Message));
+        }
+    }
+
+    /// <summary>
+    /// 建立新用戶或找回現有用戶 (使用 MediatR)
+    /// </summary>
+    [HttpPost("create-or-retrieve-mediatr")]
+    public async Task<ActionResult<ApiResponse<UserSession>>> CreateOrRetrieveUserWithMediatR([FromBody] CreateUserRequest request)
+    {
+        try
+        {
+            var command = new CreateOrRetrieveUserCommand
+            {
+                BrowserFingerprint = request.BrowserFingerprint,
+                UserAgent = request.UserAgent,
+                IpAddress = request.IpAddress,
+                DeviceType = request.DeviceType,
+                OperatingSystem = request.OperatingSystem,
+                Browser = request.Browser,
+                BrowserVersion = request.BrowserVersion,
+                Platform = request.Platform,
+            };
+
+            var userSession = await _mediator.Send(command);
+            return Ok(ApiResponse<UserSession>.Ok(userSession));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<UserSession>.Fail("建立或找回用戶失敗", ex.Message));
         }
     }
 
