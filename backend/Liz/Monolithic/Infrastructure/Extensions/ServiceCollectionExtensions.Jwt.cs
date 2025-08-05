@@ -1,7 +1,6 @@
-﻿// JWT 相關 ServiceCollection 擴充
+﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace Monolithic.Infrastructure.Extensions;
 

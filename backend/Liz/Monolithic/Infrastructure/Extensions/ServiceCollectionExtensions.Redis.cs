@@ -1,5 +1,4 @@
-﻿// Redis 相關 ServiceCollection 擴充
-namespace Monolithic.Infrastructure.Extensions;
+﻿namespace Monolithic.Infrastructure.Extensions;
 
 public static partial class ServiceCollectionExtensions
 {

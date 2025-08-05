@@ -4,6 +4,7 @@ using Monolithic.Shared.Common;
 
 namespace Monolithic.Shared.Middleware
 {
+    // API 回應結果過濾器
     public class ApiResponseResultFilter : IAsyncResultFilter
     {
         public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
@@ -42,8 +43,13 @@ namespace Monolithic.Shared.Middleware
         private static bool IsApiResponse(object? value)
         {
             if (value == null)
+            {
                 return false;
+            }
+
+            // 取得值的類型
             var type = value.GetType();
+            // 檢查是否為 ApiResponse<T> 的實例
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ApiResponse<>);
         }
     }

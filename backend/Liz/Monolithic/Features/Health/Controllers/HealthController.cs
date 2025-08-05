@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Monolithic.Features.Health.Requests;
 
 namespace Monolithic.Features.Health.Controllers
 {
@@ -7,119 +8,66 @@ namespace Monolithic.Features.Health.Controllers
     [Route("[controller]")]
     public class HealthController : ControllerBase
     {
-        private readonly HealthCheckService _healthCheckService;
+        private readonly IMediator _mediator;
 
-        public HealthController(HealthCheckService healthCheckService)
+        public HealthController(IMediator mediator)
         {
-            _healthCheckService = healthCheckService;
+            _mediator = mediator;
         }
 
         /// <summary>
-        /// 基本健康檢查
+        /// 基本健康檢查 (MediatR)
         /// </summary>
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Ok(new { status = "Healthy", timestamp = DateTime.UtcNow });
+            var query = new GetHealthStatusQuery(false);
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
 
         /// <summary>
-        /// 詳細健康檢查，包含所有依賴服務
+        /// 詳細健康檢查，包含所有依賴服務 (MediatR)
         /// </summary>
         [HttpGet("detailed")]
         public async Task<IActionResult> GetDetailed()
         {
-            var healthReport = await _healthCheckService.CheckHealthAsync();
-            var response = new
-            {
-                status = healthReport.Status.ToString(),
-                totalDuration = healthReport.TotalDuration.TotalMilliseconds,
-                timestamp = DateTime.UtcNow,
-                entries = healthReport.Entries.Select(entry => new
-                {
-                    name = entry.Key,
-                    status = entry.Value.Status.ToString(),
-                    duration = entry.Value.Duration.TotalMilliseconds,
-                    description = entry.Value.Description,
-                    exception = entry.Value.Exception?.Message,
-                    tags = entry.Value.Tags,
-                }),
-            };
-
-            return CreateHealthResponse(healthReport.Status, response);
+            var query = new GetHealthStatusQuery(true);
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
 
         /// <summary>
-        /// 檢查資料庫連線
+        /// 檢查資料庫連線 (MediatR)
         /// </summary>
         [HttpGet("database")]
         public async Task<IActionResult> GetDatabase()
         {
-            return await GetHealthByTag("database", "databases");
+            var query = new GetHealthStatusQuery(true) { Tag = "database", PropertyName = "databases" };
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
 
         /// <summary>
-        /// 檢查快取服務連線
+        /// 檢查快取服務連線 (MediatR)
         /// </summary>
         [HttpGet("cache")]
         public async Task<IActionResult> GetCache()
         {
-            return await GetHealthByTag("cache", "caches");
+            var query = new GetHealthStatusQuery(true) { Tag = "cache", PropertyName = "caches" };
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
 
         /// <summary>
-        /// 檢查訊息佇列連線
+        /// 檢查訊息佇列連線 (MediatR)
         /// </summary>
         [HttpGet("messaging")]
         public async Task<IActionResult> GetMessaging()
         {
-            return await GetHealthByTag("messaging", "messaging");
-        }
-
-        /// <summary>
-        /// 通用的標籤健康檢查方法
-        /// </summary>
-        private async Task<IActionResult> GetHealthByTag(string tag, string propertyName)
-        {
-            var healthReport = await _healthCheckService.CheckHealthAsync(check => check.Tags.Contains(tag));
-            var taggedChecks = healthReport.Entries.Where(e => e.Value.Tags.Contains(tag));
-
-            var response = CreateTaggedHealthResponse(healthReport.Status, taggedChecks, propertyName);
-            return CreateHealthResponse(healthReport.Status, response);
-        }
-
-        /// <summary>
-        /// 建立標籤化健康檢查回應
-        /// </summary>
-        private object CreateTaggedHealthResponse(
-            HealthStatus status,
-            IEnumerable<KeyValuePair<string, HealthReportEntry>> checks,
-            string propertyName
-        )
-        {
-            var properties = new Dictionary<string, object>
-            {
-                ["status"] = status.ToString(),
-                ["timestamp"] = DateTime.UtcNow,
-                [propertyName] = checks.Select(entry => new
-                {
-                    name = entry.Key,
-                    status = entry.Value.Status.ToString(),
-                    duration = entry.Value.Duration.TotalMilliseconds,
-                    description = entry.Value.Description,
-                }),
-            };
-
-            return properties;
-        }
-
-        /// <summary>
-        /// 建立統一的健康檢查 HTTP 回應
-        /// </summary>
-        private IActionResult CreateHealthResponse(HealthStatus status, object response)
-        {
-            var statusCode = status == HealthStatus.Healthy ? 200 : 503;
-            return StatusCode(statusCode, response);
+            var query = new GetHealthStatusQuery(true) { Tag = "messaging", PropertyName = "messaging" };
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
     }
 }
