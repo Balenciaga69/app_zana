@@ -21,6 +21,7 @@ public class GetHealthStatusHandler : IRequestHandler<GetHealthStatusQuery, obje
 
     private IEnumerable<object> MapHealthEntries(IEnumerable<KeyValuePair<string, HealthReportEntry>> entries, bool includeExceptionAndTags = false)
     {
+        // 如果需要包含例外和標籤
         if (includeExceptionAndTags)
         {
             return entries.Select(entry => new
@@ -60,7 +61,9 @@ public class GetHealthStatusHandler : IRequestHandler<GetHealthStatusQuery, obje
         // 標籤健康檢查
         if (!string.IsNullOrWhiteSpace(request.Tag) && !string.IsNullOrWhiteSpace(request.PropertyName))
         {
+            // 檢查是否有指定標籤
             var healthReport = await _healthCheckService.CheckHealthAsync(check => check.Tags.Contains(request.Tag), cancellationToken);
+            // 如果有指定標籤，則返回該標籤的健康檢查結果
             var taggedChecks = healthReport.Entries.Where(e => e.Value.Tags.Contains(request.Tag));
 
             var response = new Dictionary<string, object>
