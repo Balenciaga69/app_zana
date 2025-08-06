@@ -13,10 +13,12 @@ C# .NET 8+,SignalR,EF Core,PostgreSQL,Redis,Serilog,MediatR,Docker,Health Checks
 ## 目前階段需要具備的功能：
 - 用戶可開房,進房,離開房間
 - 用戶可發言,接收訊息
+- 同一台電腦同一瀏覽器視為同一用戶
+- 同一用戶可以同時存在多個房間
 - 斷線可重連
 - 歷史訊息查詢
 - 分享房間連結
-- 開房時可設定配置
+- 房主在開房時與房間內可設定配置(密碼、房間名稱、人數上限)
 - 系統自動銷毀空房間
 - 統計在線人數
 - (未來)可能會生成QRCode
@@ -30,6 +32,8 @@ C# .NET 8+,SignalR,EF Core,PostgreSQL,Redis,Serilog,MediatR,Docker,Health Checks
 - 不採用 DDD、乾淨架構、CQRS
 - 希望你能 TDD，至少腦海中有測試想法再下手
 - 目前為單體架構，未來會拆分成微服務 + 多DB
+- 避免直接外鍵關聯: 不要用 navigation property, 只保留 ID 引用
+
 ### 關於 Feature 與 Shared
 - 依據 Features 切分（而非 Controller、Service、Models...）
 - 未來每個 Feature 會獨立成微服務
