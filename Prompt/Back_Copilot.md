@@ -22,17 +22,24 @@ C# .NET 8+,SignalR,EF Core,PostgreSQL,Redis,Serilog,MediatR,Docker,Health Checks
 - (未來)可能會生成QRCode
 
 ## 給後端工程師提醒：
-- 已有健康檢查(postgresql,rabbitmq,redis)
-- 已有 EF Core DbContext,Entities,各種 Entity 的配置
+- 已有健康檢查（PostgreSQL、RabbitMQ、Redis）
+- 已有 EF Core DbContext、Entities 及各種 Entity 配置
 - 已可執行 Migration 到 PostgreSQL
-- 已有通用 API Response
-- 已有通用 Exception Filter
-- 已有通用日誌紀錄
-- 採用 Controller,MediatR(不使用 Service),會用Repository Pattern
-- DDD 跟 乾淨架構 還有 CQRS 都很棒，但我們不採用
-- 我希望你能 TDD，至少腦海中有測試甚麼的想法再來下手
-- 目前是單體架構，但遲早會拆分成微服務 + 多DB
-- 按照 Features 分類管理
+- 已有通用 API Response、Exception Filter、日誌紀錄
+- 採用 Controller、MediatR（不使用 Service），並使用 Repository Pattern
+- 不採用 DDD、乾淨架構、CQRS
+- 希望你能 TDD，至少腦海中有測試想法再下手
+- 目前為單體架構，未來會拆分成微服務 + 多DB
+### 關於 Feature 與 Shared
+- 依據 Features 切分（而非 Controller、Service、Models...）
+- 未來每個 Feature 會獨立成微服務
+- 每個 Feature 資料夾包含：
+  - Commands（含 Handler、Result，放同一檔案）
+  - Queries（含 Handler、Result，放同一檔案）
+  - Controller（僅連接 Command/Query，Req/Resp 也用 Command/Query）
+  - Repositories（介面與實作放同一檔案）
+- DbContext、Entities 統一放在 Infrastructure
+- BuildingBlock 類通用元件未來可放在 Shared
 
 ## 參與者的開發環境與角色定位
 - 開發環境：Windows + VSCode + Docker

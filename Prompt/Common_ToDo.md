@@ -1,7 +1,17 @@
 ﻿# 已完成事項
 ## 前端開發
 - 新增四個基本頁面： | 首頁 | 加入房間頁 | 建立房間頁 | 聊天室頁
-- 前端寫個小功能實驗後端要求的瀏覽器指紋跟Localstorage能不能做到
+- 包含:
+  - 房間首頁
+  - 建立房間頁
+  - 加入房間頁
+  - 聊天室頁
+- 使用 Chakra UI 進行樣式設計
+- 使用 Zustand 管理全域狀態
+- 使用 React Router 進行路由管理
+- 使用 React Hook Form 處理表單
+- 使用 Axios 進行 API 請求
+- 使用 SignalR Client 進行即時通訊
 ## 後端開發
 - 建立 `DbContext`
 - Migrate 資料庫完成
