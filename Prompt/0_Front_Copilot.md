@@ -15,7 +15,7 @@ React, Typescript, Vite, Chakra UI, Zustand, SignalR Client, Axios, React Hook F
 - 用戶可發言,接收訊息
 - 同一台電腦同一瀏覽器視為同一用戶
 - 同一用戶可以同時存在多個房間
-- 斷線可重連
+- 斷線可重連(斷線不等於離開房間，需要有機制判斷)
 - 歷史訊息查詢
 - 分享房間連結
 - 房主在開房時與房間內可設定配置(密碼、房間名稱、人數上限)

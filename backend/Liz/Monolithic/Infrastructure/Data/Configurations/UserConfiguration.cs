@@ -7,11 +7,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        // 索引設定
-        builder.HasIndex(e => e.LastActiveAt);
-        builder.HasIndex(e => e.IsOnline);
-
-        // 屬性設定
-        builder.Property(u => u.IsOnline).HasDefaultValue(false);
+        builder.HasKey(u => u.Id);
+        builder.Property(u => u.DeviceFingerprint).IsRequired().HasMaxLength(128);
+        builder.HasIndex(u => u.DeviceFingerprint).IsUnique();
+        builder.Property(u => u.Nickname).HasMaxLength(32);
+        builder.HasIndex(u => u.IsActive);
     }
 }

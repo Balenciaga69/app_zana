@@ -1,10 +1,8 @@
-using FluentAssertions;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Monolithic.Shared.Logging;
 using Moq;
-using System.Diagnostics;
 
 namespace Monolithic.Test.Shared.Logging;
 
