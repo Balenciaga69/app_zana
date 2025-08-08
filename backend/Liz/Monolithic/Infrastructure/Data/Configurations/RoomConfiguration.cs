@@ -7,9 +7,12 @@ public class RoomConfiguration : IEntityTypeConfiguration<Room>
 {
     public void Configure(EntityTypeBuilder<Room> builder)
     {
-        builder.HasOne(e => e.CreatedBy).WithMany(e => e.CreatedRooms).HasForeignKey(e => e.CreatedById).OnDelete(DeleteBehavior.Restrict);
-        builder.HasIndex(e => e.CreatedById);
-        builder.HasIndex(e => e.LastActivityAt);
-        builder.HasIndex(e => e.IsActive);
+        builder.HasKey(r => r.Id);
+        builder.Property(r => r.Name).IsRequired().HasMaxLength(100);
+        builder.Property(r => r.OwnerId).IsRequired();
+        builder.Property(r => r.PasswordHash).HasMaxLength(256);
+        builder.Property(r => r.InviteCode).IsRequired().HasMaxLength(32);
+        builder.HasIndex(r => r.InviteCode).IsUnique();
+        builder.HasIndex(r => r.IsActive);
     }
 }

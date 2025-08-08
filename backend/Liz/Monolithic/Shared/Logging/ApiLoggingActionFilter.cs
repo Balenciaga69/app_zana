@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
+using System.Diagnostics;
 
 namespace Monolithic.Shared.Logging;
 
@@ -79,3 +79,4 @@ public class ApiLoggingActionFilter : ActionFilterAttribute
         base.OnActionExecuted(context);
     }
 }
+

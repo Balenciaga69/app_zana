@@ -12,8 +12,7 @@ namespace Monolithic.Infrastructure.Data
         public DbSet<Room> Rooms { get; set; }
         public DbSet<RoomParticipant> RoomParticipants { get; set; }
         public DbSet<Message> Messages { get; set; }
-        public DbSet<Connection> Connections { get; set; }
-        public DbSet<DeviceFingerprint> DeviceFingerprints { get; set; }
+        public DbSet<UserConnection> UserConnections { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
