@@ -34,11 +34,7 @@ public class ApiLoggingActionFilterTests
 
         // Assert
         _mockLogger.Verify(
-            x => x.LogInfo(
-                It.Is<string>(msg => msg.Contains("[API請求]") && msg.Contains("TestController")),
-                It.IsAny<object>(),
-                It.IsAny<string>()
-            ),
+            x => x.LogInfo(It.Is<string>(msg => msg.Contains("[API請求]") && msg.Contains("TestController")), It.IsAny<object>(), It.IsAny<string>()),
             Times.Once
         );
     }
@@ -59,11 +55,7 @@ public class ApiLoggingActionFilterTests
 
         // Assert
         _mockLogger.Verify(
-            x => x.LogInfo(
-                It.Is<string>(msg => msg.Contains("[API回應]") && msg.Contains("Status: 200")),
-                It.IsAny<object>(),
-                It.IsAny<string>()
-            ),
+            x => x.LogInfo(It.Is<string>(msg => msg.Contains("[API回應]") && msg.Contains("Status: 200")), It.IsAny<object>(), It.IsAny<string>()),
             Times.Once
         );
     }
@@ -85,12 +77,13 @@ public class ApiLoggingActionFilterTests
 
         // Assert
         _mockLogger.Verify(
-            x => x.LogError(
-                It.Is<string>(msg => msg.Contains("[API錯誤]")),
-                It.Is<Exception>(ex => ex == exception),
-                It.IsAny<object>(),
-                It.IsAny<string>()
-            ),
+            x =>
+                x.LogError(
+                    It.Is<string>(msg => msg.Contains("[API錯誤]")),
+                    It.Is<Exception>(ex => ex == exception),
+                    It.IsAny<object>(),
+                    It.IsAny<string>()
+                ),
             Times.Once
         );
     }
@@ -112,11 +105,7 @@ public class ApiLoggingActionFilterTests
 
         // Assert
         _mockLogger.Verify(
-            x => x.LogInfo(
-                It.Is<string>(msg => msg.Contains("Duration:") && msg.Contains("ms")),
-                It.IsAny<object>(),
-                It.IsAny<string>()
-            ),
+            x => x.LogInfo(It.Is<string>(msg => msg.Contains("Duration:") && msg.Contains("ms")), It.IsAny<object>(), It.IsAny<string>()),
             Times.Once
         );
     }
@@ -136,11 +125,7 @@ public class ApiLoggingActionFilterTests
 
         // Assert
         _mockLogger.Verify(
-            x => x.LogInfo(
-                It.IsAny<string>(),
-                It.Is<object>(data => data.ToString()!.Contains("QueryParams")),
-                It.IsAny<string>()
-            ),
+            x => x.LogInfo(It.IsAny<string>(), It.Is<object>(data => data.ToString()!.Contains("QueryParams")), It.IsAny<string>()),
             Times.Once
         );
     }
@@ -178,14 +163,9 @@ public class ApiLoggingActionFilterTests
         var controller = new TestController();
         var filters = new List<IFilterMetadata>();
 
-        return new ActionExecutedContext(actionContext, filters, controller)
-        {
-            Exception = exception
-        };
+        return new ActionExecutedContext(actionContext, filters, controller) { Exception = exception };
     }
 
     // 測試用的假 Controller
-    private class TestController : ControllerBase
-    {
-    }
+    private class TestController : ControllerBase { }
 }
