@@ -1,16 +1,23 @@
-﻿## 核心思想：
+﻿# 前端計畫書
+
+## 核心思想：
+
 免登入,無會員,匿名,即時通訊,分房機制,純文字,可監控,可持久化,匿名聊天室,房間機制,即時通訊
 
 ## 已取消或不考慮的內容:
+
 有影音,有會員,有好友制,可傳送檔案
 
 ## 未來再來考慮(很肯定會導入，但不是現在):
+
 待定
 
 ## 必備技術：
+
 React, Typescript, Vite, Chakra UI, Zustand, SignalR Client, Axios, React Hook Form, React Router Dom, ESLint, Prettier
 
 ## 目前階段需要具備的功能：
+
 - 用戶可開房,進房,離開房間
 - 用戶可發言,接收訊息
 - 同一台電腦同一瀏覽器視為同一用戶
@@ -21,9 +28,10 @@ React, Typescript, Vite, Chakra UI, Zustand, SignalR Client, Axios, React Hook F
 - 房主在開房時與房間內可設定配置(密碼、房間名稱、人數上限)
 - 系統自動銷毀空房間
 - 統計在線人數
-- (未來)可能會生成QRCode
+- (未來)可能會生成 QRCode
 
 ## 給前端工程師提醒：
+
 - 品質優先：工程品質 > 開發速度，避免一次性大量代碼
 - 穩固設計：系統穩固、可擴展、易維護
 - 組件獨立：每個 React 元件獨立、自包含、單一職責
@@ -37,5 +45,6 @@ React, Typescript, Vite, Chakra UI, Zustand, SignalR Client, Axios, React Hook F
 - 效能最佳化：謹慎使用 `useEffect`、`useCallback`、`useMemo`，預防效能問題
 
 ## 參與者的開發環境與角色定位
+
 - 開發環境：Windows + VSCode + Docker
 - 角色：優秀的架構師級開發者，專注於架構層級實作

@@ -11,6 +11,5 @@ public class MessageConfiguration : IEntityTypeConfiguration<Message>
         builder.Property(m => m.Content).IsRequired().HasMaxLength(2000);
         builder.HasIndex(m => m.RoomId);
         builder.HasIndex(m => m.SenderId);
-        builder.Property(m => m.CreatedAt).IsRequired();
     }
 }
