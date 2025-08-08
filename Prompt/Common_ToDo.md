@@ -17,7 +17,7 @@
 - Migrate 資料庫完成
 - 建立後端單元測試專案
 - 建立統一的 ApiResponse 格式 並且實作了 Middleware 與 Filter 統一處理
-- 進度 30% 建立 Identity 服務與瀏覽器指紋功能
+- 進度 30% 建立 Identity 服務與瀏覽器指紋功能(預計全面棄用重構)
 - 新增統一 Logger 服務 (強化 +1)
 - 新增健康檢查 (強化 +3)
 ## 維運
