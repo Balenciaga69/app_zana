@@ -1,0 +1,3 @@
+[submodule "editor_config"]
+	path = editor_config
+	url = git@github.com:Balenciaga69/my_editor_config.git
