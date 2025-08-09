@@ -83,8 +83,8 @@ public class ErrorHandlingMiddlewareTests
 
         apiResponse.Should().NotBeNull();
         apiResponse!.Success.Should().BeFalse();
-        apiResponse.Code.Should().Be("InternalServerError");
-        apiResponse.Message.Should().Be("伺服器發生未預期錯誤，請稍後再試。");
+        apiResponse.Code.Should().Be(ErrorCode.InternalServerError.ToString());
+        apiResponse.Message.Should().Be(ErrorMessages.GetMessage(ErrorCode.InternalServerError));
         apiResponse.TraceId.Should().Be(traceId);
         apiResponse.Errors.Should().NotBeNull();
     }
