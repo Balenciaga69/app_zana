@@ -27,7 +27,9 @@ public class RegisterUserCommand : IRequest<OperationResult<RegisterUserResult>>
     /// <summary>
     /// IP 地址（可選）
     /// </summary>
-    public string? IpAddress { get; set; }    /// <summary>
+    public string? IpAddress { get; set; }
+
+    /// <summary>
     /// 驗證命令有效性
     /// </summary>
     public bool IsValid => DeviceFingerprint.IsValidDeviceFingerprint();

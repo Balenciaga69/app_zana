@@ -18,7 +18,9 @@ public class UserController : ControllerBase
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }    /// <summary>
+    }
+
+    /// <summary>
     /// 註冊用戶或重新連線
     /// POST /api/users/register
     /// </summary>
@@ -46,7 +48,15 @@ public class UserController : ControllerBase
             }
             else
             {
-                _logger.LogWarn("用戶註冊失敗", new { request.DeviceFingerprint, operationResult.ErrorCode, operationResult.ErrorMessage });
+                _logger.LogWarn(
+                    "用戶註冊失敗",
+                    new
+                    {
+                        request.DeviceFingerprint,
+                        operationResult.ErrorCode,
+                        operationResult.ErrorMessage,
+                    }
+                );
                 return BadRequest(ApiResponse<RegisterUserResult>.Fail(operationResult.ErrorCode!, operationResult.ErrorMessage!));
             }
         }

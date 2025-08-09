@@ -16,7 +16,9 @@ public class UpdateUserNicknameCommand : IRequest<OperationResult<UpdateUserNick
     {
         UserId = userId;
         Nickname = nickname;
-    }    /// <summary>
+    }
+
+    /// <summary>
     /// 驗證命令有效性
     /// </summary>
     public bool IsValid => Nickname.IsValidNickname();

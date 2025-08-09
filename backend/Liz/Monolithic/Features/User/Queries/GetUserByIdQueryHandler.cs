@@ -16,7 +16,9 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, GetUser
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }    public async Task<GetUserByIdResult?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    }
+
+    public async Task<GetUserByIdResult?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInfo("開始查詢用戶通過 ID", new { request.UserId });
 
