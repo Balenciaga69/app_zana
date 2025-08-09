@@ -57,13 +57,12 @@ public class UserController : ControllerBase
                         operationResult.ErrorMessage,
                     }
                 );
-                return BadRequest(ApiResponse<RegisterUserResult>.Fail(operationResult.ErrorCode!, operationResult.ErrorMessage!));
+                return BadRequest(ApiResponse<RegisterUserResult>.Fail(operationResult.ErrorCode!.Value, operationResult.ErrorMessage!));
             }
-        }
-        catch (Exception ex)
+        }        catch (Exception ex)
         {
             _logger.LogError("用戶註冊異常", ex, new { request.DeviceFingerprint });
-            return StatusCode(500, ApiResponse<RegisterUserResult>.Fail(ErrorCodes.InternalServerError, ErrorMessages.InternalServerError));
+            return StatusCode(500, ApiResponse<RegisterUserResult>.Fail(ErrorCode.InternalServerError));
         }
     }
 
@@ -77,11 +76,9 @@ public class UserController : ControllerBase
         try
         {
             var query = new GetUserByIdQuery(userId);
-            var result = await _mediator.Send(query);
-
-            if (result == null)
+            var result = await _mediator.Send(query);            if (result == null)
             {
-                return NotFound(ApiResponse<GetUserByIdResult>.Fail("用戶不存在", "找不到指定的用戶"));
+                return NotFound(ApiResponse<GetUserByIdResult>.Fail(ErrorCode.UserNotFound));
             }
 
             return Ok(ApiResponse<GetUserByIdResult>.Ok(result));
@@ -89,7 +86,7 @@ public class UserController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError("取得用戶資訊失敗", ex, new { userId });
-            return StatusCode(500, ApiResponse<GetUserByIdResult>.Fail("取得用戶資訊失敗", ex.Message));
+            return StatusCode(500, ApiResponse<GetUserByIdResult>.Fail(ErrorCode.InternalServerError));
         }
     }
 
@@ -103,11 +100,9 @@ public class UserController : ControllerBase
         try
         {
             var query = new GetUserByIdQuery(id);
-            var result = await _mediator.Send(query);
-
-            if (result == null)
+            var result = await _mediator.Send(query);            if (result == null)
             {
-                return NotFound(ApiResponse<GetUserByIdResult>.Fail("用戶不存在", $"找不到 ID 為 {id} 的用戶"));
+                return NotFound(ApiResponse<GetUserByIdResult>.Fail(ErrorCode.UserNotFound, $"找不到 ID 為 {id} 的用戶"));
             }
 
             return Ok(ApiResponse<GetUserByIdResult>.Ok(result));
@@ -115,7 +110,7 @@ public class UserController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError("取得用戶資訊失敗", ex, new { id });
-            return StatusCode(500, ApiResponse<GetUserByIdResult>.Fail("取得用戶資訊失敗", ex.Message));
+            return StatusCode(500, ApiResponse<GetUserByIdResult>.Fail(ErrorCode.InternalServerError));
         }
     }
 
@@ -152,11 +147,10 @@ public class UserController : ControllerBase
                 );
                 return BadRequest(apiResponse);
             }
-        }
-        catch (Exception ex)
+        }        catch (Exception ex)
         {
             _logger.LogError("更新暱稱失敗", ex, new { request.UserId, request.Nickname });
-            return StatusCode(500, ApiResponse<UpdateUserNicknameResult>.Fail(ErrorCodes.InternalServerError, ErrorMessages.InternalServerError));
+            return StatusCode(500, ApiResponse<UpdateUserNicknameResult>.Fail(ErrorCode.InternalServerError));
         }
     }
 
@@ -177,8 +171,7 @@ public class UserController : ControllerBase
             var result = await _mediator.Send(query);
 
             return Ok(ApiResponse<GetUserConnectionsResult>.Ok(result));
-        }
-        catch (Exception ex)
+        }        catch (Exception ex)
         {
             _logger.LogError(
                 "取得連線歷史失敗",
@@ -190,7 +183,7 @@ public class UserController : ControllerBase
                     take,
                 }
             );
-            return StatusCode(500, ApiResponse<GetUserConnectionsResult>.Fail("取得連線歷史失敗", ex.Message));
+            return StatusCode(500, ApiResponse<GetUserConnectionsResult>.Fail(ErrorCode.InternalServerError));
         }
     }
 
@@ -206,11 +199,9 @@ public class UserController : ControllerBase
         try
         {
             var query = new GetUserByDeviceFingerprintQuery(request.DeviceFingerprint);
-            var result = await _mediator.Send(query);
-
-            if (result == null)
+            var result = await _mediator.Send(query);            if (result == null)
             {
-                return NotFound(ApiResponse<GetUserByDeviceFingerprintResult>.Fail("設備未註冊", "找不到對應的用戶"));
+                return NotFound(ApiResponse<GetUserByDeviceFingerprintResult>.Fail(ErrorCode.UserNotFound, "找不到對應的用戶"));
             }
 
             return Ok(ApiResponse<GetUserByDeviceFingerprintResult>.Ok(result));
@@ -218,7 +209,7 @@ public class UserController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError("驗證設備指紋失敗", ex, new { request.DeviceFingerprint });
-            return StatusCode(500, ApiResponse<GetUserByDeviceFingerprintResult>.Fail("驗證設備指紋失敗", ex.Message));
+            return StatusCode(500, ApiResponse<GetUserByDeviceFingerprintResult>.Fail(ErrorCode.InternalServerError));
         }
     }
 }

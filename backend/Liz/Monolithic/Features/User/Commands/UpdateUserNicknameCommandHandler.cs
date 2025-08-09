@@ -21,9 +21,7 @@ public class UpdateUserNicknameCommandHandler : IRequestHandler<UpdateUserNickna
 
     public async Task<OperationResult<UpdateUserNicknameResult>> Handle(UpdateUserNicknameCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInfo("開始處理更新用戶暱稱請求", new { request.UserId, request.Nickname });
-
-        try
+        _logger.LogInfo("開始處理更新用戶暱稱請求", new { request.UserId, request.Nickname });        try
         {
             // 第一步：驗證命令
             var validationError = request.GetValidationError();
@@ -38,7 +36,7 @@ public class UpdateUserNicknameCommandHandler : IRequestHandler<UpdateUserNickna
                         validationError,
                     }
                 );
-                return OperationResult<UpdateUserNicknameResult>.Fail(validationError);
+                return OperationResult<UpdateUserNicknameResult>.Fail(validationError.Value);
             }
 
             // 第二步：查找用戶
@@ -46,7 +44,7 @@ public class UpdateUserNicknameCommandHandler : IRequestHandler<UpdateUserNickna
             if (user == null)
             {
                 _logger.LogWarn("找不到指定用戶", new { request.UserId });
-                return OperationResult<UpdateUserNicknameResult>.Fail(ErrorCodes.UserNotFound);
+                return OperationResult<UpdateUserNicknameResult>.Fail(ErrorCode.UserNotFound);
             }
 
             // 第三步：更新用戶資訊
@@ -67,14 +65,12 @@ public class UpdateUserNicknameCommandHandler : IRequestHandler<UpdateUserNickna
             );
 
             // 第四步：建立結果
-            var result = new UpdateUserNicknameResult(user.Id, user.Nickname, user.UpdatedAt);
-
-            return OperationResult<UpdateUserNicknameResult>.Ok(result);
+            var result = new UpdateUserNicknameResult(user.Id, user.Nickname, user.UpdatedAt);            return OperationResult<UpdateUserNicknameResult>.Ok(result);
         }
         catch (Exception ex)
         {
             _logger.LogError("更新用戶暱稱失敗", ex, new { request.UserId, request.Nickname });
-            return OperationResult<UpdateUserNicknameResult>.Fail(ErrorCodes.InternalServerError);
+            return OperationResult<UpdateUserNicknameResult>.Fail(ErrorCode.InternalServerError);
         }
     }
 }

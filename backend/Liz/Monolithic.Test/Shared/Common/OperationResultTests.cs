@@ -22,13 +22,11 @@ public class OperationResultTests
         result.Data.Should().Be(testData);
         result.ErrorCode.Should().BeNull();
         result.ErrorMessage.Should().BeNull();
-    }
-
-    [Fact]
+    }    [Fact]
     public void Fail_WithErrorCode_ShouldReturnFailResult()
     {
         // Arrange
-        var errorCode = ErrorCodes.UserNotFound;
+        var errorCode = ErrorCode.UserNotFound;
 
         // Act
         var result = OperationResult<string>.Fail(errorCode);
@@ -37,14 +35,12 @@ public class OperationResultTests
         result.Success.Should().BeFalse();
         result.Data.Should().BeNull();
         result.ErrorCode.Should().Be(errorCode);
-        result.ErrorMessage.Should().Be(ErrorMessages.UserNotFound);
-    }
-
-    [Fact]
+        result.ErrorMessage.Should().Be(ErrorMessages.GetMessage(errorCode));
+    }    [Fact]
     public void Fail_WithCustomMessage_ShouldReturnFailResult()
     {
         // Arrange
-        var errorCode = ErrorCodes.InvalidInput;
+        var errorCode = ErrorCode.InvalidInput;
         var customMessage = "Custom error message";
 
         // Act
@@ -72,13 +68,11 @@ public class OperationResultTests
         apiResponse.Data.Should().Be(testData);
         apiResponse.Code.Should().Be("OK");
         apiResponse.Message.Should().Be("操作成功");
-    }
-
-    [Fact]
+    }    [Fact]
     public void ToApiResponse_FailResult_ShouldReturnFailApiResponse()
     {
         // Arrange
-        var errorCode = ErrorCodes.UserNotFound;
+        var errorCode = ErrorCode.UserNotFound;
         var result = OperationResult<string>.Fail(errorCode);
 
         // Act
@@ -87,21 +81,19 @@ public class OperationResultTests
         // Assert
         apiResponse.Success.Should().BeFalse();
         apiResponse.Data.Should().BeNull();
-        apiResponse.Code.Should().Be(errorCode);
-        apiResponse.Message.Should().Be(ErrorMessages.UserNotFound);
-    }
-
-    [Fact]
+        apiResponse.Code.Should().Be(errorCode.ToString());
+        apiResponse.Message.Should().Be(ErrorMessages.GetMessage(errorCode));
+    }    [Fact]
     public void OperationResult_WithoutGeneric_ShouldWork()
     {
         // Act
         var successResult = OperationResult.Ok();
-        var failResult = OperationResult.Fail(ErrorCodes.InternalServerError);
+        var failResult = OperationResult.Fail(ErrorCode.InternalServerError);
 
         // Assert
         successResult.Success.Should().BeTrue();
         failResult.Success.Should().BeFalse();
-        failResult.ErrorCode.Should().Be(ErrorCodes.InternalServerError);
-        failResult.ErrorMessage.Should().Be(ErrorMessages.InternalServerError);
+        failResult.ErrorCode.Should().Be(ErrorCode.InternalServerError);
+        failResult.ErrorMessage.Should().Be(ErrorMessages.GetMessage(ErrorCode.InternalServerError));
     }
 }

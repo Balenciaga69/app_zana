@@ -32,15 +32,13 @@ public class RegisterUserCommand : IRequest<OperationResult<RegisterUserResult>>
     /// <summary>
     /// 驗證命令有效性
     /// </summary>
-    public bool IsValid => DeviceFingerprint.IsValidDeviceFingerprint();
-
-    /// <summary>
+    public bool IsValid => DeviceFingerprint.IsValidDeviceFingerprint();    /// <summary>
     /// 取得驗證錯誤碼
     /// </summary>
-    public string? GetValidationError()
+    public ErrorCode? GetValidationError()
     {
         if (!DeviceFingerprint.IsValidDeviceFingerprint())
-            return ErrorCodes.InvalidDeviceFingerprint;
+            return ErrorCode.InvalidDeviceFingerprint;
 
         return null;
     }
