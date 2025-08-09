@@ -29,9 +29,7 @@ namespace Monolithic.Shared.Middleware
                 _logger.LogError(ex, "Unhandled exception");
                 await HandleExceptionAsync(context, ex);
             }
-        }
-
-        /// <summary>
+        }        /// <summary>
         /// 處理異常並返回統一的 API 響應格式
         /// </summary>
         private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
@@ -40,8 +38,7 @@ namespace Monolithic.Shared.Middleware
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             var response = ApiResponse<object>.Fail(
-                code: "InternalServerError",
-                message: "伺服器發生未預期錯誤，請稍後再試。",
+                ErrorCode.InternalServerError,
                 errors: new { exception.Message, exception.StackTrace }
             );
             response.TraceId = context.TraceIdentifier;
