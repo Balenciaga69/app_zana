@@ -5,7 +5,9 @@ on:
     branches: [ main, develop ] # 針對 main 和 develop 分支
   push: # 當有程式碼推送到遠端時觸發
     branches: [ main, develop ] # 針對 main 和 develop 分支
-
+permissions:
+  contents: write
+  pull-requests: write
 jobs:
   # === 後端建置與測試 ===
   backend-build-and-test:
