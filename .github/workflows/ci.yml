@@ -64,7 +64,7 @@ jobs:
         with:
           name: backend-test-results # Artifact 名稱
           path: backend/Liz/TestResults/ # 測試結果檔案路徑
-          retention-days: 30 # 保存 30 天
+          retention-days: 5 # 保存 5 天
       
       # 步驟 8: 發布測試結果摘要
       - name: Publish test results # 在 GitHub Actions 中顯示測試結果摘要

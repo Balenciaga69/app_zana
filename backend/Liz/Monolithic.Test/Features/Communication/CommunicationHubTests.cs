@@ -211,8 +211,6 @@ public class TestStartup
         services.AddLogging();
         services.AddSignalR();
 
-        // TODO: 加入 Communication 相關服務
-        // services.AddCommunicationServices(configuration);
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

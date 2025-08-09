@@ -57,10 +57,6 @@ public class CommunicationHub : Hub
             connectionId
         );
 
-        // TODO: @Balenciaga69 未來透過 RabbitMQ 通知其他微服務
-        // - 通知 User 微服務更新連線狀態
-        // - 通知 Room 微服務處理離開房間
-
         await base.OnDisconnectedAsync(exception);
     }
 
