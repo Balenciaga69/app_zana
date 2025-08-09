@@ -1,4 +1,4 @@
-﻿// Communication 微服務 - SignalR Hub
+// Communication 微服務 - SignalR Hub
 // 職責：專注於即時通訊連線管理、訊息傳輸和廣播
 // 邊界：不處理業務邏輯，未來將獨立為微服務
 using Microsoft.AspNetCore.SignalR;
