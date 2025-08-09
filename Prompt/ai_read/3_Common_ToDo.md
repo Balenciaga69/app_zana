@@ -25,13 +25,9 @@
 - 新增健康檢查 (強化 +3)
 - 初步建立 Communication Feature 來處理 SignalR 即時通訊職責相關功能
 - 初步建立 User Feature
-- 初步建立 OperationResult 統一MediatR回傳格式、共用硬編碼、錯誤代碼
+- 初步建立 OperationResult,ErrorCodes,Constants,ValidationExtensions 統一MediatR回傳格式、共用硬編碼、錯誤代碼
 ## 維運
 
 - 建立 GitHub Actions，自動格式化 PR 的 YAML
 
 # 尚未完成事項
-
-### 問題思考:
-- User.Nickname 最大長度 32 是硬編碼嗎?，如果甲方要求改成 64，是否需要修改多個檔案?
-- 如果未來改成要支援英文版與日文版我該怎麼處理?目前大多數都是中文，甚至有些中英夾雜。

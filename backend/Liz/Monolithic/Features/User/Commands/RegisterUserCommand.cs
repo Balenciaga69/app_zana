@@ -1,11 +1,13 @@
 ﻿using MediatR;
+using Monolithic.Shared.Common;
+using Monolithic.Shared.Extensions;
 
 namespace Monolithic.Features.User.Commands;
 
 /// <summary>
 /// 用戶註冊命令 - 包含命令和結果定義
 /// </summary>
-public class RegisterUserCommand : IRequest<RegisterUserResult>
+public class RegisterUserCommand : IRequest<OperationResult<RegisterUserResult>>
 {
     /// <summary>
     /// 現有用戶 ID（重新連線時使用）
@@ -25,7 +27,21 @@ public class RegisterUserCommand : IRequest<RegisterUserResult>
     /// <summary>
     /// IP 地址（可選）
     /// </summary>
-    public string? IpAddress { get; set; }
+    public string? IpAddress { get; set; }    /// <summary>
+    /// 驗證命令有效性
+    /// </summary>
+    public bool IsValid => DeviceFingerprint.IsValidDeviceFingerprint();
+
+    /// <summary>
+    /// 取得驗證錯誤碼
+    /// </summary>
+    public string? GetValidationError()
+    {
+        if (!DeviceFingerprint.IsValidDeviceFingerprint())
+            return ErrorCodes.InvalidDeviceFingerprint;
+
+        return null;
+    }
 }
 
 /// <summary>

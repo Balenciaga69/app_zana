@@ -18,9 +18,7 @@ public class UserController : ControllerBase
     {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
-
-    /// <summary>
+    }    /// <summary>
     /// 註冊用戶或重新連線
     /// POST /api/users/register
     /// </summary>
@@ -37,16 +35,25 @@ public class UserController : ControllerBase
                 IpAddress = request.IpAddress,
             };
 
-            var result = await _mediator.Send(command);
+            var operationResult = await _mediator.Send(command);
 
-            _logger.LogInfo("用戶註冊成功", new { result.UserId, result.IsNewUser });
+            if (operationResult.Success)
+            {
+                _logger.LogInfo("用戶註冊成功", new { operationResult.Data!.UserId, operationResult.Data.IsNewUser });
 
-            return Ok(ApiResponse<RegisterUserResult>.Ok(result, result.IsNewUser ? "新用戶註冊成功" : "用戶重新連線成功"));
+                var message = operationResult.Data.IsNewUser ? "新用戶註冊成功" : "用戶重新連線成功";
+                return Ok(ApiResponse<RegisterUserResult>.Ok(operationResult.Data, message));
+            }
+            else
+            {
+                _logger.LogWarn("用戶註冊失敗", new { request.DeviceFingerprint, operationResult.ErrorCode, operationResult.ErrorMessage });
+                return BadRequest(ApiResponse<RegisterUserResult>.Fail(operationResult.ErrorCode!, operationResult.ErrorMessage!));
+            }
         }
         catch (Exception ex)
         {
-            _logger.LogError("用戶註冊失敗", ex, new { request.DeviceFingerprint });
-            return StatusCode(500, ApiResponse<RegisterUserResult>.Fail("用戶註冊失敗", ex.Message));
+            _logger.LogError("用戶註冊異常", ex, new { request.DeviceFingerprint });
+            return StatusCode(500, ApiResponse<RegisterUserResult>.Fail(ErrorCodes.InternalServerError, ErrorMessages.InternalServerError));
         }
     }
 

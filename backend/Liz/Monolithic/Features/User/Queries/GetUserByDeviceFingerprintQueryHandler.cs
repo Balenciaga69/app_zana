@@ -16,11 +16,9 @@ public class GetUserByDeviceFingerprintQueryHandler : IRequestHandler<GetUserByD
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
-
-    public async Task<GetUserByDeviceFingerprintResult?> Handle(GetUserByDeviceFingerprintQuery request, CancellationToken cancellationToken)
+    }    public async Task<GetUserByDeviceFingerprintResult?> Handle(GetUserByDeviceFingerprintQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInfo("查詢用戶通過設備指紋", new { request.DeviceFingerprint });
+        _logger.LogInfo("開始查詢用戶通過設備指紋", new { request.DeviceFingerprint });
 
         try
         {
