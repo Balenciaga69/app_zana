@@ -1,5 +1,4 @@
-﻿// 健康檢查 ServiceCollection 擴充
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Monolithic.Infrastructure.Extensions;
 

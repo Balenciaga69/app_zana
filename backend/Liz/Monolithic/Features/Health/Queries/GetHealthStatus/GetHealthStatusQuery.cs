@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Monolithic.Features.Health.Requests;
+namespace Monolithic.Features.Health.Queries.GetHealthStatus;
 
 /// <summary>
 /// 取得健康檢查狀態的 Query

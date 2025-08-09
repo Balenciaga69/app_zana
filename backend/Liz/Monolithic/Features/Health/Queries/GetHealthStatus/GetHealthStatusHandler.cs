@@ -1,9 +1,8 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Monolithic.Features.Health.Requests;
 using Monolithic.Shared.Logging;
 
-namespace Monolithic.Features.Health.Handlers;
+namespace Monolithic.Features.Health.Queries.GetHealthStatus;
 
 /// <summary>
 /// 取得健康檢查狀態的 Query Handler
