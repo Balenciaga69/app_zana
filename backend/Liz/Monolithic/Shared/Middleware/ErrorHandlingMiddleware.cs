@@ -15,6 +15,9 @@ namespace Monolithic.Shared.Middleware
             _logger = logger;
         }
 
+        /// <summary>
+        /// 處理請求
+        /// </summary>
         public async Task Invoke(HttpContext context)
         {
             try
@@ -28,6 +31,9 @@ namespace Monolithic.Shared.Middleware
             }
         }
 
+        /// <summary>
+        /// 處理異常並返回統一的 API 響應格式
+        /// </summary>
         private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
