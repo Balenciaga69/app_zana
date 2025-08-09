@@ -8,6 +8,7 @@ public class User : BaseEntity
     public string DeviceFingerprint { get; set; } = default!;
     public bool IsActive { get; set; }
     public DateTime LastActiveAt { get; set; }
+
     [Required]
     public string Nickname { get; set; }
 }

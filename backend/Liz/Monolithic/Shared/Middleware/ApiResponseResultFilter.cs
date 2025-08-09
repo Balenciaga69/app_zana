@@ -32,11 +32,11 @@ namespace Monolithic.Shared.Middleware
                     var propertyValues = new Dictionary<string, object?>
                     {
                         ["Success"] = DefaultSuccess, // 設定成功屬性
-                        ["Code"] = DefaultCode,       // 設定回應代碼
+                        ["Code"] = DefaultCode, // 設定回應代碼
                         ["Message"] = DefaultMessage, // 設定訊息
                         ["Data"] = objectResult.Value, // 設定資料內容
                         ["Timestamp"] = DateTime.UtcNow, // 設定時間戳
-                        ["TraceId"] = context.HttpContext.TraceIdentifier // 設定追蹤 ID
+                        ["TraceId"] = context.HttpContext.TraceIdentifier, // 設定追蹤 ID
                     };
                     // 逐一設定 ApiResponse 屬性值
                     foreach (var kvp in propertyValues)
