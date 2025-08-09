@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  checks: write
 jobs:
   # === 後端建置與測試 ===
   backend-build-and-test:
