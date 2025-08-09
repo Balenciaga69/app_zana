@@ -56,7 +56,7 @@ jobs:
       
       # 步驟 7: 上傳測試結果
       - name: Upload test results # 上傳測試結果作為 Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always() # 無論測試結果如何都上傳
         with:
           name: backend-test-results # Artifact 名稱
