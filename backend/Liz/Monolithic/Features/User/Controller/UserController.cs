@@ -34,7 +34,7 @@ public class UserController : ControllerBase
                 ExistingUserId = request.ExistingUserId,
                 DeviceFingerprint = request.DeviceFingerprint,
                 UserAgent = request.UserAgent,
-                IpAddress = request.IpAddress
+                IpAddress = request.IpAddress,
             };
 
             var result = await _mediator.Send(command);
@@ -112,19 +112,34 @@ public class UserController : ControllerBase
         try
         {
             var command = new UpdateUserNicknameCommand(request.UserId, request.Nickname);
-            var result = await _mediator.Send(command);
+            var operationResult = await _mediator.Send(command);
 
-            if (!result.Success)
+            // 直接轉換 OperationResult 為 ApiResponse
+            var apiResponse = operationResult.ToApiResponse();
+
+            if (operationResult.Success)
             {
-                return BadRequest(ApiResponse<UpdateUserNicknameResult>.Fail("更新暱稱失敗", "用戶不存在或暱稱格式無效"));
+                _logger.LogInfo("暱稱更新成功", new { request.UserId, request.Nickname });
+                return Ok(apiResponse);
             }
-
-            return Ok(ApiResponse<UpdateUserNicknameResult>.Ok(result, "暱稱更新成功"));
+            else
+            {
+                _logger.LogWarn(
+                    "暱稱更新失敗",
+                    new
+                    {
+                        request.UserId,
+                        request.Nickname,
+                        operationResult.ErrorCode,
+                    }
+                );
+                return BadRequest(apiResponse);
+            }
         }
         catch (Exception ex)
         {
             _logger.LogError("更新暱稱失敗", ex, new { request.UserId, request.Nickname });
-            return StatusCode(500, ApiResponse<UpdateUserNicknameResult>.Fail("更新暱稱失敗", ex.Message));
+            return StatusCode(500, ApiResponse<UpdateUserNicknameResult>.Fail(ErrorCodes.InternalServerError, ErrorMessages.InternalServerError));
         }
     }
 
@@ -136,7 +151,8 @@ public class UserController : ControllerBase
     public async Task<ActionResult<ApiResponse<GetUserConnectionsResult>>> GetConnections(
         [FromQuery] Guid userId,
         [FromQuery] int skip = 0,
-        [FromQuery] int take = 20)
+        [FromQuery] int take = 20
+    )
     {
         try
         {
@@ -147,7 +163,16 @@ public class UserController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError("取得連線歷史失敗", ex, new { userId, skip, take });
+            _logger.LogError(
+                "取得連線歷史失敗",
+                ex,
+                new
+                {
+                    userId,
+                    skip,
+                    take,
+                }
+            );
             return StatusCode(500, ApiResponse<GetUserConnectionsResult>.Fail("取得連線歷史失敗", ex.Message));
         }
     }
@@ -157,7 +182,9 @@ public class UserController : ControllerBase
     /// POST /api/users/device-verify
     /// </summary>
     [HttpPost("device-verify")]
-    public async Task<ActionResult<ApiResponse<GetUserByDeviceFingerprintResult>>> VerifyDeviceFingerprint([FromBody] DeviceFingerprintRequest request)
+    public async Task<ActionResult<ApiResponse<GetUserByDeviceFingerprintResult>>> VerifyDeviceFingerprint(
+        [FromBody] DeviceFingerprintRequest request
+    )
     {
         try
         {

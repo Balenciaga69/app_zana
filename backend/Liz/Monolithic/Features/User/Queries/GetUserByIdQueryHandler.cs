@@ -12,9 +12,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, GetUser
     private readonly IUserRepository _userRepository;
     private readonly IAppLogger<GetUserByIdQueryHandler> _logger;
 
-    public GetUserByIdQueryHandler(
-        IUserRepository userRepository,
-        IAppLogger<GetUserByIdQueryHandler> logger)
+    public GetUserByIdQueryHandler(IUserRepository userRepository, IAppLogger<GetUserByIdQueryHandler> logger)
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -43,7 +41,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, GetUser
                 IsActive = user.IsActive,
                 LastActiveAt = user.LastActiveAt,
                 CreatedAt = user.CreatedAt,
-                DeviceFingerprint = user.DeviceFingerprint
+                DeviceFingerprint = user.DeviceFingerprint,
             };
         }
         catch (Exception ex)

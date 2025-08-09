@@ -12,22 +12,24 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
     private readonly IUserRepository _userRepository;
     private readonly IAppLogger<RegisterUserCommandHandler> _logger;
 
-    public RegisterUserCommandHandler(
-        IUserRepository userRepository,
-        IAppLogger<RegisterUserCommandHandler> logger)
+    public RegisterUserCommandHandler(IUserRepository userRepository, IAppLogger<RegisterUserCommandHandler> logger)
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
+
     public async Task<RegisterUserResult> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        _logger.LogInfo("處理用戶註冊命令", new
-        {
-            request.ExistingUserId,
-            request.DeviceFingerprint,
-            HasUserAgent = !string.IsNullOrEmpty(request.UserAgent),
-            HasIpAddress = !string.IsNullOrEmpty(request.IpAddress)
-        });
+        _logger.LogInfo(
+            "處理用戶註冊命令",
+            new
+            {
+                request.ExistingUserId,
+                request.DeviceFingerprint,
+                HasUserAgent = !string.IsNullOrEmpty(request.UserAgent),
+                HasIpAddress = !string.IsNullOrEmpty(request.IpAddress),
+            }
+        );
 
         try
         {
@@ -35,12 +37,14 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
             if (request.ExistingUserId.HasValue)
             {
                 var result = await TryReconnectExistingUserAsync(request);
-                if (result != null) return result;
+                if (result != null)
+                    return result;
             }
 
             // 2. 嘗試通過設備指紋找到現有用戶
             var existingResult = await TryFindExistingUserAsync(request);
-            if (existingResult != null) return existingResult;
+            if (existingResult != null)
+                return existingResult;
 
             // 3. 創建新用戶
             return await CreateNewUserAsync(request);
@@ -78,7 +82,8 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
     private async Task<RegisterUserResult?> TryFindExistingUserAsync(RegisterUserCommand request)
     {
         var existingUser = await _userRepository.GetByDeviceFingerprintAsync(request.DeviceFingerprint);
-        if (existingUser == null) return null;
+        if (existingUser == null)
+            return null;
 
         existingUser.LastActiveAt = DateTime.UtcNow;
         existingUser.IsActive = true;
@@ -100,7 +105,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
             DeviceFingerprint = request.DeviceFingerprint,
             Nickname = GenerateRandomNickname(),
             IsActive = true,
-            LastActiveAt = DateTime.UtcNow
+            LastActiveAt = DateTime.UtcNow,
         };
 
         await _userRepository.CreateAsync(newUser);
@@ -122,7 +127,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
             IsNewUser = isNewUser,
             IsActive = user.IsActive,
             LastActiveAt = user.LastActiveAt,
-            CreatedAt = user.CreatedAt
+            CreatedAt = user.CreatedAt,
         };
     }
 

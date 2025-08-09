@@ -25,6 +25,7 @@
 - 新增健康檢查 (強化 +3)
 - 初步建立 Communication Feature 來處理 SignalR 即時通訊職責相關功能
 - 初步建立 User Feature
+- 初步建立 OperationResult 統一MediatR回傳格式、共用硬編碼、錯誤代碼
 ## 維運
 
 - 建立 GitHub Actions，自動格式化 PR 的 YAML

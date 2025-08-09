@@ -12,9 +12,7 @@ public class GetUserByDeviceFingerprintQueryHandler : IRequestHandler<GetUserByD
     private readonly IUserRepository _userRepository;
     private readonly IAppLogger<GetUserByDeviceFingerprintQueryHandler> _logger;
 
-    public GetUserByDeviceFingerprintQueryHandler(
-        IUserRepository userRepository,
-        IAppLogger<GetUserByDeviceFingerprintQueryHandler> logger)
+    public GetUserByDeviceFingerprintQueryHandler(IUserRepository userRepository, IAppLogger<GetUserByDeviceFingerprintQueryHandler> logger)
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -42,7 +40,7 @@ public class GetUserByDeviceFingerprintQueryHandler : IRequestHandler<GetUserByD
                 Nickname = user.Nickname,
                 IsActive = user.IsActive,
                 LastActiveAt = user.LastActiveAt,
-                CreatedAt = user.CreatedAt
+                CreatedAt = user.CreatedAt,
             };
         }
         catch (Exception ex)

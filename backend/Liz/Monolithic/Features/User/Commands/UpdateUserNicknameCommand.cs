@@ -1,11 +1,12 @@
 ﻿using MediatR;
+using Monolithic.Shared.Common;
 
 namespace Monolithic.Features.User.Commands;
 
 /// <summary>
 /// 更新用戶暱稱命令
 /// </summary>
-public class UpdateUserNicknameCommand : IRequest<UpdateUserNicknameResult>
+public class UpdateUserNicknameCommand : IRequest<OperationResult<UpdateUserNicknameResult>>
 {
     public Guid UserId { get; set; }
     public string Nickname { get; set; } = default!;
@@ -14,6 +15,27 @@ public class UpdateUserNicknameCommand : IRequest<UpdateUserNicknameResult>
     {
         UserId = userId;
         Nickname = nickname;
+    }
+
+    /// <summary>
+    /// 驗證命令有效性
+    /// </summary>
+    public bool IsValid => IsValidNickname(Nickname);
+
+    /// <summary>
+    /// 取得驗證錯誤碼
+    /// </summary>
+    public string? GetValidationError()
+    {
+        if (!IsValidNickname(Nickname))
+            return ErrorCodes.InvalidNickname;
+
+        return null;
+    }
+
+    private static bool IsValidNickname(string nickname)
+    {
+        return !string.IsNullOrWhiteSpace(nickname) && nickname.Length <= UserConstants.MaxNicknameLength;
     }
 }
 
@@ -25,5 +47,11 @@ public class UpdateUserNicknameResult
     public Guid UserId { get; set; }
     public string Nickname { get; set; } = default!;
     public DateTime UpdatedAt { get; set; }
-    public bool Success { get; set; }
+
+    public UpdateUserNicknameResult(Guid userId, string nickname, DateTime updatedAt)
+    {
+        UserId = userId;
+        Nickname = nickname;
+        UpdatedAt = updatedAt;
+    }
 }

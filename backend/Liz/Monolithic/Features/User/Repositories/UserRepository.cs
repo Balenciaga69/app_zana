@@ -98,8 +98,8 @@ public class UserRepository : IUserRepository
 
     public async Task<IEnumerable<UserConnection>> GetUserConnectionsAsync(Guid userId, int skip, int take)
     {
-        return await _context.UserConnections
-            .Where(c => c.UserId == userId.ToString())
+        return await _context
+            .UserConnections.Where(c => c.UserId == userId.ToString())
             .OrderByDescending(c => c.ConnectedAt)
             .Skip(skip)
             .Take(take)
@@ -108,14 +108,12 @@ public class UserRepository : IUserRepository
 
     public async Task<int> GetUserConnectionsCountAsync(Guid userId)
     {
-        return await _context.UserConnections
-            .CountAsync(c => c.UserId == userId.ToString());
+        return await _context.UserConnections.CountAsync(c => c.UserId == userId.ToString());
     }
 
     public async Task<bool> IsUserOnlineAsync(Guid userId)
     {
-        return await _context.UserConnections
-            .AnyAsync(c => c.UserId == userId.ToString() && c.DisconnectedAt == null);
+        return await _context.UserConnections.AnyAsync(c => c.UserId == userId.ToString() && c.DisconnectedAt == null);
     }
 
     public async Task<UserConnection> CreateConnectionAsync(UserConnection connection)
@@ -134,8 +132,6 @@ public class UserRepository : IUserRepository
 
     public async Task<IEnumerable<UserConnection>> GetActiveConnectionsAsync(Guid userId)
     {
-        return await _context.UserConnections
-            .Where(c => c.UserId == userId.ToString() && c.DisconnectedAt == null)
-            .ToListAsync();
+        return await _context.UserConnections.Where(c => c.UserId == userId.ToString() && c.DisconnectedAt == null).ToListAsync();
     }
 }
