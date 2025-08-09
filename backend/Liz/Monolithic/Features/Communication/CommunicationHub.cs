@@ -112,13 +112,21 @@ public class CommunicationHub : Hub
     /// </summary>
     private ConnectionInfo ExtractConnectionInfo()
     {
-        var httpContext = Context.GetHttpContext();
+        HttpContext? httpContext = null;
+        try
+        {
+            httpContext = Context.GetHttpContext();
+        }
+        catch
+        {
+            // GetHttpContext() 在 Mock 環境中可能會失敗，忽略例外
+        }
 
         return new ConnectionInfo
         {
             ConnectionId = Context.ConnectionId,
-            IpAddress = httpContext?.Connection.RemoteIpAddress?.ToString(),
-            UserAgent = httpContext?.Request.Headers.UserAgent.ToString(),
+            IpAddress = httpContext?.Connection?.RemoteIpAddress?.ToString(),
+            UserAgent = httpContext?.Request?.Headers?.UserAgent.ToString(),
         };
     }
 }

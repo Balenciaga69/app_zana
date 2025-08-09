@@ -10,5 +10,5 @@ public class User : BaseEntity
     public DateTime LastActiveAt { get; set; }
 
     [Required]
-    public string Nickname { get; set; }
+    public string Nickname { get; set; } = default!;
 }

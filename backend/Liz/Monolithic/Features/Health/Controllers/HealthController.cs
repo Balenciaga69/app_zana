@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Monolithic.Features.Health.Queries.GetHealthStatus;
+using Monolithic.Features.Health.Queries;
 
 namespace Monolithic.Features.Health.Controllers
 {

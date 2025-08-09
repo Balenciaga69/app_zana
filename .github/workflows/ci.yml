@@ -1,4 +1,4 @@
-name: CI # 持續整合工作流程名稱
+name: CI
 
 on:
   pull_request: # 當有 Pull Request 發生時觸發

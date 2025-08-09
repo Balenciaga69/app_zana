@@ -8,7 +8,7 @@
 - IsActive: bool
 - LastActiveAt: DateTime
 - DeviceFingerprint: string
-- Nickname: string?
+- Nickname: string
 - CreatedAt: DateTime
 - UpdatedAt: DateTime
 

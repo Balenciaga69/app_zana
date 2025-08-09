@@ -42,6 +42,9 @@ builder.Services.AddAppHealthChecks(builder.Configuration);
 // MediatR 服務註冊
 builder.Services.AddMediatRServices();
 
+// User Feature 服務註冊
+builder.Services.AddUserServices();
+
 // Communication 註冊 (SignalR)
 builder.Services.AddCommunicationServices(builder.Configuration);
 

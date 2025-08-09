@@ -13,3 +13,4 @@ jobs:
       # TODO: @Balenciaga69 這裡可依需求補上部署、產物上傳、S3/CDN 同步等
       - name: 預留 deploy 步驟
         run: echo "Deploy 步驟待補"
+      # 註解: 此工作流程成功後會觸發 auto-format-on-pr-to-main 工作流程
