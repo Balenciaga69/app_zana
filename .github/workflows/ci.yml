@@ -1,17 +1,97 @@
-name: CI
+name: CI # 持續整合工作流程名稱
 
 on:
-  pull_request:
-    branches: [ main, develop ]
-  push:
-    branches: [ main, develop ]
-
+  pull_request: # 當有 Pull Request 發生時觸發
+    branches: [ main, develop ] # 針對 main 和 develop 分支
+  push: # 當有程式碼推送到遠端時觸發
+    branches: [ main, develop ] # 針對 main 和 develop 分支
+permissions:
+  contents: write
+  pull-requests: write
+  checks: write
 jobs:
-  build:
-    name: Build & Test (預留)
-    runs-on: ubuntu-latest
+  # === 後端建置與測試 ===
+  backend-build-and-test:
+    name: Backend Build & Test # 後端建置與測試工作
+    runs-on: ubuntu-latest # 使用最新版的 Ubuntu 運行環境
+    defaults:
+      run:
+        working-directory: backend/Liz # 設定預設工作目錄
     steps:
-      - uses: actions/checkout@v4
-      # TODO: 這裡可依前後端分開 build/test，日後擴充
-      - name: 預留 build 步驟
-        run: echo "Build 步驟待補"
+      # 步驟 1: 檢查程式碼
+      - name: Checkout code # 從 Git 倉庫檢出程式碼
+        uses: actions/checkout@v4
+      
+      # 步驟 2: 設定 .NET 環境
+      - name: Setup .NET # 設定 .NET SDK 開發環境
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x" # 指定 .NET 8 版本
+      
+      # 步驟 3: 恢復 NuGet 套件依賴
+      - name: Restore dependencies # 恢復專案的 NuGet 套件依賴
+        run: dotnet restore # 下載並安裝 .csproj 中定義的套件
+      
+      # 步驟 4: 建置主要專案
+      - name: Build main project # 建置主要的後端專案
+        run: dotnet build Monolithic/Monolithic.csproj --no-restore --configuration Release # 以 Release 模式建置，不重複恢復套件
+      
+      # 步驟 5: 建置測試專案
+      - name: Build test project # 建置測試專案
+        run: dotnet build Monolithic.Test/Monolithic.Test.csproj --no-restore --configuration Release # 建置測試專案
+      
+      # 步驟 6: 執行單元測試
+      - name: Run unit tests # 執行後端單元測試
+        run: |
+          dotnet test Monolithic.Test/Monolithic.Test.csproj \
+            --no-build \
+            --configuration Release \
+            --logger "trx;LogFileName=test_results.trx" \
+            --logger "console;verbosity=detailed" \
+            --collect:"XPlat Code Coverage" \
+            --results-directory ./TestResults
+        # 參數說明:
+        # --no-build: 不重新建置，使用已建置的檔案
+        # --logger "trx": 產生 Visual Studio 測試結果檔案
+        # --logger "console": 在控制台顯示詳細測試結果
+        # --collect:"XPlat Code Coverage": 收集跨平台程式碼覆蓋率
+        # --results-directory: 指定測試結果輸出目錄
+      
+      # 步驟 7: 上傳測試結果
+      - name: Upload test results # 上傳測試結果作為 Artifact
+        uses: actions/upload-artifact@v4
+        if: always() # 無論測試結果如何都上傳
+        with:
+          name: backend-test-results # Artifact 名稱
+          path: backend/Liz/TestResults/ # 測試結果檔案路徑
+          retention-days: 30 # 保存 30 天
+      
+      # 步驟 8: 發布測試結果摘要
+      - name: Publish test results # 在 GitHub Actions 中顯示測試結果摘要
+        uses: dorny/test-reporter@v1
+        if: always() # 無論測試結果如何都執行
+        with:
+          name: Backend Test Results # 顯示名稱
+          path: backend/Liz/TestResults/*.trx # 測試結果檔案路徑
+          reporter: dotnet-trx # 使用 .NET trx 格式的報告器
+          fail-on-error: true # 如果有測試失敗就讓工作流失敗
+
+  # === 整體品質檢查 ===
+  quality-gate:
+    name: Quality Gate # 品質門檻檢查
+    runs-on: ubuntu-latest
+    needs: [backend-build-and-test] # 依賴後端測試完成
+    if: always() # 即使前面的工作失敗也要執行
+    steps:
+      # 步驟 1: 檢查所有前置工作是否成功
+      - name: Check build status # 檢查建置狀態
+        run: |
+          echo "Backend Build Status: ${{ needs.backend-build-and-test.result }}"
+          
+          # 如果前置工作失敗，就讓這個工作也失敗
+          if [ "${{ needs.backend-build-and-test.result }}" != "success" ]; then
+            echo "❌ Quality gate failed - build/tests failed"
+            exit 1
+          else
+            echo "✅ Quality gate passed - all builds and tests successful"
+          fi

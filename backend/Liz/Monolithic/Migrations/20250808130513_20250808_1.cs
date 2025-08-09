@@ -19,12 +19,13 @@ namespace Monolithic.Migrations
                     SenderId = table.Column<string>(type: "text", nullable: false),
                     Content = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Messages", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "RoomParticipants",
@@ -36,12 +37,13 @@ namespace Monolithic.Migrations
                     JoinedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LeftAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RoomParticipants", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Rooms",
@@ -57,12 +59,13 @@ namespace Monolithic.Migrations
                     InviteCode = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
                     DestroyedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Rooms", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "UserConnections",
@@ -76,12 +79,13 @@ namespace Monolithic.Migrations
                     IpAddress = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
                     UserAgent = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserConnections", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "Users",
@@ -93,84 +97,47 @@ namespace Monolithic.Migrations
                     LastActiveAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Nickname = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
-                });
+                }
+            );
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Messages_RoomId",
-                table: "Messages",
-                column: "RoomId");
+            migrationBuilder.CreateIndex(name: "IX_Messages_RoomId", table: "Messages", column: "RoomId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Messages_SenderId",
-                table: "Messages",
-                column: "SenderId");
+            migrationBuilder.CreateIndex(name: "IX_Messages_SenderId", table: "Messages", column: "SenderId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_RoomParticipants_RoomId_UserId",
-                table: "RoomParticipants",
-                columns: new[] { "RoomId", "UserId" });
+            migrationBuilder.CreateIndex(name: "IX_RoomParticipants_RoomId_UserId", table: "RoomParticipants", columns: new[] { "RoomId", "UserId" });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Rooms_InviteCode",
-                table: "Rooms",
-                column: "InviteCode",
-                unique: true);
+            migrationBuilder.CreateIndex(name: "IX_Rooms_InviteCode", table: "Rooms", column: "InviteCode", unique: true);
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Rooms_IsActive",
-                table: "Rooms",
-                column: "IsActive");
+            migrationBuilder.CreateIndex(name: "IX_Rooms_IsActive", table: "Rooms", column: "IsActive");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_UserConnections_ConnectionId",
-                table: "UserConnections",
-                column: "ConnectionId",
-                unique: true);
+            migrationBuilder.CreateIndex(name: "IX_UserConnections_ConnectionId", table: "UserConnections", column: "ConnectionId", unique: true);
 
-            migrationBuilder.CreateIndex(
-                name: "IX_UserConnections_DisconnectedAt",
-                table: "UserConnections",
-                column: "DisconnectedAt");
+            migrationBuilder.CreateIndex(name: "IX_UserConnections_DisconnectedAt", table: "UserConnections", column: "DisconnectedAt");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_UserConnections_UserId",
-                table: "UserConnections",
-                column: "UserId");
+            migrationBuilder.CreateIndex(name: "IX_UserConnections_UserId", table: "UserConnections", column: "UserId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_DeviceFingerprint",
-                table: "Users",
-                column: "DeviceFingerprint",
-                unique: true);
+            migrationBuilder.CreateIndex(name: "IX_Users_DeviceFingerprint", table: "Users", column: "DeviceFingerprint", unique: true);
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_IsActive",
-                table: "Users",
-                column: "IsActive");
+            migrationBuilder.CreateIndex(name: "IX_Users_IsActive", table: "Users", column: "IsActive");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Messages");
+            migrationBuilder.DropTable(name: "Messages");
 
-            migrationBuilder.DropTable(
-                name: "RoomParticipants");
+            migrationBuilder.DropTable(name: "RoomParticipants");
 
-            migrationBuilder.DropTable(
-                name: "Rooms");
+            migrationBuilder.DropTable(name: "Rooms");
 
-            migrationBuilder.DropTable(
-                name: "UserConnections");
+            migrationBuilder.DropTable(name: "UserConnections");
 
-            migrationBuilder.DropTable(
-                name: "Users");
+            migrationBuilder.DropTable(name: "Users");
         }
     }
 }
