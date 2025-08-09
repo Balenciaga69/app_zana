@@ -22,7 +22,9 @@ public class OperationResultTests
         result.Data.Should().Be(testData);
         result.ErrorCode.Should().BeNull();
         result.ErrorMessage.Should().BeNull();
-    }    [Fact]
+    }
+
+    [Fact]
     public void Fail_WithErrorCode_ShouldReturnFailResult()
     {
         // Arrange
@@ -36,7 +38,9 @@ public class OperationResultTests
         result.Data.Should().BeNull();
         result.ErrorCode.Should().Be(errorCode);
         result.ErrorMessage.Should().Be(ErrorMessages.GetMessage(errorCode));
-    }    [Fact]
+    }
+
+    [Fact]
     public void Fail_WithCustomMessage_ShouldReturnFailResult()
     {
         // Arrange
@@ -68,7 +72,9 @@ public class OperationResultTests
         apiResponse.Data.Should().Be(testData);
         apiResponse.Code.Should().Be("OK");
         apiResponse.Message.Should().Be("操作成功");
-    }    [Fact]
+    }
+
+    [Fact]
     public void ToApiResponse_FailResult_ShouldReturnFailApiResponse()
     {
         // Arrange
@@ -83,7 +89,9 @@ public class OperationResultTests
         apiResponse.Data.Should().BeNull();
         apiResponse.Code.Should().Be(errorCode.ToString());
         apiResponse.Message.Should().Be(ErrorMessages.GetMessage(errorCode));
-    }    [Fact]
+    }
+
+    [Fact]
     public void OperationResult_WithoutGeneric_ShouldWork()
     {
         // Act
