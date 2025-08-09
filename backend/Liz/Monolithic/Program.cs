@@ -3,6 +3,7 @@ dotnet ef migrations add "250805_01"
 dotnet csharpier . --config-path "../.csharpierrc"
  */
 
+using Monolithic.Features.Communication;
 using Monolithic.Infrastructure.Data;
 using Monolithic.Infrastructure.Extensions;
 using Monolithic.Shared.Logging;
@@ -32,9 +33,6 @@ builder.Services.AddRedisServices(builder.Configuration);
 // MassTransit 服務註冊
 builder.Services.AddMassTransitServices(builder.Configuration);
 
-// Identity 服務註冊
-builder.Services.AddIdentityServices();
-
 // 統一 Logger 服務註冊
 builder.Services.AddAppLogging();
 
@@ -43,6 +41,9 @@ builder.Services.AddAppHealthChecks(builder.Configuration);
 
 // MediatR 服務註冊
 builder.Services.AddMediatRServices();
+
+// Communication 註冊 (SignalR)
+builder.Services.AddCommunicationServices(builder.Configuration);
 
 // .NET Core 原生註冊
 builder.Services.AddControllers();
@@ -85,4 +86,8 @@ app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = check 
 app.MapHealthChecks("/health/live", new HealthCheckOptions { Predicate = _ => false });
 
 app.MapControllers();
+
+// 註冊 Communication Hub (SignalR)
+app.MapHub<CommunicationHub>("/communication-hub");
+
 app.Run();

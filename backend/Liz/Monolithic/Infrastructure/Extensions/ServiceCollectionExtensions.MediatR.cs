@@ -1,6 +1,6 @@
 ﻿// MediatR 相關 ServiceCollection 擴充
-using System.Reflection;
 using MediatR;
+using System.Reflection;
 
 namespace Monolithic.Infrastructure.Extensions;
 

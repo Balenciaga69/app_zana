@@ -23,7 +23,7 @@
 - 建立統一的 ApiResponse 格式 並且實作了 Middleware 與 Filter 統一處理
 - 新增統一 Logger 服務 (強化 +1)
 - 新增健康檢查 (強化 +3)
-- ~~進度 30% 建立 Identity 服務與瀏覽器指紋功能(預計全面棄用重構)~~ **已棄用，重新設計**
+- 建立 Communication Feature 來處理 SignalR 即時通訊職責相關功能
 
 ## 維運
 

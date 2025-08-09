@@ -51,10 +51,29 @@ namespace Monolithic.Shared.Middleware
             await next();
         }
 
-        // 檢查是否已經是 ApiResponse 的實例
         private static bool IsApiResponse(object? value)
         {
-            return value is not null && value.GetType() is { IsGenericType: true } type && type.GetGenericTypeDefinition() == typeof(ApiResponse<>);
+            // 檢查值是否為 null
+            var isNotNull = value is not null;
+            if (!isNotNull)
+            {
+                return false;
+            }
+
+            // 取得值的 Type
+            var valueType = value!.GetType();
+
+            // 檢查 Type 是否為泛型
+            var isGenericType = valueType.IsGenericType;
+            if (!isGenericType)
+            {
+                return false;
+            }
+
+            // 檢查泛型定義是否為 ApiResponse<>
+            var genericTypeDefinition = valueType.GetGenericTypeDefinition();
+            var isApiResponseType = genericTypeDefinition == typeof(ApiResponse<>);
+            return isApiResponseType;
         }
     }
 }

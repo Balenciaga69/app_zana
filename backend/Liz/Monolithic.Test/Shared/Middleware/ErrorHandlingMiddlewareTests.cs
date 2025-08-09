@@ -1,11 +1,11 @@
-﻿using System.Net;
-using System.Text.Json;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Monolithic.Shared.Common;
 using Monolithic.Shared.Middleware;
 using Moq;
+using System.Net;
+using System.Text.Json;
 
 namespace Monolithic.Test.Shared.Middleware;
 
