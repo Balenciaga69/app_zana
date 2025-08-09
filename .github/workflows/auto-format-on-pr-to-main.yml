@@ -1,17 +1,16 @@
 name: Auto Format on PR to Main # 工作流程名稱，顯示在 Actions 頁面
 
 on:
-  pull_request: # 當有 Pull Request 發生時觸發
-    branches: [main, develop] # 針對 main 和 develop 分支
-  push: # 當有程式碼推送到遠端時觸發
-    branches: [main, develop] # 針對 main 和 develop 分支
+  workflow_run:
+    workflows: ["CD"] # 當 CD 工作流程成功後觸發
+    types:
+      - completed
 
 permissions:
   contents: write # 授予工作流程寫入權限，以便它可以提交變更
 
 jobs:
   frontend-auto-format:
-    if: github.event_name == 'pull_request' && github.base_ref == 'main' # 只有當 PR 的目標分支是 main 時才執行
     name: Frontend Auto Format & Commit # 前端格式化工作名稱
     runs-on: ubuntu-latest # 使用最新版的 Ubuntu 運行環境
     defaults:
@@ -19,8 +18,6 @@ jobs:
         working-directory: frontend # 設定所有步驟的預設工作目錄為 frontend
     steps:
       - uses: actions/checkout@v4 # 檢查程式碼
-        with:
-          ref: ${{ github.head_ref }} # 檢出 PR 的分支
       - uses: pnpm/action-setup@v3 # 設定 pnpm
         with:
           version: 9
@@ -33,12 +30,11 @@ jobs:
       - name: Commit & Push changes # 提交並推送格式化後的變更
         uses: EndBug/add-and-commit@v9
         with:
-          message: "chore: auto format code before merge to main" # 提交訊息
+          message: "chore: auto format code after successful CD" # 提交訊息
           add: "." # 添加所有變更過的檔案
           cwd: frontend # 提交的工作目錄
 
   backend-auto-format:
-    if: github.event_name == 'pull_request' && github.base_ref == 'main' # 只有當 PR 的目標分支是 main 時才執行
     name: Backend Auto Format & Commit # 後端格式化工作名稱
     runs-on: ubuntu-latest # 使用最新版的 Ubuntu 運行環境
     defaults:
@@ -46,8 +42,6 @@ jobs:
         working-directory: backend/Liz/Monolithic # 設定預設工作目錄
     steps:
       - uses: actions/checkout@v4 # 檢查程式碼
-        with:
-          ref: ${{ github.head_ref }} # 檢出 PR 的分支
       - name: Setup .NET # 設定 .NET 環境
         uses: actions/setup-dotnet@v4
         with:
@@ -61,12 +55,11 @@ jobs:
       - name: Commit & Push changes # 提交並推送格式化後的變更
         uses: EndBug/add-and-commit@v9
         with:
-          message: "chore: auto format backend code before merge to main" # 提交訊息
+          message: "chore: auto format backend code after successful CD" # 提交訊息
           add: "." # 添加所有變更過的檔案
           cwd: backend/Liz/Monolithic # 提交的工作目錄
 
   backend-test-auto-format:
-    if: github.event_name == 'pull_request' && github.base_ref == 'main' # 只有當 PR 的目標分支是 main 時才執行
     name: Backend Test Auto Format & Commit # 後端測試格式化工作名稱
     runs-on: ubuntu-latest # 使用最新版的 Ubuntu 運行環境
     defaults:
@@ -74,8 +67,6 @@ jobs:
         working-directory: backend/Liz/Monolithic.Test # 設定預設工作目錄
     steps:
       - uses: actions/checkout@v4 # 檢查程式碼
-        with:
-          ref: ${{ github.head_ref }} # 檢出 PR 的分支
       - name: Setup .NET # 設定 .NET 環境
         uses: actions/setup-dotnet@v4
         with:
@@ -89,6 +80,6 @@ jobs:
       - name: Commit & Push changes # 提交並推送格式化後的變更
         uses: EndBug/add-and-commit@v9
         with:
-          message: "chore: auto format backend test code before merge to main" # 提交訊息
+          message: "chore: auto format backend test code after successful CD" # 提交訊息
           add: "." # 添加所有變更過的檔案
           cwd: backend/Liz/Monolithic.Test # 提交的工作目錄
