@@ -17,7 +17,12 @@ namespace Monolithic.Test.Infrastructure.Data
         {
             // Arrange
             var db = GetInMemoryDbContext();
-            var user = new User { DeviceFingerprint = "testDeviceFingerprint", Nickname = "testNickname1", IsActive = true };
+            var user = new User
+            {
+                DeviceFingerprint = "testDeviceFingerprint",
+                Nickname = "testNickname1",
+                IsActive = true,
+            };
             db.Users.Add(user);
 
             // Act
