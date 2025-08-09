@@ -35,12 +35,15 @@ public class CommunicationHubTests : IAsyncDisposable
 
         _connection = await CreateConnection();
 
-        _connection.On<string, DateTime>("ConnectionEstablished", (connectionId, serverTime) =>
-        {
-            connectionEstablishedReceived = true;
-            receivedConnectionId = connectionId;
-            receivedServerTime = serverTime;
-        });
+        _connection.On<string, DateTime>(
+            "ConnectionEstablished",
+            (connectionId, serverTime) =>
+            {
+                connectionEstablishedReceived = true;
+                receivedConnectionId = connectionId;
+                receivedServerTime = serverTime;
+            }
+        );
 
         // Act
         await _connection.StartAsync();
@@ -64,11 +67,14 @@ public class CommunicationHubTests : IAsyncDisposable
         _connection = await CreateConnection();
         await _connection.StartAsync();
 
-        _connection.On<DateTime>("Pong", (timestamp) =>
-        {
-            pongReceived = true;
-            receivedTimestamp = timestamp;
-        });
+        _connection.On<DateTime>(
+            "Pong",
+            (timestamp) =>
+            {
+                pongReceived = true;
+                receivedTimestamp = timestamp;
+            }
+        );
 
         // Act
         await _connection.InvokeAsync("Ping");
@@ -90,11 +96,14 @@ public class CommunicationHubTests : IAsyncDisposable
         _connection = await CreateConnection();
         await _connection.StartAsync();
 
-        _connection.On<DateTime>("HeartbeatResponse", (timestamp) =>
-        {
-            heartbeatResponseReceived = true;
-            receivedTimestamp = timestamp;
-        });
+        _connection.On<DateTime>(
+            "HeartbeatResponse",
+            (timestamp) =>
+            {
+                heartbeatResponseReceived = true;
+                receivedTimestamp = timestamp;
+            }
+        );
 
         // Act
         await _connection.InvokeAsync("Heartbeat");
@@ -116,11 +125,14 @@ public class CommunicationHubTests : IAsyncDisposable
         _connection = await CreateConnection();
         await _connection.StartAsync();
 
-        _connection.On<object>("ConnectionInfo", (info) =>
-        {
-            connectionInfoReceived = true;
-            receivedConnectionInfo = info;
-        });
+        _connection.On<object>(
+            "ConnectionInfo",
+            (info) =>
+            {
+                connectionInfoReceived = true;
+                receivedConnectionInfo = info;
+            }
+        );
 
         // Act
         await _connection.InvokeAsync("GetConnectionInfo");
@@ -168,9 +180,7 @@ public class CommunicationHubTests : IAsyncDisposable
     /// </summary>
     private async Task<HubConnection> CreateConnection()
     {
-        return await Task.FromResult(new HubConnectionBuilder()
-            .WithUrl("http://localhost/communication-hub")
-            .Build());
+        return await Task.FromResult(new HubConnectionBuilder().WithUrl("http://localhost/communication-hub").Build());
     }
 
     /// <summary>
@@ -210,7 +220,6 @@ public class TestStartup
         // 基本服務
         services.AddLogging();
         services.AddSignalR();
-
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
