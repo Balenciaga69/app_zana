@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Features\User\Commands\" />
+    <Folder Include="Shared\Common\" />
   </ItemGroup>
 
 </Project>
