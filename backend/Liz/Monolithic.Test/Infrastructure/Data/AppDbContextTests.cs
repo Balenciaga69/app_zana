@@ -8,7 +8,9 @@ namespace Monolithic.Test.Infrastructure.Data
     {
         private AppDbContext GetInMemoryDbContext()
         {
-            var options = new DbContextOptionsBuilder<AppDbContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
             return new AppDbContext(options);
         }
 

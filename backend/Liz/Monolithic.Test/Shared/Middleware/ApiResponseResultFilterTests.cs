@@ -26,7 +26,10 @@ public class ApiResponseResultFilterTests
     /// <summary>
     /// 建立 ResultExecutingContext 測試用的輔助方法。
     /// </summary>
-    private ResultExecutingContext CreateResultExecutingContext(IActionResult result, string traceId = "test-trace")
+    private ResultExecutingContext CreateResultExecutingContext(
+        IActionResult result,
+        string traceId = "test-trace"
+    )
     {
         var httpContext = new DefaultHttpContext();
         httpContext.TraceIdentifier = traceId;

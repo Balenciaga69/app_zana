@@ -56,10 +56,18 @@ internal class CommunicationHubTests : IClassFixture<SignalRTestFixture>, IAsync
         await hub.OnConnectedAsync();
 
         // Assert
-        mockLogger.Verify(x => x.LogInfo("[Communication] 新連線建立", It.IsAny<object>(), "test-connection-id"), Times.Once);
+        mockLogger.Verify(
+            x => x.LogInfo("[Communication] 新連線建立", It.IsAny<object>(), "test-connection-id"),
+            Times.Once
+        );
 
         mockCaller.Verify(
-            x => x.SendCoreAsync("ConnectionEstablished", It.Is<object[]>(args => args.Length == 2 && args[0].Equals("test-connection-id")), default),
+            x =>
+                x.SendCoreAsync(
+                    "ConnectionEstablished",
+                    It.Is<object[]>(args => args.Length == 2 && args[0].Equals("test-connection-id")),
+                    default
+                ),
             Times.Once
         );
     }
@@ -80,7 +88,12 @@ internal class CommunicationHubTests : IClassFixture<SignalRTestFixture>, IAsync
 
         // Assert
         mockLogger.Verify(
-            x => x.LogInfo("[Communication] 連線中斷", It.Is<object>(obj => obj.ToString()!.Contains("Test exception")), "test-connection-id"),
+            x =>
+                x.LogInfo(
+                    "[Communication] 連線中斷",
+                    It.Is<object>(obj => obj.ToString()!.Contains("Test exception")),
+                    "test-connection-id"
+                ),
             Times.Once
         );
     }
@@ -404,7 +417,10 @@ public class SignalRTestFixture : IAsyncDisposable
         catch (Exception ex)
         {
             _host?.Dispose();
-            throw new InvalidOperationException($"Failed to start test server on port {port}: {ex.Message}", ex);
+            throw new InvalidOperationException(
+                $"Failed to start test server on port {port}: {ex.Message}",
+                ex
+            );
         }
     }
 
@@ -432,7 +448,10 @@ public class SignalRTestFixture : IAsyncDisposable
 
     public Task<HubConnection> CreateConnectionAsync()
     {
-        var connection = new HubConnectionBuilder().WithUrl($"{_serverUrl}/communication-hub").WithAutomaticReconnect().Build();
+        var connection = new HubConnectionBuilder()
+            .WithUrl($"{_serverUrl}/communication-hub")
+            .WithAutomaticReconnect()
+            .Build();
 
         _connections.Add(connection);
         return Task.FromResult(connection);
@@ -514,7 +533,12 @@ public class MockAppLogger<T> : IAppLogger<T>
         // 什麼都不做 - 測試環境
     }
 
-    public void LogError(string message, Exception? exception = null, object? data = null, string? contextId = null)
+    public void LogError(
+        string message,
+        Exception? exception = null,
+        object? data = null,
+        string? contextId = null
+    )
     {
         // 什麼都不做 - 測試環境
     }
