@@ -48,7 +48,7 @@
 
 ## WebSocket (SignalR) API
 
-### Hub: ChatHub
+### Hub: CommunicationHub
 
 #### 房間操作方法
 

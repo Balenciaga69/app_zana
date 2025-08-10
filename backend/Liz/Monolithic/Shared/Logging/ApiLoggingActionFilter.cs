@@ -123,3 +123,5 @@ public class ApiLoggingActionFilter : ActionFilterAttribute
     // 值物件來封裝請求上下文 - 遵循不可變性原則
     private record RequestContext(string ControllerName, string ActionName, string Method, string Path);
 }
+
+// 本檔案已廢棄，因日誌統一交由 MediatR Pipeline 處理

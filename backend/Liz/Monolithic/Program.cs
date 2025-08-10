@@ -58,7 +58,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ApiResponseResultFilter>();
-    options.Filters.Add<ApiLoggingActionFilter>();
+    // options.Filters.Add<ApiLoggingActionFilter>(); // 已移除，改由 MediatR Pipeline 處理日誌
 });
 
 var app = builder.Build();
