@@ -13,8 +13,7 @@ namespace Monolithic.Test.Shared.Middleware;
 public class ErrorHandlingMiddlewareTests
 {
     /*
-     * 當 middleware 捕捉到例外時，應該正確記錄 log 並回傳統一格式的錯誤訊息。
-     * 應根據不同的 Exception 類型，回傳正確的 HTTP 狀態碼與錯誤碼。
+     * TODO: Not Implemented:
      * 當沒有例外時，應該正常呼叫下一個 middleware。
      * 回傳內容應包含 TraceId。
      * 應正確處理 message 與 stack trace。
@@ -117,6 +116,7 @@ public class ErrorHandlingMiddlewareTests
     )
     {
         // Arrange
+        // Activator.CreateInstance 用於動態建立指定類型的例外實例
         var exception = (Exception)Activator.CreateInstance(exceptionType, "Test exception")!;
         var mockLogger = new Mock<ILogger<ErrorHandlingMiddleware>>();
         var (context, responseBody) = CreateTestHttpContext();

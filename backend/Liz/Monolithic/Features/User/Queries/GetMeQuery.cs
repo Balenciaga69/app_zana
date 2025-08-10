@@ -34,14 +34,14 @@ public class GetMeQueryHandler : IRequestHandler<GetMeQuery, GetMeResult>
 
         // 沒有 DeviceFingerprint -> 丟出例外
         if (string.IsNullOrEmpty(deviceFingerprint))
-            throw new UnauthorizedAccessException("Device fingerprint is required");
+            throw new UnauthorizedAccessException();
 
         // 查詢 User
         var user = await _userRepository.GetByDeviceFingerprintAsync(deviceFingerprint);
 
-        // 處理找不到用戶 -> InvalidOperationException
+        // 處理找不到用戶 -> 丟出例外
         if (user == null)
-            throw new InvalidOperationException("User not found");
+            throw new InvalidOperationException();
 
         // 組裝 GetMeResult 回傳
         return new GetMeResult

@@ -22,7 +22,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetByDeviceFingerprintAsync(string deviceFingerprint)
     {
-        // 查詢資料庫，根據 deviceFingerprint 取得 User 實體，找不到則回傳 null
+        // TODO: 未來加入 Redis 快取後，考慮先檢查快取中是否有資料，若無再查詢資料庫
         return await _context
             .Users.AsNoTracking()
             .FirstOrDefaultAsync(u => u.DeviceFingerprint == deviceFingerprint && u.IsActive);
@@ -30,8 +30,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User> CreateAsync(User user)
     {
-        // 將新的 User 實體新增到資料庫，儲存後回傳該 User
-        // 檢查 deviceFingerprint 是否已存在
+        // TODO: 未來加入 Redis 快取後，新增用戶時需同步更新快取資料
         var existingUser = await GetByDeviceFingerprintAsync(user.DeviceFingerprint);
         if (existingUser != null)
         {
@@ -47,14 +46,14 @@ public class UserRepository : IUserRepository
 
     public async Task UpdateAsync(User user)
     {
-        // 更新資料庫中的 User 實體
+        // TODO: 未來加入 Redis 快取後，更新用戶時需同步更新快取資料
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
     }
 
     public async Task<bool> IsUserOnlineAsync(Guid userId)
     {
-        // 查詢該用戶是否有活躍的連線
+        // TODO: 未來加入 Redis 快取後，考慮將在線狀態存入快取以提升查詢效率
         return await _context
             .UserConnections.AsNoTracking()
             .AnyAsync(uc => uc.UserId == userId.ToString() && uc.DisconnectedAt == null);
@@ -62,7 +61,7 @@ public class UserRepository : IUserRepository
 
     public async Task<IEnumerable<User>> GetOnlineUsersAsync()
     {
-        // 查詢所有目前在線的 User（根據 UserConnection 判斷）
+        // TODO: 未來加入 Redis 快取後，考慮將在線用戶列表存入快取以提升查詢效率
         var onlineUserIds = await _context
             .UserConnections.AsNoTracking()
             .Where(uc => uc.DisconnectedAt == null)
@@ -78,7 +77,7 @@ public class UserRepository : IUserRepository
 
     public async Task<IEnumerable<User>> GetInactiveUsersAsync(DateTime inactiveSince)
     {
-        // 查詢自指定時間以來未活動的用戶
+        // TODO: 未來加入 Redis 快取後，考慮將非活躍用戶的查詢結果存入快取以提升查詢效率
         return await _context
             .Users.AsNoTracking()
             .Where(u => u.LastActiveAt < inactiveSince && u.IsActive)
