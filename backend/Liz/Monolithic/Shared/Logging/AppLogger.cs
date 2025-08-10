@@ -41,7 +41,12 @@ public class AppLogger<T> : IAppLogger<T>
         );
     }
 
-    public void LogError(string message, Exception? exception = null, object? data = null, string? traceId = null)
+    public void LogError(
+        string message,
+        Exception? exception = null,
+        object? data = null,
+        string? traceId = null
+    )
     {
         _logger.LogError(
             exception,

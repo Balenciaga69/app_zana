@@ -83,7 +83,10 @@ app.UseAuthorization();
 app.MapHealthChecks("/health");
 
 // 只回報標記為 "ready" 的檢查，讓平台判斷服務是否「已準備好」接收流量（如資料庫連線、外部依賴都正常），避免流量導入未初始化完成的服務。
-app.MapHealthChecks("/health/ready", new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") });
+app.MapHealthChecks(
+    "/health/ready",
+    new HealthCheckOptions { Predicate = check => check.Tags.Contains("ready") }
+);
 
 // 用於「活存性」檢查（liveness probe），確保服務進程還活著。若回傳 unhealthy，平台會自動重啟服務，避免服務掛死卻無人察覺。
 app.MapHealthChecks("/health/live", new HealthCheckOptions { Predicate = _ => false });

@@ -21,7 +21,9 @@ public class UpdateUserNicknameCommand : IRequest<OperationResult<UpdateUserNick
     /// <summary>
     /// 驗證命令有效性
     /// </summary>
-    public bool IsValid => Nickname.IsValidNickname();    /// <summary>
+    public bool IsValid => Nickname.IsValidNickname();
+
+    /// <summary>
     /// 取得驗證錯誤碼
     /// </summary>
     public ErrorCode? GetValidationError()

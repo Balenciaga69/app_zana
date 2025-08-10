@@ -5,7 +5,10 @@ public static partial class DIExt
     /// <summary>
     /// 註冊 Communication 服務相關服務 (SignalR, 即時通訊)
     /// </summary>
-    public static IServiceCollection AddCommunicationServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddCommunicationServices(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
         // SignalR 核心服務
         services.AddSignalR(options =>

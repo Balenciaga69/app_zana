@@ -77,7 +77,9 @@ public class UserRepository : IUserRepository
         return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
     }
 
-    public async Task<Infrastructure.Data.Entities.User?> GetByDeviceFingerprintAsync(string deviceFingerprint)
+    public async Task<Infrastructure.Data.Entities.User?> GetByDeviceFingerprintAsync(
+        string deviceFingerprint
+    )
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.DeviceFingerprint == deviceFingerprint);
     }
@@ -113,7 +115,9 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> IsUserOnlineAsync(Guid userId)
     {
-        return await _context.UserConnections.AnyAsync(c => c.UserId == userId.ToString() && c.DisconnectedAt == null);
+        return await _context.UserConnections.AnyAsync(c =>
+            c.UserId == userId.ToString() && c.DisconnectedAt == null
+        );
     }
 
     public async Task<UserConnection> CreateConnectionAsync(UserConnection connection)
@@ -132,6 +136,8 @@ public class UserRepository : IUserRepository
 
     public async Task<IEnumerable<UserConnection>> GetActiveConnectionsAsync(Guid userId)
     {
-        return await _context.UserConnections.Where(c => c.UserId == userId.ToString() && c.DisconnectedAt == null).ToListAsync();
+        return await _context
+            .UserConnections.Where(c => c.UserId == userId.ToString() && c.DisconnectedAt == null)
+            .ToListAsync();
     }
 }

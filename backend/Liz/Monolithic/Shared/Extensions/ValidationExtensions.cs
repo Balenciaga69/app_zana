@@ -20,7 +20,8 @@ public static class ValidationExtensions
     /// </summary>
     public static bool IsValidDeviceFingerprint(this string? deviceFingerprint)
     {
-        return !string.IsNullOrWhiteSpace(deviceFingerprint) && deviceFingerprint.Length <= UserConstants.MaxDeviceFingerprintLength;
+        return !string.IsNullOrWhiteSpace(deviceFingerprint)
+            && deviceFingerprint.Length <= UserConstants.MaxDeviceFingerprintLength;
     }
 
     /// <summary>
@@ -44,7 +45,8 @@ public static class ValidationExtensions
     /// </summary>
     public static bool IsValidInviteCode(this string? inviteCode)
     {
-        return !string.IsNullOrWhiteSpace(inviteCode) && inviteCode.Length <= RoomConstants.MaxInviteCodeLength;
+        return !string.IsNullOrWhiteSpace(inviteCode)
+            && inviteCode.Length <= RoomConstants.MaxInviteCodeLength;
     }
 
     /// <summary>

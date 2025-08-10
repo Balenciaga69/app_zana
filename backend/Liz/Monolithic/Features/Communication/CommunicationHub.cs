@@ -82,7 +82,11 @@ public class CommunicationHub : Hub
         var connectionId = Context.ConnectionId;
         var timestamp = DateTime.UtcNow;
 
-        _logger.LogInfo("[Communication] Ping 測試", new { ConnectionId = connectionId, Timestamp = timestamp }, connectionId);
+        _logger.LogInfo(
+            "[Communication] Ping 測試",
+            new { ConnectionId = connectionId, Timestamp = timestamp },
+            connectionId
+        );
 
         await Clients.Caller.SendAsync("Pong", timestamp);
     }

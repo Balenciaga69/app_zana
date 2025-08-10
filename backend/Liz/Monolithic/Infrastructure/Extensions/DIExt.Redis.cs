@@ -5,7 +5,10 @@ public static partial class DIExt
     /// <summary>
     /// 註冊 Redis 服務
     /// </summary>
-    public static IServiceCollection AddRedisServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddRedisServices(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
         var redisConnectionString = configuration.GetConnectionString("UserRedis");
 
