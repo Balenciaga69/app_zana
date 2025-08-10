@@ -22,7 +22,13 @@
 3. 部署：
    - 靜態網站自動部署至 GitHub Pages。
    - 同步 build 產物至 AWS S3，並透過 CloudFront 提供 CDN 加速。
-
+## 分支規則
+- Main 是真的有功能可以用而且沒問題
+- Develop 是開發中的功能，可能有 Bug
+- Feature 分支用於開發新功能，完成後合併至 Develop
+- Feature 分支命名規則：`feature/功能名稱/...(/可選)`
+- Feature -> Develop 需要經過`auto-format`腳本
+- Develop -> Main 需要經過 CI/CD 腳本
 ## 成本與注意事項
 
 - 優先使用 GitHub 免費資源，AWS 僅用於 S3/CloudFront 並控制於免費額度內。

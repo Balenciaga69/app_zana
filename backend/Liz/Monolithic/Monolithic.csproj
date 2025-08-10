@@ -36,7 +36,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Features\User\Controller\" />
     <Folder Include="Features\User\Commands\" />
     <Folder Include="Features\User\Repositories\" />
     <Folder Include="Features\User\Queries\" />
