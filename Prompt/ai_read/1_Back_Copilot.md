@@ -1,65 +1,75 @@
-﻿# 後端計畫書
+﻿## 後端專案計畫書：匿名即時聊天室
 
-## 核心思想：
+### 核心理念
 
-免登入,無會員,匿名,即時通訊,分房機制,純文字,可監控,可持久化,匿名聊天室,房間機制,即時通訊
+* 無會員制：免登入、匿名、純文字聊天。
+* 即時通訊：支援即時訊息傳輸與分房機制。
+* 可擴展性：可監控、可持久化，並具備未來微服務化的潛力。
 
-## 已取消或不考慮的內容:
+---
 
-有影音,有會員,有好友制,可傳送檔案,AutoMapper,FluentValidation,DDD,乾淨架構,CQRS, JWT,TDD(因為跟AiAgent開發相性不佳)
+### 技術與架構
 
-## 未來再來考慮(很肯定會導入，但不是現在):
+#### 必備技術棧
 
-K8s,AWS,Polly,YARP(API Gateway),RabbitMQ,MassTransit,gRPC,微服務,Grafana,Prometheus,ELK Stack
+這個專案將採用 C# .NET 8+ 作為核心框架，並利用 SignalR 實現即時通訊。資料庫部分，主資料庫選用 PostgreSQL 搭配 EF Core 進行物件關聯對應，同時以 Redis 處理快取與暫存資料。日誌紀錄會使用 Serilog，命令/查詢模式則由 MediatR 負責。專案將全程使用 Docker 進行容器化，並內建 Health Checks 確保服務健康。在品質把關方面，我們將以 xUnit 搭配 Moq 和 FluentAssertions 撰寫單元測試。版本控制則採用 Git，並利用 GitHub Actions 實現自動化工作流程。最後，Swagger 將用來產生與維護 API 文件。
 
-## 必備技術：
+#### 架構模式
 
-C# .NET 8+,SignalR,EF Core,PostgreSQL,Redis,Serilog,MediatR,Docker,Health Checks,xUnit,Moq,FluentAssertions,Git,Swagger,GitHub Actions
+* 架構類型：單體架構 (未來會轉為微服務)
+* 設計模式：
+    * 命令/查詢模式：使用 MediatR
+    * 資料存取：Repository Pattern (介面與實作放在同一個檔案)
+* 程式碼組織：
+    * 依據 Features 切分，而非傳統的分層 (e.g., Controller, Service)
+    * 每個 Feature 資料夾包含：`Commands` (含 Handler)、`Queries` (含 Handler)、`Controller`、`Repositories`
+    * `DbContext` 與 `Entities` 集中放在 `Infrastructure`
+    * 通用元件可放置於 `Shared`
 
-## 目前階段需要具備的功能：
+#### 資料庫設計原則
 
-- 用戶可開房,進房,離開房間
-- 用戶可發言,接收訊息
-- 同一台電腦同一瀏覽器視為同一用戶
-- 同一用戶可以同時存在多個房間
-- 斷線可重連
-- 歷史訊息查詢
-- 分享房間連結
-- 房主在開房時與房間內可設定配置(密碼、房間名稱、人數上限)
-- 系統自動銷毀空房間
-- 統計在線人數
-- (未來)可能會生成 QRCode
+* 避免直接外鍵關聯：只保留 ID 引用，不使用 Navigation Property。
+* 通用欄位：所有 Entity 必須包含 `CreatedAt`、`UpdatedAt`、`Id`。
 
-## 給後端工程師提醒：
+---
 
-- 已有健康檢查（PostgreSQL、RabbitMQ、Redis）
-- 已有 EF Core DbContext、Entities 及各種 Entity 配置
-- 已可執行 Migration 到 PostgreSQL
-- 已有通用 API Response、Exception Filter、日誌紀錄
-- 採用 Controller、MediatR（不使用 Service），並使用 Repository Pattern
-- 不採用 DDD、乾淨架構、CQRS
-- 目前為單體架構，未來會拆分成微服務 + 多 DB
-- 避免直接外鍵關聯: 不要用 navigation property, 只保留 ID 引用
+### 目前階段功能需求
 
-### 關於 Feature 與 Shared
+* 房間管理
+    * 使用者可建立房間、加入房間、離開房間。
+    * 房間可設定密碼、名稱、人數上限。
+    * 系統自動銷毀無人的空房間。
+* 使用者行為
+    * 使用者可發送與接收訊息。
+    * 支援歷史訊息查詢。
+* 連線與識別
+    * 支援斷線後重連。
+    * 同瀏覽器視為同一用戶。
+    * 同一用戶可同時進入多個房間。
+* 資訊顯示
+    * 統計並顯示房間內的在線人數。
+    * 提供房間連結分享功能。
 
-- 依據 Features 切分（而非 Controller、Service、Models...）
-- 未來每個 Feature 會獨立成微服務
-- 每個 Feature 資料夾包含：
-  - Commands（含 Handler、Result，放同一檔案）
-  - Queries（含 Handler、Result，放同一檔案）
-  - Controller（僅連接 Command/Query，Req/Resp 也用 Command/Query），就是薄薄一層
-  - Repositories（介面與實作放同一檔案）
-- DbContext、Entities 統一放在 Infrastructure
-- BuildingBlock 類通用元件未來可放在 Shared
-- Controller 用 ApiResponse<T>
+---
 
-## 參與者的開發環境與角色定位
+### 已具備基礎架構
 
-- 開發環境：Windows + VSCode + Docker
-- 角色：優秀的架構師級開發者，專注於架構層級實作
-- 品質優先：工程品質 > 開發速度，避免一次性大量代碼
+* 已建置健康檢查 (PostgreSQL, Redis)。
+* 已完成 EF Core DbContext、Entities 與各種配置。
+* 已可執行 Migration 至 PostgreSQL。
+* 已具備通用 API Response、Exception Filter 與日誌紀錄功能。
+* Controller 只負責連接 Command/Query，保持輕量化。
 
-## 註：
+---
 
-所有 Entities 都包含 CreatedAt、UpdatedAt、Id
+### 開發環境與角色定位
+
+* 開發環境：Windows + VSCode + Docker
+* 角色：架構師級開發者，專注於架構品質。
+* 開發原則：工程品質優先於開發速度，避免趕工而產生大量一次性程式碼。
+
+---
+
+### 未來規劃 (暫不實作)
+
+專案初期暫不導入 K8s 和 AWS 進行部署，也不會使用 gRPC、RabbitMQ 和 MassTransit 處理通訊。監控工具如 Grafana、Prometheus、ELK Stack 也將延後實施。架構上，YARP (API Gateway) 和微服務拆分會是未來階段的任務。在功能面，語音合成服務如 Polly 和 QRCode 生成功能暫不實作。此外，有影音、會員、好友制、檔案傳輸等功能已明確取消。架構模式方面，DDD、乾淨架構、CQRS、JWT 以及 TDD 也不在目前的考量範圍內，也不會使用 AutoMapper 和 FluentValidation。
