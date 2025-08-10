@@ -12,12 +12,7 @@ public static class HttpContextExtensions
     /// </summary>
     public static string? GetDeviceFingerprint(this HttpContext httpContext)
     {
-        if (
-            httpContext.Items.TryGetValue(
-                DeviceFingerprintMiddleware.CONTEXT_KEY,
-                out var deviceFingerprint
-            )
-        )
+        if (httpContext.Items.TryGetValue(DeviceFingerprintMiddleware.CONTEXT_KEY, out var deviceFingerprint))
         {
             return deviceFingerprint?.ToString();
         }

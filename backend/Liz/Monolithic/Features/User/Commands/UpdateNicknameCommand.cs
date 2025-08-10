@@ -1,6 +1,5 @@
-﻿namespace Monolithic.Features.User.Commands
+﻿namespace Monolithic.Features.User.Commands;
+
+public class UpdateNicknameCommand
 {
-    public class UpdateNicknameCommand
-    {
-    }
 }
