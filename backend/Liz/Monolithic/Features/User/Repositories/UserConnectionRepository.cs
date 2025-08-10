@@ -1,8 +1,8 @@
 ﻿namespace Monolithic.Features.User.Repositories;
-using UserConnection = Infrastructure.Data.Entities.UserConnection;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UserConnection = Infrastructure.Data.Entities.UserConnection;
 
 public class UserConnectionRepository : IUserConnectionRepository
 {

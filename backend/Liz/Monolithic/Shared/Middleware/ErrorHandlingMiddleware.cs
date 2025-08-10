@@ -37,14 +37,65 @@ public class ErrorHandlingMiddleware
     private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+        var (statusCode, errorCode, defaultMessage) = GetErrorDetails(exception);
+        context.Response.StatusCode = (int)statusCode;
+
+        var message =
+            (!string.IsNullOrWhiteSpace(exception.Message) && exception.Message != defaultMessage)
+                ? exception.Message
+                : defaultMessage;
+
         var response = ApiResponse<object>.Fail(
-            ErrorCode.InternalServerError,
+            errorCode,
+            message,
             errors: new { exception.Message, exception.StackTrace }
         );
         response.TraceId = context.TraceIdentifier;
 
         var json = JsonSerializer.Serialize(response);
         await context.Response.WriteAsync(json);
+    }
+
+    /// <summary>
+    /// 根據異常類型決定 HTTP 狀態碼和錯誤碼
+    /// </summary>
+    private static (HttpStatusCode statusCode, ErrorCode errorCode, string message) GetErrorDetails(
+        Exception exception
+    )
+    {
+        return exception switch
+        {
+            UnauthorizedAccessException => (
+                HttpStatusCode.Unauthorized,
+                ErrorCode.AuthRequired,
+                ErrorMessages.GetMessage(ErrorCode.AuthRequired)
+            ),
+            InvalidOperationException => (
+                HttpStatusCode.NotFound,
+                ErrorCode.NotFound,
+                ErrorMessages.GetMessage(ErrorCode.NotFound)
+            ),
+            ArgumentNullException => (
+                HttpStatusCode.BadRequest,
+                ErrorCode.InvalidInput,
+                ErrorMessages.GetMessage(ErrorCode.InvalidInput)
+            ),
+            ArgumentException => (
+                HttpStatusCode.BadRequest,
+                ErrorCode.InvalidInput,
+                ErrorMessages.GetMessage(ErrorCode.InvalidInput)
+            ),
+            KeyNotFoundException => (
+                HttpStatusCode.NotFound,
+                ErrorCode.ResourceNotFound,
+                ErrorMessages.GetMessage(ErrorCode.ResourceNotFound)
+            ),
+            _ => (
+                HttpStatusCode.InternalServerError,
+                ErrorCode.InternalServerError,
+                ErrorMessages.GetMessage(ErrorCode.InternalServerError)
+            ),
+        };
     }
 }

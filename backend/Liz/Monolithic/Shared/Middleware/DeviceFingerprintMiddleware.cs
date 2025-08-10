@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-
-namespace Monolithic.Shared.Middleware;
+﻿namespace Monolithic.Shared.Middleware;
 
 /// <summary>
 /// Middleware 負責從 HTTP Header 提取 DeviceFingerprint 並存到 HttpContext.Items

@@ -1,27 +1,21 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Monolithic.Features.User.Repositories;
 using Monolithic.Shared.Extensions;
 
 namespace Monolithic.Features.User.Queries;
 
-// CQRS: Command (這裡其實是 Query)
-public class GetMeQuery
-{
-    // 這裡可加上必要的屬性，例如用戶識別資訊（如 UserId, DeviceFingerprint, HttpContext 等）
-    // 目前假設由 Handler 取得當前用戶資訊，這裡不需要額外屬性
-}
+public class GetMeQuery : IRequest<GetMeResult> { }
 
-// CQRS: Result (回傳型別)
 public class GetMeResult
 {
     public Guid Id { get; set; }
     public string Nickname { get; set; } = string.Empty;
     public string DeviceFingerprint { get; set; } = string.Empty;
     public DateTime LastActiveAt { get; set; }
+    public bool IsActive { get; set; }
+    public DateTime CreatedAt { get; set; }
 }
 
-// CQRS: Handler
 public class GetMeQueryHandler : IRequestHandler<GetMeQuery, GetMeResult>
 {
     private readonly IUserRepository _userRepository;
@@ -33,13 +27,31 @@ public class GetMeQueryHandler : IRequestHandler<GetMeQuery, GetMeResult>
         _httpContextAccessor = httpContextAccessor;
     }
 
-    // public async Task<GetMeResult> Handle(GetMeQuery query, CancellationToken cancellationToken)
-    // {
-    //     // 1. 透過 HttpContext 擴充方法取得 DeviceFingerprint
-    //     // var deviceFingerprint = _httpContextAccessor.HttpContext?.GetDeviceFingerprint();
-    //     // 2. 若沒有 DeviceFingerprint，可丟例外或回傳錯誤
-    //     // 3. 用 _userRepository.GetByDeviceFingerprintAsync 查詢 User
-    //     // 4. 組裝 GetMeResult 回傳
-    //     // 5. 處理找不到用戶的情境（可丟例外或回傳 null）
-    // }
+    public async Task<GetMeResult> Handle(GetMeQuery query, CancellationToken cancellationToken)
+    {
+        // 透過 HttpContext 擴充方法取得 DeviceFingerprint
+        var deviceFingerprint = _httpContextAccessor.HttpContext?.GetDeviceFingerprint();
+
+        // 沒有 DeviceFingerprint -> 丟出例外
+        if (string.IsNullOrEmpty(deviceFingerprint))
+            throw new UnauthorizedAccessException("Device fingerprint is required");
+
+        // 查詢 User
+        var user = await _userRepository.GetByDeviceFingerprintAsync(deviceFingerprint);
+
+        // 處理找不到用戶 -> InvalidOperationException
+        if (user == null)
+            throw new InvalidOperationException("User not found");
+
+        // 組裝 GetMeResult 回傳
+        return new GetMeResult
+        {
+            Id = user.Id,
+            Nickname = user.Nickname,
+            DeviceFingerprint = user.DeviceFingerprint,
+            LastActiveAt = user.LastActiveAt,
+            IsActive = user.IsActive,
+            CreatedAt = user.CreatedAt,
+        };
+    }
 }

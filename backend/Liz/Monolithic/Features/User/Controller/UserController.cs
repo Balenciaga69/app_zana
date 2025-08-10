@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Monolithic.Features.User.Queries;
+using Monolithic.Shared.Common;
 
 namespace Monolithic.Features.User.Controller;
 
@@ -6,6 +9,13 @@ namespace Monolithic.Features.User.Controller;
 [Route("users")]
 public class UserController : ControllerBase
 {
+    private readonly IMediator _mediator;
+
+    public UserController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     #region User Management
 
     [HttpGet("{id}")]
@@ -15,9 +25,11 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("me")]
-    public IActionResult GetMe()
+    public async Task<ActionResult<ApiResponse<GetMeResult>>> GetMe()
     {
-        throw new NotImplementedException();
+        var query = new GetMeQuery();
+        var result = await _mediator.Send(query);
+        return Ok(ApiResponse<GetMeResult>.Ok(result, "取得用戶資訊成功"));
     }
 
     [HttpPut("me/nickname")]
