@@ -8,18 +8,25 @@ namespace Monolithic.Features.User.Commands;
 /// <summary>
 /// 用戶註冊命令處理器
 /// </summary>
-public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, OperationResult<RegisterUserResult>>
+public class RegisterUserCommandHandler
+    : IRequestHandler<RegisterUserCommand, OperationResult<RegisterUserResult>>
 {
     private readonly IUserRepository _userRepository;
     private readonly IAppLogger<RegisterUserCommandHandler> _logger;
 
-    public RegisterUserCommandHandler(IUserRepository userRepository, IAppLogger<RegisterUserCommandHandler> logger)
+    public RegisterUserCommandHandler(
+        IUserRepository userRepository,
+        IAppLogger<RegisterUserCommandHandler> logger
+    )
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<OperationResult<RegisterUserResult>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult<RegisterUserResult>> Handle(
+        RegisterUserCommand request,
+        CancellationToken cancellationToken
+    )
     {
         _logger.LogInfo(
             "開始處理用戶註冊命令",
@@ -33,13 +40,13 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
         );
 
         try
-        {            // 第一步：驗證命令
+        { // 第一步：驗證命令
             var validationError = request.GetValidationError();
             if (validationError != null)
             {
                 _logger.LogWarn("設備指紋驗證失敗", new { request.DeviceFingerprint, validationError });
                 return OperationResult<RegisterUserResult>.Fail(validationError.Value);
-            }// 第二步：嘗試重新連線現有用戶
+            } // 第二步：嘗試重新連線現有用戶
             if (request.ExistingUserId.HasValue)
             {
                 var reconnectResult = await TryReconnectExistingUserAsync(request);
@@ -54,7 +61,8 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
 
             // 第四步：創建新用戶
             return await CreateNewUserAsync(request);
-        }        catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _logger.LogError("用戶註冊失敗", ex, new { request.DeviceFingerprint });
             return OperationResult<RegisterUserResult>.Fail(ErrorCode.InternalServerError);
@@ -64,9 +72,12 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
     /// <summary>
     /// 嘗試重新連線現有用戶
     /// </summary>
-    private async Task<OperationResult<RegisterUserResult>> TryReconnectExistingUserAsync(RegisterUserCommand request)
+    private async Task<OperationResult<RegisterUserResult>> TryReconnectExistingUserAsync(
+        RegisterUserCommand request
+    )
     {
-        var existingUser = await _userRepository.GetByIdAsync(request.ExistingUserId!.Value);        if (existingUser == null || existingUser.DeviceFingerprint != request.DeviceFingerprint)
+        var existingUser = await _userRepository.GetByIdAsync(request.ExistingUserId!.Value);
+        if (existingUser == null || existingUser.DeviceFingerprint != request.DeviceFingerprint)
         {
             return OperationResult<RegisterUserResult>.Fail(ErrorCode.UserNotFound);
         }
@@ -79,10 +90,14 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
 
         var result = CreateUserResult(existingUser, isNewUser: false);
         return OperationResult<RegisterUserResult>.Ok(result);
-    }    /// <summary>
+    }
+
+    /// <summary>
     /// 嘗試通過設備指紋找到現有用戶
     /// </summary>
-    private async Task<OperationResult<RegisterUserResult>> TryFindExistingUserAsync(RegisterUserCommand request)
+    private async Task<OperationResult<RegisterUserResult>> TryFindExistingUserAsync(
+        RegisterUserCommand request
+    )
     {
         var existingUser = await _userRepository.GetByDeviceFingerprintAsync(request.DeviceFingerprint);
         if (existingUser == null)

@@ -17,7 +17,11 @@ namespace Monolithic.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     RoomId = table.Column<Guid>(type: "uuid", nullable: false),
                     SenderId = table.Column<string>(type: "text", nullable: false),
-                    Content = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    Content = table.Column<string>(
+                        type: "character varying(2000)",
+                        maxLength: 2000,
+                        nullable: false
+                    ),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 },
@@ -50,13 +54,25 @@ namespace Monolithic.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Name = table.Column<string>(
+                        type: "character varying(100)",
+                        maxLength: 100,
+                        nullable: false
+                    ),
                     OwnerId = table.Column<string>(type: "text", nullable: false),
-                    PasswordHash = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    PasswordHash = table.Column<string>(
+                        type: "character varying(256)",
+                        maxLength: 256,
+                        nullable: true
+                    ),
                     MaxParticipants = table.Column<int>(type: "integer", nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     LastActiveAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    InviteCode = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
+                    InviteCode = table.Column<string>(
+                        type: "character varying(32)",
+                        maxLength: 32,
+                        nullable: false
+                    ),
                     DestroyedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -73,11 +89,23 @@ namespace Monolithic.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false),
-                    ConnectionId = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    ConnectionId = table.Column<string>(
+                        type: "character varying(128)",
+                        maxLength: 128,
+                        nullable: false
+                    ),
                     ConnectedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DisconnectedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    IpAddress = table.Column<string>(type: "character varying(45)", maxLength: 45, nullable: true),
-                    UserAgent = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    IpAddress = table.Column<string>(
+                        type: "character varying(45)",
+                        maxLength: 45,
+                        nullable: true
+                    ),
+                    UserAgent = table.Column<string>(
+                        type: "character varying(500)",
+                        maxLength: 500,
+                        nullable: true
+                    ),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 },
@@ -92,10 +120,18 @@ namespace Monolithic.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    DeviceFingerprint = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    DeviceFingerprint = table.Column<string>(
+                        type: "character varying(128)",
+                        maxLength: 128,
+                        nullable: false
+                    ),
                     IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     LastActiveAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Nickname = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
+                    Nickname = table.Column<string>(
+                        type: "character varying(32)",
+                        maxLength: 32,
+                        nullable: true
+                    ),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 },
@@ -109,19 +145,46 @@ namespace Monolithic.Migrations
 
             migrationBuilder.CreateIndex(name: "IX_Messages_SenderId", table: "Messages", column: "SenderId");
 
-            migrationBuilder.CreateIndex(name: "IX_RoomParticipants_RoomId_UserId", table: "RoomParticipants", columns: new[] { "RoomId", "UserId" });
+            migrationBuilder.CreateIndex(
+                name: "IX_RoomParticipants_RoomId_UserId",
+                table: "RoomParticipants",
+                columns: new[] { "RoomId", "UserId" }
+            );
 
-            migrationBuilder.CreateIndex(name: "IX_Rooms_InviteCode", table: "Rooms", column: "InviteCode", unique: true);
+            migrationBuilder.CreateIndex(
+                name: "IX_Rooms_InviteCode",
+                table: "Rooms",
+                column: "InviteCode",
+                unique: true
+            );
 
             migrationBuilder.CreateIndex(name: "IX_Rooms_IsActive", table: "Rooms", column: "IsActive");
 
-            migrationBuilder.CreateIndex(name: "IX_UserConnections_ConnectionId", table: "UserConnections", column: "ConnectionId", unique: true);
+            migrationBuilder.CreateIndex(
+                name: "IX_UserConnections_ConnectionId",
+                table: "UserConnections",
+                column: "ConnectionId",
+                unique: true
+            );
 
-            migrationBuilder.CreateIndex(name: "IX_UserConnections_DisconnectedAt", table: "UserConnections", column: "DisconnectedAt");
+            migrationBuilder.CreateIndex(
+                name: "IX_UserConnections_DisconnectedAt",
+                table: "UserConnections",
+                column: "DisconnectedAt"
+            );
 
-            migrationBuilder.CreateIndex(name: "IX_UserConnections_UserId", table: "UserConnections", column: "UserId");
+            migrationBuilder.CreateIndex(
+                name: "IX_UserConnections_UserId",
+                table: "UserConnections",
+                column: "UserId"
+            );
 
-            migrationBuilder.CreateIndex(name: "IX_Users_DeviceFingerprint", table: "Users", column: "DeviceFingerprint", unique: true);
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_DeviceFingerprint",
+                table: "Users",
+                column: "DeviceFingerprint",
+                unique: true
+            );
 
             migrationBuilder.CreateIndex(name: "IX_Users_IsActive", table: "Users", column: "IsActive");
         }

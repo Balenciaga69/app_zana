@@ -29,7 +29,9 @@ namespace Monolithic.Shared.Middleware
                 _logger.LogError(ex, "Unhandled exception");
                 await HandleExceptionAsync(context, ex);
             }
-        }        /// <summary>
+        }
+
+        /// <summary>
         /// 處理異常並返回統一的 API 響應格式
         /// </summary>
         private static async Task HandleExceptionAsync(HttpContext context, Exception exception)

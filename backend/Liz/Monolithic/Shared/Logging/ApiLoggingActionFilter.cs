@@ -58,7 +58,11 @@ public class ApiLoggingActionFilter : ActionFilterAttribute
     }
 
     // 記錄請求日誌
-    private void LogRequest(RequestContext requestContext, IDictionary<string, object?> actionArguments, IQueryCollection queryParams)
+    private void LogRequest(
+        RequestContext requestContext,
+        IDictionary<string, object?> actionArguments,
+        IQueryCollection queryParams
+    )
     {
         var requestData = BuildRequestData(actionArguments, queryParams);
 
@@ -80,7 +84,12 @@ public class ApiLoggingActionFilter : ActionFilterAttribute
     }
 
     // 記錄錯誤日誌
-    private void LogError(RequestContext requestContext, int statusCode, TimeSpan? duration, Exception exception)
+    private void LogError(
+        RequestContext requestContext,
+        int statusCode,
+        TimeSpan? duration,
+        Exception exception
+    )
     {
         _logger.LogError(
             $"[API錯誤] {requestContext.ControllerName} | {requestContext.Method} {requestContext.Path} | Status: {statusCode} | Duration: {duration?.TotalMilliseconds}ms",
@@ -91,7 +100,10 @@ public class ApiLoggingActionFilter : ActionFilterAttribute
     }
 
     // 建構請求資料
-    private static Dictionary<string, object?> BuildRequestData(IDictionary<string, object?> actionArguments, IQueryCollection queryParams)
+    private static Dictionary<string, object?> BuildRequestData(
+        IDictionary<string, object?> actionArguments,
+        IQueryCollection queryParams
+    )
     {
         var requestData = new Dictionary<string, object?>();
 

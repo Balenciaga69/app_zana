@@ -53,7 +53,8 @@ public static partial class DIExt
             var rabbitMqUsername = rabbitMqConfig["Username"] ?? "guest";
             var rabbitMqPassword = rabbitMqConfig["Password"] ?? "guest";
             var rabbitMqVirtualHost = rabbitMqConfig["VirtualHost"] ?? "/";
-            rabbitMqConnectionString = $"amqp://{rabbitMqUsername}:{rabbitMqPassword}@{rabbitMqHost}:{rabbitMqPort}{rabbitMqVirtualHost}";
+            rabbitMqConnectionString =
+                $"amqp://{rabbitMqUsername}:{rabbitMqPassword}@{rabbitMqHost}:{rabbitMqPort}{rabbitMqVirtualHost}";
         }
 
         if (!string.IsNullOrWhiteSpace(rabbitMqConnectionString))

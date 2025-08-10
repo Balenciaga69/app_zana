@@ -7,18 +7,25 @@ namespace Monolithic.Features.User.Queries;
 /// <summary>
 /// 查詢用戶連線狀態查詢處理器
 /// </summary>
-public class GetUserConnectionsQueryHandler : IRequestHandler<GetUserConnectionsQuery, GetUserConnectionsResult>
+public class GetUserConnectionsQueryHandler
+    : IRequestHandler<GetUserConnectionsQuery, GetUserConnectionsResult>
 {
     private readonly IUserRepository _userRepository;
     private readonly IAppLogger<GetUserConnectionsQueryHandler> _logger;
 
-    public GetUserConnectionsQueryHandler(IUserRepository userRepository, IAppLogger<GetUserConnectionsQueryHandler> logger)
+    public GetUserConnectionsQueryHandler(
+        IUserRepository userRepository,
+        IAppLogger<GetUserConnectionsQueryHandler> logger
+    )
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<GetUserConnectionsResult> Handle(GetUserConnectionsQuery request, CancellationToken cancellationToken)
+    public async Task<GetUserConnectionsResult> Handle(
+        GetUserConnectionsQuery request,
+        CancellationToken cancellationToken
+    )
     {
         _logger.LogInfo(
             "查詢用戶連線歷史",
@@ -32,7 +39,11 @@ public class GetUserConnectionsQueryHandler : IRequestHandler<GetUserConnections
 
         try
         {
-            var connections = await _userRepository.GetUserConnectionsAsync(request.UserId, request.Skip, request.Take);
+            var connections = await _userRepository.GetUserConnectionsAsync(
+                request.UserId,
+                request.Skip,
+                request.Take
+            );
             var totalCount = await _userRepository.GetUserConnectionsCountAsync(request.UserId);
 
             _logger.LogInfo(

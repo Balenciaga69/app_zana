@@ -7,7 +7,10 @@ public static partial class DIExt
     /// <summary>
     /// 註冊 MassTransit 服務
     /// </summary>
-    public static IServiceCollection AddMassTransitServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddMassTransitServices(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
         services.AddMassTransit(x =>
         {

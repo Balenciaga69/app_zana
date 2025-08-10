@@ -8,20 +8,28 @@ namespace Monolithic.Features.User.Commands;
 /// <summary>
 /// 更新用戶暱稱命令處理器
 /// </summary>
-public class UpdateUserNicknameCommandHandler : IRequestHandler<UpdateUserNicknameCommand, OperationResult<UpdateUserNicknameResult>>
+public class UpdateUserNicknameCommandHandler
+    : IRequestHandler<UpdateUserNicknameCommand, OperationResult<UpdateUserNicknameResult>>
 {
     private readonly IUserRepository _userRepository;
     private readonly IAppLogger<UpdateUserNicknameCommandHandler> _logger;
 
-    public UpdateUserNicknameCommandHandler(IUserRepository userRepository, IAppLogger<UpdateUserNicknameCommandHandler> logger)
+    public UpdateUserNicknameCommandHandler(
+        IUserRepository userRepository,
+        IAppLogger<UpdateUserNicknameCommandHandler> logger
+    )
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<OperationResult<UpdateUserNicknameResult>> Handle(UpdateUserNicknameCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult<UpdateUserNicknameResult>> Handle(
+        UpdateUserNicknameCommand request,
+        CancellationToken cancellationToken
+    )
     {
-        _logger.LogInfo("開始處理更新用戶暱稱請求", new { request.UserId, request.Nickname });        try
+        _logger.LogInfo("開始處理更新用戶暱稱請求", new { request.UserId, request.Nickname });
+        try
         {
             // 第一步：驗證命令
             var validationError = request.GetValidationError();
@@ -65,7 +73,8 @@ public class UpdateUserNicknameCommandHandler : IRequestHandler<UpdateUserNickna
             );
 
             // 第四步：建立結果
-            var result = new UpdateUserNicknameResult(user.Id, user.Nickname, user.UpdatedAt);            return OperationResult<UpdateUserNicknameResult>.Ok(result);
+            var result = new UpdateUserNicknameResult(user.Id, user.Nickname, user.UpdatedAt);
+            return OperationResult<UpdateUserNicknameResult>.Ok(result);
         }
         catch (Exception ex)
         {

@@ -10,7 +10,8 @@ public static partial class DIExt
     {
         // 取得連線字串，若未設定則拋出例外
         var connectionString =
-            configuration.GetConnectionString("UserDbConnection") ?? throw new InvalidOperationException("PostgreSQL connection string not found.");
+            configuration.GetConnectionString("UserDbConnection")
+            ?? throw new InvalidOperationException("PostgreSQL connection string not found.");
 
         // 註冊 AppDbContext，並設定使用 Npgsql (PostgreSQL) 提供者
         services.AddDbContext<AppDbContext>(options =>
