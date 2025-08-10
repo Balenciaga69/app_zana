@@ -53,6 +53,8 @@ C# .NET 8+,SignalR,EF Core,PostgreSQL,Redis,Serilog,MediatR,Docker,Health Checks
   - Repositories（介面與實作放同一檔案）
 - DbContext、Entities 統一放在 Infrastructure
 - BuildingBlock 類通用元件未來可放在 Shared
+- MediatR 用 OperationResult<T>
+- Controller 用 ApiResponse<T>
 
 ## 參與者的開發環境與角色定位
 

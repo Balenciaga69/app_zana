@@ -55,20 +55,7 @@ public class GetUserConnectionsQueryHandler
                     totalCount,
                 }
             );
-
-            return new GetUserConnectionsResult
-            {
-                Connections = connections.Select(c => new UserConnectionInfo
-                {
-                    Id = c.Id,
-                    ConnectionId = c.ConnectionId,
-                    ConnectedAt = c.ConnectedAt,
-                    DisconnectedAt = c.DisconnectedAt,
-                    IpAddress = c.IpAddress,
-                    UserAgent = c.UserAgent,
-                }),
-                TotalCount = totalCount,
-            };
+            return new GetUserConnectionsResult { Connections = (IEnumerable<UserConnectionInfo>)connections, TotalCount = totalCount, };
         }
         catch (Exception ex)
         {

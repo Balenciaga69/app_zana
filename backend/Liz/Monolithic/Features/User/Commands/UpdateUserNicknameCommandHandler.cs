@@ -31,7 +31,7 @@ public class UpdateUserNicknameCommandHandler
         _logger.LogInfo("開始處理更新用戶暱稱請求", new { request.UserId, request.Nickname });
         try
         {
-            // 第一步：驗證命令
+            // 第一步：驗證 Command
             var validationError = request.GetValidationError();
             if (validationError != null)
             {
