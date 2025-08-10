@@ -48,7 +48,7 @@ C# .NET 8+,SignalR,EF Core,PostgreSQL,Redis,Serilog,MediatR,Docker,Health Checks
 - 每個 Feature 資料夾包含：
   - Commands（含 Handler、Result，放同一檔案）
   - Queries（含 Handler、Result，放同一檔案）
-  - Controller（僅連接 Command/Query，Req/Resp 也用 Command/Query）
+  - Controller（僅連接 Command/Query，Req/Resp 也用 Command/Query），就是薄薄一層
   - Repositories（介面與實作放同一檔案）
 - DbContext、Entities 統一放在 Infrastructure
 - BuildingBlock 類通用元件未來可放在 Shared
