@@ -1,5 +1,4 @@
 ﻿// Communication Hub 基本測試
-using System.Collections.Concurrent;
 using FluentAssertions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Monolithic.Features.Communication;
 using Monolithic.Shared.Logging;
 using Moq;
+using System.Collections.Concurrent;
 
 namespace Monolithic.Test.Features.Communication;
 

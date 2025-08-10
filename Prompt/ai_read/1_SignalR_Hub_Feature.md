@@ -10,63 +10,63 @@
 
 #### 方法
 
-- **RegisterUser(existingUserId?, deviceFingerprint)** - 用戶註冊/重新連線
-- **Heartbeat()** - 心跳保持連線
-- **GetConnectionInfo()** - 取得當前連線資訊
+- RegisterUser(existingUserId?, deviceFingerprint) - 用戶註冊/重新連線
+- Heartbeat() - 心跳保持連線
+- GetConnectionInfo() - 取得當前連線資訊
 
 #### 事件
 
-- **UserRegistered(userId, nickname, isNewUser)** - 用戶註冊成功
-- **ConnectionEstablished(connectionId, serverTime)** - 連線建立確認
-- **ForceDisconnect(reason)** - 強制斷線通知
+- UserRegistered(userId, nickname, isNewUser) - 用戶註冊成功
+- ConnectionEstablished(connectionId, serverTime) - 連線建立確認
+- ForceDisconnect(reason) - 強制斷線通知
 
 ### 房間管理
 
 #### 方法
 
-- **JoinRoom(roomId, password?)** - 加入房間
-- **LeaveRoom(roomId)** - 離開房間
-- **GetRoomOnlineCount(roomId)** - 取得房間在線人數
+- JoinRoom(roomId, password?) - 加入房間
+- LeaveRoom(roomId) - 離開房間
+- GetRoomOnlineCount(roomId) - 取得房間在線人數
 
 #### 事件
 
-- **RoomJoined(roomId, roomInfo, participantCount)** - 成功加入房間
-- **RoomLeft(roomId)** - 成功離開房間
-- **RoomMemberJoined(roomId, userId, nickname, joinedAt)** - 有人加入房間
-- **RoomMemberLeft(roomId, userId, nickname, leftAt)** - 有人離開房間
-- **RoomOnlineCountChanged(roomId, onlineCount)** - 房間人數變更
-- **RoomDestroyed(roomId, reason)** - 房間被銷毀通知
-- **RoomSettingsChanged(roomId, newSettings)** - 房間設定變更
-- **JoinRoomFailed(reason)** - 加入房間失敗
+- RoomJoined(roomId, roomInfo, participantCount) - 成功加入房間
+- RoomLeft(roomId) - 成功離開房間
+- RoomMemberJoined(roomId, userId, nickname, joinedAt) - 有人加入房間
+- RoomMemberLeft(roomId, userId, nickname, leftAt) - 有人離開房間
+- RoomOnlineCountChanged(roomId, onlineCount) - 房間人數變更
+- RoomDestroyed(roomId, reason) - 房間被銷毀通知
+- RoomSettingsChanged(roomId, newSettings) - 房間設定變更
+- JoinRoomFailed(reason) - 加入房間失敗
 
 ### 訊息管理
 
 #### 方法
 
-- **SendMessageToRoom(roomId, content)** - 發送訊息到房間
+- SendMessageToRoom(roomId, content) - 發送訊息到房間
 
 #### 事件
 
-- **ReceiveMessage(roomId, messageId, senderId, senderNickname, content, timestamp)** - 接收新訊息
-- **MessageDelivered(messageId)** - 訊息送達確認（可選）
+- ReceiveMessage(roomId, messageId, senderId, senderNickname, content, timestamp) - 接收新訊息
+- MessageDelivered(messageId) - 訊息送達確認（可選）
 
 ### 用戶狀態
 
 #### 方法
 
-- **UpdateNickname(newNickname)** - 更新暱稱
-- **GetGlobalOnlineStats()** - 取得全域在線統計
+- UpdateNickname(newNickname) - 更新暱稱
+- GetGlobalOnlineStats() - 取得全域在線統計
 
 #### 事件
 
-- **NicknameUpdated(userId, newNickname)** - 暱稱更新成功
-- **GlobalOnlineCountChanged(totalUsers, totalConnections)** - 全域在線人數變更
-- **UserStatusChanged(userId, isOnline, lastActiveAt)** - 用戶狀態變更
+- NicknameUpdated(userId, newNickname) - 暱稱更新成功
+- GlobalOnlineCountChanged(totalUsers, totalConnections) - 全域在線人數變更
+- UserStatusChanged(userId, isOnline, lastActiveAt) - 用戶狀態變更
 
 ### 通用事件
 
-- **Error(errorMessage)** - 錯誤通知
-- **ServerNotification(title, message, level)** - 伺服器通知
+- Error(errorMessage) - 錯誤通知
+- ServerNotification(title, message, level) - 伺服器通知
 
 ## 權限與驗證
 
@@ -113,13 +113,13 @@
 
 ### 常見錯誤碼
 
-- **AUTH_REQUIRED** - 需要先註冊用戶
-- **ROOM_NOT_FOUND** - 房間不存在
-- **ROOM_FULL** - 房間人數已滿
-- **WRONG_PASSWORD** - 房間密碼錯誤
-- **NOT_ROOM_MEMBER** - 非房間成員
-- **RATE_LIMITED** - 操作頻率過高
-- **INVALID_INPUT** - 輸入參數無效
+- AUTH_REQUIRED - 需要先註冊用戶
+- ROOM_NOT_FOUND - 房間不存在
+- ROOM_FULL - 房間人數已滿
+- WRONG_PASSWORD - 房間密碼錯誤
+- NOT_ROOM_MEMBER - 非房間成員
+- RATE_LIMITED - 操作頻率過高
+- INVALID_INPUT - 輸入參數無效
 
 ### 錯誤處理策略
 
