@@ -1,4 +1,5 @@
 ﻿namespace Monolithic.Features.User.Repositories;
+
 using User = Infrastructure.Data.Entities.User;
 
 public interface IUserRepository

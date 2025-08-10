@@ -1,4 +1,5 @@
 ﻿namespace Monolithic.Features.User.Repositories;
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

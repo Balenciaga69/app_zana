@@ -1,4 +1,5 @@
 ﻿namespace Monolithic.Features.User.Repositories;
+
 using UserConnection = Infrastructure.Data.Entities.UserConnection;
 
 public interface IUserConnectionRepository

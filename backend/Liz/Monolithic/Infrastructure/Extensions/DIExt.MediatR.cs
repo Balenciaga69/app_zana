@@ -1,5 +1,5 @@
-﻿using MediatR;
-using System.Reflection;
+﻿using System.Reflection;
+using MediatR;
 
 namespace Monolithic.Infrastructure.Extensions;
 
