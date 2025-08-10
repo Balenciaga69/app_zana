@@ -28,9 +28,6 @@
                 Errors = errors,
             };
 
-        /// <summary>
-        /// 使用 ErrorCode 枚舉建立失敗回應
-        /// </summary>
         public static ApiResponse<T> Fail(ErrorCode errorCode, object? errors = null) =>
             new ApiResponse<T>
             {
@@ -40,9 +37,6 @@
                 Errors = errors,
             };
 
-        /// <summary>
-        /// 使用 ErrorCode 枚舉建立失敗回應，並自定義訊息
-        /// </summary>
         public static ApiResponse<T> Fail(ErrorCode errorCode, string customMessage, object? errors = null) =>
             new ApiResponse<T>
             {

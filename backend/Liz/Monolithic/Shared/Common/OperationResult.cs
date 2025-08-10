@@ -1,9 +1,5 @@
 ﻿namespace Monolithic.Shared.Common;
 
-/// <summary>
-/// 操作結果基類
-/// </summary>
-/// <typeparam name="T">資料類型</typeparam>
 public class OperationResult<T>
 {
     public bool Success { get; private set; }
@@ -20,24 +16,14 @@ public class OperationResult<T>
         ErrorMessage = errorMessage;
     }
 
-    /// <summary>
-    /// 建立成功結果
-    /// </summary>
     public static OperationResult<T> Ok(T data) => new(true, data, null, null);
 
-    /// <summary>
-    /// 建立失敗結果（使用 ErrorCode 枚舉）
-    /// </summary>
-    public static OperationResult<T> Fail(ErrorCode errorCode) => new(false, default, errorCode, ErrorMessages.GetMessage(errorCode));
+    public static OperationResult<T> Fail(ErrorCode errorCode) =>
+        new(false, default, errorCode, ErrorMessages.GetMessage(errorCode));
 
-    /// <summary>
-    /// 建立失敗結果（使用 ErrorCode 枚舉和自定義訊息）
-    /// </summary>
-    public static OperationResult<T> Fail(ErrorCode errorCode, string customMessage) => new(false, default, errorCode, customMessage);
+    public static OperationResult<T> Fail(ErrorCode errorCode, string customMessage) =>
+        new(false, default, errorCode, customMessage);
 
-    /// <summary>
-    /// 轉換為 ApiResponse 格式
-    /// </summary>
     public ApiResponse<T> ToApiResponse()
     {
         if (Success)
@@ -52,33 +38,22 @@ public class OperationResult<T>
             }
             else
             {
-                // 向後相容性支援
                 return ApiResponse<T>.Fail("Unknown", ErrorMessage ?? "未知錯誤");
             }
         }
     }
 }
 
-/// <summary>
-/// 不含資料的操作結果
-/// </summary>
 public class OperationResult : OperationResult<object>
 {
     private OperationResult(bool success, ErrorCode? errorCode, string? errorMessage)
         : base(success, null, errorCode, errorMessage) { }
 
-    /// <summary>
-    /// 建立成功結果
-    /// </summary>
     public static OperationResult Ok() => new(true, null, null);
 
-    /// <summary>
-    /// 建立失敗結果（使用 ErrorCode 枚舉）
-    /// </summary>
-    public static new OperationResult Fail(ErrorCode errorCode) => new(false, errorCode, ErrorMessages.GetMessage(errorCode));
+    public static new OperationResult Fail(ErrorCode errorCode) =>
+        new(false, errorCode, ErrorMessages.GetMessage(errorCode));
 
-    /// <summary>
-    /// 建立失敗結果（使用 ErrorCode 枚舉和自定義訊息）
-    /// </summary>
-    public static new OperationResult Fail(ErrorCode errorCode, string customMessage) => new(false, errorCode, customMessage);
+    public static new OperationResult Fail(ErrorCode errorCode, string customMessage) =>
+        new(false, errorCode, customMessage);
 }

@@ -170,7 +170,7 @@ public static class ErrorMessages
         [ErrorCode.InvalidInput] = "輸入參數格式無效",
         [ErrorCode.InternalServerError] = "伺服器發生未預期錯誤，請稍後再試",
         [ErrorCode.DatabaseError] = "資料庫操作失敗",
-        [ErrorCode.ServiceUnavailable] = "服務暫時不可用"
+        [ErrorCode.ServiceUnavailable] = "服務暫時不可用",
     };
 
     /// <summary>
