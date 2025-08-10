@@ -11,4 +11,7 @@ public interface IUserRepository
     Task<bool> IsUserOnlineAsync(Guid userId);
     Task<IEnumerable<User>> GetOnlineUsersAsync();
     Task<IEnumerable<User>> GetInactiveUsersAsync(DateTime inactiveSince);
+    Task<bool> CheckDeviceFingerprintExistsAsync(string deviceFingerprint);
+    Task UpdateUserDeviceFingerprintAsync(Guid userId, string deviceFingerprint);
+    Task CreateNewUserAsync(string deviceFingerprint);
 }

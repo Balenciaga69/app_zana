@@ -2,6 +2,8 @@
 // 職責：專注於即時通訊連線管理、訊息傳輸和廣播
 // 邊界：不處理業務邏輯，未來將獨立為微服務
 using Microsoft.AspNetCore.SignalR;
+using Monolithic.Features.User.Services;
+using Monolithic.Shared.Extensions;
 using Monolithic.Shared.Logging;
 
 namespace Monolithic.Features.Communication;
@@ -9,10 +11,16 @@ namespace Monolithic.Features.Communication;
 public class CommunicationHub : Hub
 {
     private readonly IAppLogger<CommunicationHub> _logger;
+    private readonly IUserCommunicationService _userCommunicationService;
 
-    public CommunicationHub(IAppLogger<CommunicationHub> logger)
+    public CommunicationHub(
+        IAppLogger<CommunicationHub> logger,
+        IUserCommunicationService userCommunicationService
+    )
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _userCommunicationService =
+            userCommunicationService ?? throw new ArgumentNullException(nameof(userCommunicationService));
     }
 
     /// <summary>
@@ -40,6 +48,89 @@ public class CommunicationHub : Hub
     }
 
     /// <summary>
+    /// 註冊/重新連線用戶
+    /// Hub 只負責驗證與轉發，業務邏輯委派給 Service
+    /// </summary>
+    public async Task RegisterUser(string? existingUserId, string deviceFingerprint)
+    {
+        var connectionId = Context.ConnectionId;
+
+        _logger.LogInfo(
+            "[Communication] 用戶註冊請求",
+            new
+            {
+                ExistingUserId = existingUserId,
+                DeviceFingerprint = deviceFingerprint,
+                ConnectionId = connectionId,
+            },
+            connectionId
+        );
+
+        try
+        {
+            // 基本驗證
+            if (string.IsNullOrEmpty(deviceFingerprint))
+            {
+                await Clients.Caller.SendAsync("Error", "設備指紋不能為空");
+                return;
+            }
+
+            // 委派給 Service 處理業務邏輯
+            await _userCommunicationService.RegisterUserAsync(
+                existingUserId,
+                deviceFingerprint,
+                connectionId
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"[Communication] 用戶註冊失敗: {ex.Message}", ex, connectionId);
+            await Clients.Caller.SendAsync("Error", $"註冊失敗: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// 即時更新暱稱
+    /// Hub 只負責驗證與轉發，業務邏輯委派給 Service
+    /// </summary>
+    public async Task UpdateNickname(string newNickname)
+    {
+        var connectionId = Context.ConnectionId;
+
+        _logger.LogInfo(
+            "[Communication] 暱稱更新請求",
+            new { NewNickname = newNickname, ConnectionId = connectionId },
+            connectionId
+        );
+
+        try
+        {
+            // 基本驗證
+            if (string.IsNullOrEmpty(newNickname))
+            {
+                await Clients.Caller.SendAsync("Error", "暱稱不能為空");
+                return;
+            }
+
+            // 從 HttpContext 取得 deviceFingerprint（只信任伺服器端）
+            var deviceFingerprint = Context.GetHttpContext()?.GetDeviceFingerprint();
+            if (string.IsNullOrEmpty(deviceFingerprint))
+            {
+                await Clients.Caller.SendAsync("Error", "無法驗證裝置指紋");
+                return;
+            }
+
+            // 委派給 Service 處理業務邏輯
+            await _userCommunicationService.UpdateNicknameAsync(newNickname, deviceFingerprint);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"[Communication] 暱稱更新失敗: {ex.Message}", ex, connectionId);
+            await Clients.Caller.SendAsync("Error", $"暱稱更新失敗: {ex.Message}");
+        }
+    }
+
+    /// <summary>
     /// 連線中斷事件
     /// </summary>
     public override async Task OnDisconnectedAsync(Exception? exception)
@@ -56,6 +147,16 @@ public class CommunicationHub : Hub
             },
             connectionId
         );
+
+        try
+        {
+            // 委派給 Service 處理用戶斷線邏輯
+            await _userCommunicationService.HandleUserDisconnectedAsync(connectionId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"[Communication] 處理用戶斷線失敗: {ex.Message}", ex, connectionId);
+        }
 
         await base.OnDisconnectedAsync(exception);
     }

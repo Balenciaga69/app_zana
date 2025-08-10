@@ -34,9 +34,7 @@ public class UserRepository : IUserRepository
         var existingUser = await GetByDeviceFingerprintAsync(user.DeviceFingerprint);
         if (existingUser != null)
         {
-            throw new InvalidOperationException(
-                $"User with device fingerprint '{user.DeviceFingerprint}' already exists"
-            );
+            throw new InvalidOperationException($"設備指紋 '{user.DeviceFingerprint}' 已經存在。");
         }
 
         _context.Users.Add(user);
@@ -82,5 +80,36 @@ public class UserRepository : IUserRepository
             .Users.AsNoTracking()
             .Where(u => u.LastActiveAt < inactiveSince && u.IsActive)
             .ToListAsync();
+    }
+
+    public async Task<bool> CheckDeviceFingerprintExistsAsync(string deviceFingerprint)
+    {
+        // 檢查資料庫中是否已存在指定的設備指紋
+        return await _context.Users.AsNoTracking().AnyAsync(u => u.DeviceFingerprint == deviceFingerprint);
+    }
+
+    public async Task UpdateUserDeviceFingerprintAsync(Guid userId, string deviceFingerprint)
+    {
+        var user = await GetByIdAsync(userId);
+        if (user == null)
+        {
+            throw new InvalidOperationException($"用戶 ID '{userId}' 不存在。");
+        }
+
+        user.DeviceFingerprint = deviceFingerprint;
+        await UpdateAsync(user);
+    }
+
+    public async Task CreateNewUserAsync(string deviceFingerprint)
+    {
+        var newUser = new User
+        {
+            Id = Guid.NewGuid(),
+            DeviceFingerprint = deviceFingerprint,
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+        };
+        await CreateAsync(newUser);
     }
 }

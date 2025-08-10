@@ -23,6 +23,7 @@
     <Using Include="Xunit" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Features\Communication\" />
     <Folder Include="Features\User\Commands\" />
     <Folder Include="Shared\Common\" />
   </ItemGroup>
