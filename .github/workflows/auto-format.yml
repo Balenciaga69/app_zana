@@ -1,0 +1,52 @@
+name: Auto Format on PR to Develop
+
+on:
+  pull_request:
+    branches: [ develop ]
+    types: [ closed ] # PR 合併時觸發
+
+permissions:
+  contents: write
+
+jobs:
+  frontend-auto-format:
+    name: Frontend Auto Format & Commit
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - run: pnpm install
+      - run: pnpm run format
+      - run: pnpm run lint -- --fix || true
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: "chore: auto format code after PR to develop"
+          add: "."
+          cwd: frontend
+
+  backend-auto-format:
+    name: Backend Auto Format & Commit
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    defaults:
+      run:
+        working-directory: backend/Liz/Monolithic
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - run: dotnet tool restore
+      - run: dotnet csharpier . --config-path "../.csharpierrc"
+      - run: dotnet format .
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: "chore: auto format backend code after PR to develop"
+          add: "."
+          cwd: backend/Liz/Monolithic
