@@ -1,6 +1,6 @@
-﻿using System.Reflection;
+﻿using Infrastructure.Behaviors;
 using MediatR;
-using Infrastructure.Behaviors;
+using System.Reflection;
 
 namespace Monolithic.Infrastructure.Extensions;
 

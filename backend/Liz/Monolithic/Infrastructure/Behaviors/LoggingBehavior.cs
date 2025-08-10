@@ -1,6 +1,5 @@
-using System.Diagnostics;
 using MediatR;
-using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace Infrastructure.Behaviors;
 
@@ -17,7 +16,8 @@ public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
     public async Task<TResponse> Handle(
         TRequest request,
         RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         var requestName = typeof(TRequest).Name;
         _logger.LogInformation("Handling {RequestName} with payload: {@Request}", requestName, request);
