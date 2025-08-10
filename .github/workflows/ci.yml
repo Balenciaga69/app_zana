@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request: # 當有 Pull Request 發生時觸發
-    branches: [ main ] # 針對 main  分支
+    branches: [ main , develop ] # 針對 main, develop 分支
   push: # 當有程式碼推送到遠端時觸發
-    branches: [ main ] # 針對 main  分支
+    branches: [ main , develop ] # 針對 main, develop 分支
 permissions:
   contents: write
   pull-requests: write
