@@ -58,7 +58,9 @@ public class UserCommunicationService : IUserCommunicationService
                 NewNickname = newNickname,
             },
             user.Id.ToString()
-        ); // 廣播給所有用戶（全域通知）
+        );
+
+        // 廣播給所有用戶（全域通知）
         await _hubContext.Clients.All.SendAsync("NicknameUpdated", user.Id, user.Nickname);
 
         // TODO: 如果只想通知同房間的人，需要：
