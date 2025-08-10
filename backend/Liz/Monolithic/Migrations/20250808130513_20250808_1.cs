@@ -54,11 +54,7 @@ public partial class _20250808_1 : Migration
             columns: table => new
             {
                 Id = table.Column<Guid>(type: "uuid", nullable: false),
-                Name = table.Column<string>(
-                    type: "character varying(100)",
-                    maxLength: 100,
-                    nullable: false
-                ),
+                Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                 OwnerId = table.Column<string>(type: "text", nullable: false),
                 PasswordHash = table.Column<string>(
                     type: "character varying(256)",
@@ -127,11 +123,7 @@ public partial class _20250808_1 : Migration
                 ),
                 IsActive = table.Column<bool>(type: "boolean", nullable: false),
                 LastActiveAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                Nickname = table.Column<string>(
-                    type: "character varying(32)",
-                    maxLength: 32,
-                    nullable: true
-                ),
+                Nickname = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
                 CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                 UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
             },

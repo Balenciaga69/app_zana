@@ -3,8 +3,8 @@
 // 邊界：不處理業務邏輯，未來將獨立為微服務
 using Microsoft.AspNetCore.SignalR;
 using Monolithic.Features.User.Services;
-using Monolithic.Shared.Logging;
 using Monolithic.Shared.Extensions;
+using Monolithic.Shared.Logging;
 
 namespace Monolithic.Features.Communication;
 
