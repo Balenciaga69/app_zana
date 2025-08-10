@@ -1,6 +1,4 @@
-﻿好的！讓我制定詳細的 User Feature 開發計畫。讓我先檢查當前的項目結構，然後給你具體的步驟。 好的！我看到 User Feature 的資料夾結構已存在但是空的。以下是我的詳細開發計畫：
-
-## 🎯 User Feature 開發計畫
+﻿## 🎯 User Feature 開發計畫
 
 ### 第一階段：核心 Commands 與 Queries（預估 1-2 小時）
 

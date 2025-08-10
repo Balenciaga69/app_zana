@@ -6,7 +6,7 @@
 
 ## 已取消或不考慮的內容:
 
-有影音,有會員,有好友制,可傳送檔案,AutoMapper,FluentValidation,DDD,乾淨架構,CQRS, JWT
+有影音,有會員,有好友制,可傳送檔案,AutoMapper,FluentValidation,DDD,乾淨架構,CQRS, JWT,TDD(因為跟AiAgent開發相性不佳)
 
 ## 未來再來考慮(很肯定會導入，但不是現在):
 
@@ -38,7 +38,6 @@ C# .NET 8+,SignalR,EF Core,PostgreSQL,Redis,Serilog,MediatR,Docker,Health Checks
 - 已有通用 API Response、Exception Filter、日誌紀錄
 - 採用 Controller、MediatR（不使用 Service），並使用 Repository Pattern
 - 不採用 DDD、乾淨架構、CQRS
-- 希望你能 TDD，至少腦海中有測試想法再下手
 - 目前為單體架構，未來會拆分成微服務 + 多 DB
 - 避免直接外鍵關聯: 不要用 navigation property, 只保留 ID 引用
 
@@ -53,7 +52,6 @@ C# .NET 8+,SignalR,EF Core,PostgreSQL,Redis,Serilog,MediatR,Docker,Health Checks
   - Repositories（介面與實作放同一檔案）
 - DbContext、Entities 統一放在 Infrastructure
 - BuildingBlock 類通用元件未來可放在 Shared
-- MediatR 用 OperationResult<T>
 - Controller 用 ApiResponse<T>
 
 ## 參與者的開發環境與角色定位

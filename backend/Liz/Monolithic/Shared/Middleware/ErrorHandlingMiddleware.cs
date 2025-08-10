@@ -38,7 +38,6 @@ namespace Monolithic.Shared.Middleware
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
             var response = ApiResponse<object>.Fail(
                 ErrorCode.InternalServerError,
                 errors: new { exception.Message, exception.StackTrace }
