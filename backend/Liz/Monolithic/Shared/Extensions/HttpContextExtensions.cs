@@ -26,4 +26,20 @@ public static class HttpContextExtensions
     {
         return !string.IsNullOrEmpty(httpContext.GetDeviceFingerprint());
     }
+
+    /// <summary>
+    /// 取得用戶 IP Address
+    /// </summary>
+    public static string? GetIpAddress(this HttpContext httpContext)
+    {
+        return httpContext?.Connection?.RemoteIpAddress?.ToString();
+    }
+
+    /// <summary>
+    /// 取得 UserAgent
+    /// </summary>
+    public static string? GetUserAgent(this HttpContext httpContext)
+    {
+        return httpContext?.Request?.Headers["User-Agent"].ToString();
+    }
 }

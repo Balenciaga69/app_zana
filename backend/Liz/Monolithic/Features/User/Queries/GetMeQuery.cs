@@ -29,19 +29,21 @@ public class GetMeQueryHandler : IRequestHandler<GetMeQuery, GetMeResult>
 
     public async Task<GetMeResult> Handle(GetMeQuery query, CancellationToken cancellationToken)
     {
-        // 透過 HttpContext 擴充方法取得 DeviceFingerprint
+        // 取得 DeviceFingerprint
         var deviceFingerprint = _httpContextAccessor.HttpContext?.GetDeviceFingerprint();
 
         // 沒有 DeviceFingerprint -> 丟出例外
         if (string.IsNullOrEmpty(deviceFingerprint))
-            throw new UnauthorizedAccessException();
+            throw new UnauthorizedAccessException("無法驗證裝置指紋，請重新登入以繼續操作。");
 
         // 查詢 User
         var user = await _userRepository.GetByDeviceFingerprintAsync(deviceFingerprint);
 
         // 處理找不到用戶 -> 丟出例外
         if (user == null)
-            throw new InvalidOperationException();
+            throw new InvalidOperationException(
+                "找不到對應的使用者，請確認裝置指紋是否正確或聯繫系統管理員。"
+            );
 
         // 組裝 GetMeResult 回傳
         return new GetMeResult

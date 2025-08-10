@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Monolithic.Features.User.Commands;
 using Monolithic.Features.User.Queries;
 using Monolithic.Shared.Common;
 
@@ -34,10 +35,11 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("me/nickname")]
-    public IActionResult UpdateNickname([FromBody] object body)
+    public async Task<IActionResult> UpdateNickname([FromBody] UpdateNicknameCommand command)
     {
-        // TODO: 實作更新用戶暱稱的邏輯
-        throw new NotImplementedException();
+        await _mediator.Send(command);
+
+        return Ok(true);
     }
 
     [HttpGet("me/connections")]
@@ -77,10 +79,10 @@ public class UserController : ControllerBase
     #region Device Management
 
     [HttpPost("device-register")]
-    public IActionResult RegisterDevice([FromBody] object body)
+    public async Task<IActionResult> RegisterDevice([FromBody] RegisterDeviceCommand command)
     {
-        // TODO: 實作用戶設備註冊的邏輯
-        throw new NotImplementedException();
+        var result = await _mediator.Send(command);
+        return Ok(result);
     }
 
     [HttpPost("device-verify")]

@@ -2,17 +2,25 @@
 // 職責：專注於即時通訊連線管理、訊息傳輸和廣播
 // 邊界：不處理業務邏輯，未來將獨立為微服務
 using Microsoft.AspNetCore.SignalR;
+using Monolithic.Features.User.Services;
 using Monolithic.Shared.Logging;
+using Monolithic.Shared.Extensions;
 
 namespace Monolithic.Features.Communication;
 
-public class CommunicationHub : Hub
+public partial class CommunicationHub : Hub
 {
     private readonly IAppLogger<CommunicationHub> _logger;
+    private readonly IUserCommunicationService _userCommunicationService;
 
-    public CommunicationHub(IAppLogger<CommunicationHub> logger)
+    public CommunicationHub(
+        IAppLogger<CommunicationHub> logger,
+        IUserCommunicationService userCommunicationService
+    )
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _userCommunicationService =
+            userCommunicationService ?? throw new ArgumentNullException(nameof(userCommunicationService));
     }
 
     /// <summary>
@@ -22,42 +30,10 @@ public class CommunicationHub : Hub
     {
         var connectionInfo = ExtractConnectionInfo();
 
-        _logger.LogInfo(
-            "[Communication] 新連線建立",
-            new
-            {
-                ConnectionId = connectionInfo.ConnectionId,
-                UserAgent = connectionInfo.UserAgent,
-                IpAddress = connectionInfo.IpAddress,
-            },
-            connectionInfo.ConnectionId
-        );
-
         // 發送連線確認事件給客戶端
         await Clients.Caller.SendAsync("ConnectionEstablished", connectionInfo.ConnectionId, DateTime.UtcNow);
 
         await base.OnConnectedAsync();
-    }
-
-    /// <summary>
-    /// 連線中斷事件
-    /// </summary>
-    public override async Task OnDisconnectedAsync(Exception? exception)
-    {
-        var connectionId = Context.ConnectionId;
-
-        _logger.LogInfo(
-            "[Communication] 連線中斷",
-            new
-            {
-                ConnectionId = connectionId,
-                Exception = exception?.Message,
-                DisconnectedAt = DateTime.UtcNow,
-            },
-            connectionId
-        );
-
-        await base.OnDisconnectedAsync(exception);
     }
 
     /// <summary>
@@ -67,8 +43,6 @@ public class CommunicationHub : Hub
     public async Task Heartbeat()
     {
         var connectionId = Context.ConnectionId;
-
-        _logger.LogInfo("[Communication] 心跳檢查", new { ConnectionId = connectionId }, connectionId);
 
         await Clients.Caller.SendAsync("HeartbeatResponse", DateTime.UtcNow);
     }
@@ -81,12 +55,6 @@ public class CommunicationHub : Hub
     {
         var connectionId = Context.ConnectionId;
         var timestamp = DateTime.UtcNow;
-
-        _logger.LogInfo(
-            "[Communication] Ping 測試",
-            new { ConnectionId = connectionId, Timestamp = timestamp },
-            connectionId
-        );
 
         await Clients.Caller.SendAsync("Pong", timestamp);
     }
@@ -129,8 +97,9 @@ public class CommunicationHub : Hub
         return new ConnectionInfo
         {
             ConnectionId = Context.ConnectionId,
-            IpAddress = httpContext?.Connection?.RemoteIpAddress?.ToString(),
-            UserAgent = httpContext?.Request?.Headers?.UserAgent.ToString(),
+            IpAddress = httpContext != null ? httpContext.GetIpAddress() : null,
+            UserAgent = httpContext != null ? httpContext.GetUserAgent() : null,
+            // DeviceFingerprint = httpContext?.GetDeviceFingerprint(), // 如有需要可加上
         };
     }
 }
