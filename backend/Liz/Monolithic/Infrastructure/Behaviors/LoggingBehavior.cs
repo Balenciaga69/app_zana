@@ -1,14 +1,15 @@
 ﻿using System.Diagnostics;
 using MediatR;
+using Monolithic.Shared.Logging;
 
 namespace Infrastructure.Behaviors;
 
 public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
 {
-    private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
+    private readonly IAppLogger<LoggingBehavior<TRequest, TResponse>> _logger;
 
-    public LoggingBehavior(ILogger<LoggingBehavior<TRequest, TResponse>> logger)
+    public LoggingBehavior(IAppLogger<LoggingBehavior<TRequest, TResponse>> logger)
     {
         _logger = logger;
     }
@@ -20,29 +21,24 @@ public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
     )
     {
         var requestName = typeof(TRequest).Name;
-        _logger.LogInformation("Handling {RequestName} with payload: {@Request}", requestName, request);
+        var traceId = Guid.NewGuid().ToString("N").Substring(0, 8);
+        _logger.LogInfo($"Handling {requestName}", request, traceId);
         var stopwatch = Stopwatch.StartNew();
         try
         {
             var response = await next();
             stopwatch.Stop();
-            _logger.LogInformation(
-                "Handled {RequestName} in {ElapsedMilliseconds}ms. Response: {@Response}",
-                requestName,
-                stopwatch.ElapsedMilliseconds,
-                response
-            );
+            _logger.LogInfo($"Handled {requestName} in {stopwatch.ElapsedMilliseconds}ms", response, traceId);
             return response;
         }
         catch (Exception ex)
         {
             stopwatch.Stop();
             _logger.LogError(
+                $"Error handling {requestName} after {stopwatch.ElapsedMilliseconds}ms",
                 ex,
-                "Error handling {RequestName} after {ElapsedMilliseconds}ms. Payload: {@Request}",
-                requestName,
-                stopwatch.ElapsedMilliseconds,
-                request
+                request,
+                traceId
             );
             throw;
         }
