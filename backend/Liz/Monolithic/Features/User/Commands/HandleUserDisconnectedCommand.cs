@@ -40,32 +40,25 @@ public class HandleUserDisconnectedCommandHandler : IRequestHandler<HandleUserDi
 
     public async Task Handle(HandleUserDisconnectedCommand request, CancellationToken cancellationToken)
     {
-        var connectionId = request.ConnectionId;
-        _logger.LogInfo(
-            "[UserDisconnected] 處理用戶斷線",
-            new { ConnectionId = connectionId, Reason = request.Reason }
-        );
-
-        // 1. 查詢該 ConnectionId 對應的 UserConnection
-        var userConnection = await _userConnectionRepository.GetByConnectionIdAsync(connectionId);
+        // 查詢該 ConnectionId 對應的 UserConnection
+        var userConnection = await _userConnectionRepository.GetByConnectionIdAsync(request.ConnectionId);
         if (userConnection == null)
         {
-            _logger.LogWarn("找不到對應的 UserConnection", new { ConnectionId = connectionId });
             return;
         }
 
-        // 2. 標記 DisconnectedAt
+        // 標記 DisconnectedAt
         userConnection.DisconnectedAt = DateTime.UtcNow;
         await _userConnectionRepository.UpdateConnectionAsync(userConnection);
 
-        // 3. 檢查用戶是否還有其他活躍連線
+        // 檢查用戶是否還有其他活躍連線
         var userId = userConnection.UserId;
         var allConnections = await _userConnectionRepository.GetConnectionsByUserIdAsync(Guid.Parse(userId));
         var stillActive = allConnections.Any(c =>
             c.DisconnectedAt == null || c.DisconnectedAt > DateTime.UtcNow.AddMinutes(-1)
         );
 
-        // 4. 如果沒有，更新用戶狀態為離線
+        // 如果沒有，更新用戶狀態為離線
         if (!stillActive)
         {
             var user = await _userRepository.GetByIdAsync(Guid.Parse(userId));
@@ -77,10 +70,10 @@ public class HandleUserDisconnectedCommandHandler : IRequestHandler<HandleUserDi
             }
         }
 
-        // 5. 廣播 UserStatusChanged（可依需求擴充房間通知）
+        // 廣播 UserStatusChanged（可依需求擴充房間通知）
         await _hubContext.Clients.All.SendAsync("UserStatusChanged", userId, false);
 
-        // 6. 可擴充：查詢該用戶參與的房間，逐一離開（如有房間管理需求）
+        // 可擴充：查詢該用戶參與的房間，逐一離開（如有房間管理需求）
         // ...
 
         return;

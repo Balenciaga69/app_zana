@@ -39,16 +39,6 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand>
 
     public async Task Handle(RegisterUserCommand command, CancellationToken cancellationToken)
     {
-        _logger.LogInfo(
-            "[User] 用戶註冊請求",
-            new
-            {
-                command.ExistingUserId,
-                command.DeviceFingerprint,
-                command.ConnectionId,
-            },
-            command.ConnectionId
-        );
         // TODO: 實作用戶註冊/重連邏輯
         // 1. 檢查是否為重連（existingUserId + deviceFingerprint 驗證）
         // 2. 創建新用戶或恢復現有用戶

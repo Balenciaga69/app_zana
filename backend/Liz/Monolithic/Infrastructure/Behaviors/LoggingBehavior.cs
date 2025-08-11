@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using System.Diagnostics;
 
 namespace Infrastructure.Behaviors;

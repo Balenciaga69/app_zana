@@ -59,15 +59,15 @@
 * 已可執行 Migration 至 PostgreSQL。
 * 已具備通用 API Response、Exception Filter 與日誌紀錄功能。
 * Controller 只負責連接 Command/Query，保持輕量化。
-
+* 用 CommunicationHub 作為單一 Real-time Hub
+* 跨微服務/Feature 通訊會使用 RabbitMQ/MassTransit
 ---
 
-### 開發環境與角色定位
+### @Copilot Agent 模式須知
 
-* 開發環境：Windows + VSCode + Docker
-* 角色：架構師級開發者，專注於架構品質。
-* 開發原則：工程品質優先於開發速度，避免趕工而產生大量一次性程式碼。
-* 如果你是代理人模式(AI Agent - Copilot) 每次要大動刀之前要報告以下內容
+* 開發環境：Windows + VSCode + Docker (別誤用Linux語法)
+* 不用自動編譯與測試，如果有誤我會主動告知你
+* 每次要大動刀之前要告知以下內容
     * 你為什麼要改
     * 你會改變哪些檔案或新增刪除哪些檔案
     * 你會怎麼改
@@ -77,4 +77,10 @@
 
 ### 未來規劃 (暫不實作)
 
-專案初期暫不導入 K8s 和 AWS 進行部署，也不會使用 gRPC、RabbitMQ 和 MassTransit 處理通訊。監控工具如 Grafana、Prometheus、ELK Stack 也將延後實施。架構上，YARP (API Gateway) 和微服務拆分會是未來階段的任務。在功能面，語音合成服務如 Polly 和 QRCode 生成功能暫不實作。此外，有影音、會員、好友制、檔案傳輸等功能已明確取消。架構模式方面，DDD、乾淨架構、CQRS、JWT 以及 TDD 也不在目前的考量範圍內，也不會使用 AutoMapper 和 FluentValidation。
+專案初期暫不導入 K8s 和 AWS 進行部署，
+監控工具如 Grafana、Prometheus、ELK Stack 也將延後實施。
+架構上，YARP (API Gateway) 和微服務拆分會是未來階段的任務。
+在功能面，語音合成服務如 Polly 和 QRCode 生成功能暫不實作。
+此外，有影音、會員、好友制、檔案傳輸等功能已明確取消。
+架構模式方面，DDD、乾淨架構、CQRS、JWT 以及 TDD 
+也不會使用 AutoMapper 和 FluentValidation。
