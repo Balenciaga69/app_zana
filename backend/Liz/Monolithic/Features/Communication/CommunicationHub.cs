@@ -2,7 +2,6 @@
 // 職責：專注於即時通訊連線管理、訊息傳輸和廣播
 // 邊界：不處理業務邏輯，未來將獨立為微服務
 using Microsoft.AspNetCore.SignalR;
-using Monolithic.Features.User.Services;
 using Monolithic.Shared.Extensions;
 using Monolithic.Shared.Logging;
 
@@ -11,16 +10,10 @@ namespace Monolithic.Features.Communication;
 public partial class CommunicationHub : Hub
 {
     private readonly IAppLogger<CommunicationHub> _logger;
-    private readonly IUserCommunicationService _userCommunicationService;
 
-    public CommunicationHub(
-        IAppLogger<CommunicationHub> logger,
-        IUserCommunicationService userCommunicationService
-    )
+    public CommunicationHub(IAppLogger<CommunicationHub> logger)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _userCommunicationService =
-            userCommunicationService ?? throw new ArgumentNullException(nameof(userCommunicationService));
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
-﻿using System.Reflection;
+﻿using Infrastructure.Behaviors;
 using MediatR;
+using System.Reflection;
 
 namespace Monolithic.Infrastructure.Extensions;
 
@@ -11,6 +12,7 @@ public static partial class DIExt
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+            cfg.AddOpenBehavior(typeof(LoggingBehavior<,>)); // 註冊全域 LoggingBehavior
         });
         return services;
     }

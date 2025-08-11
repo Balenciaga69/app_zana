@@ -49,7 +49,7 @@ applyTo: '**'
 
 ## WebSocket (SignalR) API
 
-### Hub: ChatHub
+### Hub: CommunicationHub
 
 #### 連線管理方法
 
@@ -134,7 +134,7 @@ applyTo: '**'
 
 統一的 WebSocket 通訊中心，負責所有即時功能的協調和管理。採用單一 Hub 設計，避免多 Hub 間的複雜度。
 
-## Hub: ChatHub
+## Hub: CommunicationHub
 
 ### 連線管理
 

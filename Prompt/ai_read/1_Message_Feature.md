@@ -26,7 +26,7 @@
 
 ## WebSocket (SignalR) API
 
-### Hub: ChatHub
+### Hub: CommunicationHub
 
 #### 訊息相關方法
 

@@ -16,7 +16,7 @@ public class HealthController : ControllerBase
     }
 
     /// <summary>
-    /// 基本健康檢查 (MediatR)
+    /// 基本健康檢查
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> Get()
@@ -27,7 +27,7 @@ public class HealthController : ControllerBase
     }
 
     /// <summary>
-    /// 詳細健康檢查，包含所有依賴服務 (MediatR)
+    /// 詳細健康檢查，包含所有依賴服務
     /// </summary>
     [HttpGet("detailed")]
     public async Task<IActionResult> GetDetailed()
@@ -38,7 +38,7 @@ public class HealthController : ControllerBase
     }
 
     /// <summary>
-    /// 檢查資料庫連線 (MediatR)
+    /// 檢查資料庫連線
     /// </summary>
     [HttpGet("database")]
     public async Task<IActionResult> GetDatabase()
@@ -49,7 +49,7 @@ public class HealthController : ControllerBase
     }
 
     /// <summary>
-    /// 檢查快取服務連線 (MediatR)
+    /// 檢查快取服務連線
     /// </summary>
     [HttpGet("cache")]
     public async Task<IActionResult> GetCache()
@@ -60,7 +60,7 @@ public class HealthController : ControllerBase
     }
 
     /// <summary>
-    /// 檢查訊息佇列連線 (MediatR)
+    /// 檢查訊息佇列連線
     /// </summary>
     [HttpGet("messaging")]
     public async Task<IActionResult> GetMessaging()

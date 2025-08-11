@@ -6,7 +6,6 @@ dotnet csharpier . --config-path "../.csharpierrc"
 using Monolithic.Features.Communication;
 using Monolithic.Infrastructure.Data;
 using Monolithic.Infrastructure.Extensions;
-using Monolithic.Shared.Logging;
 using Monolithic.Shared.Middleware;
 using Serilog;
 using HealthCheckOptions = Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions;
@@ -58,7 +57,6 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ApiResponseResultFilter>();
-    options.Filters.Add<ApiLoggingActionFilter>();
 });
 
 var app = builder.Build();
