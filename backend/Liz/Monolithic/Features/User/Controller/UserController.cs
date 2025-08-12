@@ -18,7 +18,7 @@ public class UserController : ControllerBase
     }
 
     #region User Management
-
+    // TODO: @Copilot 盤點存在必要性
     [HttpGet("{id}")]
     public IActionResult GetUserById(string id)
     {
@@ -26,6 +26,7 @@ public class UserController : ControllerBase
         throw new NotImplementedException();
     }
 
+    // TODO: @Copilot 盤點存在必要性
     [HttpGet("me")]
     public async Task<ActionResult<ApiResponse<GetMeResult>>> GetMe()
     {
@@ -34,14 +35,7 @@ public class UserController : ControllerBase
         return Ok(ApiResponse<GetMeResult>.Ok(result, "取得用戶資訊成功"));
     }
 
-    [HttpPut("me/nickname")]
-    public async Task<IActionResult> UpdateNickname([FromBody] UpdateNicknameCommand command)
-    {
-        await _mediator.Send(command);
-
-        return Ok(true);
-    }
-
+    // TODO: @Copilot 盤點存在必要性
     [HttpGet("me/connections")]
     public IActionResult GetMyConnections()
     {
@@ -52,7 +46,7 @@ public class UserController : ControllerBase
     #endregion
 
     #region Status Queries
-
+    // TODO: @Copilot 盤點存在必要性
     [HttpGet("{id}/is-online")]
     public IActionResult IsUserOnline(string id)
     {
@@ -60,6 +54,7 @@ public class UserController : ControllerBase
         throw new NotImplementedException();
     }
 
+    // TODO: @Copilot 盤點存在必要性
     [HttpGet("online-stats")]
     public IActionResult GetOnlineStats()
     {
@@ -67,30 +62,12 @@ public class UserController : ControllerBase
         throw new NotImplementedException();
     }
 
+    // TODO: @Copilot 盤點存在必要性
     [HttpGet("{id}/rooms")]
     public IActionResult GetUserRooms(string id)
     {
         // TODO: 實作取得用戶所屬房間的邏輯
         throw new NotImplementedException();
     }
-
-    #endregion
-
-    #region Device Management
-
-    [HttpPost("device-register")]
-    public async Task<IActionResult> RegisterDevice([FromBody] RegisterDeviceCommand command)
-    {
-        var result = await _mediator.Send(command);
-        return Ok(result);
-    }
-
-    [HttpPost("device-verify")]
-    public IActionResult VerifyDevice([FromBody] object body)
-    {
-        // TODO: 實作用戶設備驗證的邏輯
-        throw new NotImplementedException();
-    }
-
     #endregion
 }

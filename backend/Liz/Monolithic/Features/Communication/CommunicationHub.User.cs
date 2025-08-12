@@ -8,7 +8,6 @@ public partial class CommunicationHub : Hub
 {
     /// <summary>
     /// 註冊/重新連線用戶
-    /// Hub 只負責驗證與轉發，業務邏輯委派給 Service
     /// </summary>
     public async Task RegisterUser(string? existingUserId, string deviceFingerprint)
     {
@@ -41,11 +40,9 @@ public partial class CommunicationHub : Hub
 
     /// <summary>
     /// 即時更新暱稱
-    /// Hub 只負責驗證與轉發，業務邏輯委派給 Service
     /// </summary>
     public async Task UpdateNickname(string newNickname)
     {
-        var connectionId = Context.ConnectionId;
         try
         {
             if (string.IsNullOrEmpty(newNickname))
