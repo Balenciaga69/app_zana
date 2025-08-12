@@ -30,11 +30,7 @@ public partial class CommunicationHub : Hub
                 return;
             }
             await mediator.Send(
-                new Monolithic.Features.User.Commands.RegisterUserCommand(
-                    existingUserId,
-                    deviceFingerprint,
-                    connectionId
-                )
+                new User.Commands.RegisterUserCommand(existingUserId, deviceFingerprint, connectionId)
             );
         }
         catch (Exception)
@@ -70,7 +66,7 @@ public partial class CommunicationHub : Hub
                 await Clients.Caller.SendAsync("Error", "伺服器錯誤");
                 return;
             }
-            await mediator.Send(new Monolithic.Features.User.Commands.UpdateNicknameCommand(newNickname));
+            await mediator.Send(new User.Commands.UpdateNicknameCommand(newNickname));
         }
         catch (Exception)
         {
@@ -91,10 +87,7 @@ public partial class CommunicationHub : Hub
             if (mediator != null)
             {
                 await mediator.Send(
-                    new Monolithic.Features.User.Commands.HandleUserDisconnectedCommand(
-                        connectionId,
-                        exception?.Message
-                    )
+                    new User.Commands.HandleUserDisconnectedCommand(connectionId, exception?.Message)
                 );
             }
         }
