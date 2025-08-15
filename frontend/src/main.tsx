@@ -4,7 +4,9 @@ import App from './App.tsx'
 import theme from './Shared/styles/theme.ts'
 
 createRoot(document.getElementById('root')!).render(
+  // <StrictMode>
   <ChakraProvider theme={theme}>
     <App />
   </ChakraProvider>
+  // </StrictMode>
 )
