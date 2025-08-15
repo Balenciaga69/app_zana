@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using Monolithic.Shared.Extensions;
 
 namespace Monolithic.Features.Communication;
-
+// 已被拋棄
 public partial class CommunicationV1Hub : Hub
 {
     /// <summary>

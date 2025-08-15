@@ -44,7 +44,7 @@
 
 #### 未來規劃（暫不實作）
 
-專案初期暫不導入 K8s、AWS 部署，監控工具如 Grafana、Prometheus、ELK Stack 延後實施。架構上，YARP（API Gateway）與微服務拆分為未來任務。功能面如語音合成（Polly）、QRCode 生成暫不實作。影音、會員、好友制、檔案傳輸等功能已明確取消。DDD、乾淨架構、CQRS、JWT、TDD、AutoMapper、FluentValidation 皆不採用。
+專案初期暫不導入 K8s、AWS 部署，監控工具如 Grafana、Prometheus、ELK Stack 延後實施。架構上，YARP（API Gateway）與微服務拆分為未來任務。功能面如語音合成（Polly）、QRCode 生成暫不實作。影音、會員、好友制、檔案傳輸等功能已明確取消。DDD、乾淨架構、CQRS、JWT、TDD、AutoMapper皆不採用。
 
 ---
 
