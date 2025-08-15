@@ -18,12 +18,18 @@ public partial class CommunicationHub : Hub
     /// </summary>
     public override async Task OnConnectedAsync()
     {
+        _logger.LogInfo("OnConnectedAsync");
         var connectionInfo = ExtractConnectionInfo();
-
         // 發送連線確認事件給客戶端
         await Clients.Caller.SendAsync("ConnectionEstablished", connectionInfo.ConnectionId, DateTime.UtcNow);
 
         await base.OnConnectedAsync();
+    }
+
+    public override async Task OnDisconnectedAsync(Exception exception)
+    {
+        _logger.LogInfo($"OnDisconnectedAsync: {exception}");
+        await base.OnDisconnectedAsync(exception);
     }
 
     /// <summary>

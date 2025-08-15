@@ -14,19 +14,19 @@ export class SignalRService {
       return this.connection
     }
 
-    this.connection = new HubConnectionBuilder()
-      .withUrl(config.signalR.hubUrl)
-      .withAutomaticReconnect({
-        nextRetryDelayInMilliseconds: (retryContext) => {
-          if (retryContext.previousRetryCount < this.maxReconnectAttempts) {
-            return this.reconnectDelay
-          }
-          return null // 停止重連
-        },
-      })
-      .configureLogging(LogLevel.Information)
-      .build()
-
+    this.connection = new HubConnectionBuilder().withUrl(config.signalR.hubUrl).withAutomaticReconnect().build()
+    /* 
+    .withAutomaticReconnect({
+      nextRetryDelayInMilliseconds: (retryContext) => {
+        if (retryContext.previousRetryCount < this.maxReconnectAttempts) {
+          return this.reconnectDelay
+        }
+        return null // 停止重連
+      },
+    })
+    .configureLogging(LogLevel.Information)
+    .build()
+    */
     // 註冊事件監聽器
     this.setupEventListeners()
 

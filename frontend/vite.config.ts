@@ -1,13 +1,8 @@
-﻿import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tsconfigPaths from 'vite-tsconfig-paths'
+﻿import react from '@vitejs/plugin-react'
 import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import { defineConfig } from 'vite'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   server: {
@@ -15,8 +10,8 @@ export default defineConfig({
     port: 7414,
     host: '0.0.0.0',
     https: {
-      key: fs.readFileSync(path.resolve(__dirname, 'ssl/localhost.key')),
-      cert: fs.readFileSync(path.resolve(__dirname, 'ssl/localhost.crt')),
+      key: fs.readFileSync('ssl/localhost-key.pem'),
+      cert: fs.readFileSync('ssl/localhost.pem'),
     },
     hmr: {
       port: 7414,
