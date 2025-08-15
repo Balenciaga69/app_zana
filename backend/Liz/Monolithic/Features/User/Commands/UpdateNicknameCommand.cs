@@ -1,3 +1,4 @@
+﻿using FluentValidation;
 using MediatR;
 
 namespace Monolithic.Features.User.Commands;
@@ -13,5 +14,14 @@ public class UpdateNicknameCommandHandler : IRequestHandler<UpdateNicknameComman
     {
         // TODO: 更新暱稱的 Handler 實作
         throw new NotImplementedException();
+    }
+}
+
+public class UpdateNicknameCommandValidator : AbstractValidator<UpdateNicknameCommand>
+{
+    public UpdateNicknameCommandValidator()
+    {
+        RuleFor(x => x.UserId).NotEmpty();
+        RuleFor(x => x.NewNickname).NotEmpty().MaximumLength(32); // 可依需求調整長度
     }
 }

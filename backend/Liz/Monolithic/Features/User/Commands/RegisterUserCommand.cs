@@ -1,5 +1,5 @@
+﻿using FluentValidation;
 using MediatR;
-using FluentValidation;
 
 namespace Monolithic.Features.User.Commands;
 
