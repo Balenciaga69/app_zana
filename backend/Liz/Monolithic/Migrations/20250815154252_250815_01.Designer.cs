@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Monolithic.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250808130513_20250808_1")]
-    partial class _20250808_1
+    [Migration("20250815154252_250815_01")]
+    partial class _250815_01
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -163,6 +163,7 @@ namespace Monolithic.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Nickname")
+                        .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 

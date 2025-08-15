@@ -19,8 +19,10 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
         CancellationToken cancellationToken
     )
     {
+        // ValidationContext 是 FluentValidation 的上下文類別，用來提供驗證的相關資訊
         var context = new ValidationContext<TRequest>(request);
 
+        // 驗證所有註冊的 Validator
         var failures = _validators
             .Select(validator => validator.Validate(context))
             .SelectMany(result => result.Errors)

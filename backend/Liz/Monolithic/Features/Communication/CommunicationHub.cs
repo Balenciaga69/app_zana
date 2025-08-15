@@ -89,7 +89,6 @@ public partial class CommunicationHub : Hub
             ConnectionId = Context.ConnectionId,
             IpAddress = httpContext != null ? httpContext.GetIpAddress() : null,
             UserAgent = httpContext != null ? httpContext.GetUserAgent() : null,
-            // DeviceFingerprint = httpContext?.GetDeviceFingerprint(), // 如有需要可加上
         };
     }
 }
