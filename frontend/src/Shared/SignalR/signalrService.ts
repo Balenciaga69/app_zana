@@ -1,32 +1,31 @@
-import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
+import { HttpTransportType, HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
 import { config } from '../config/config'
 
 export type ConnectionState = 'disconnected' | 'connecting' | 'connected' | 'reconnecting' | 'error'
 
 export class SignalRService {
   private connection: HubConnection | null = null
-  private reconnectAttempts = 0
-  private maxReconnectAttempts = 5
-  private reconnectDelay = 3000
+  private reconnectAttempts: number = 0
+  private maxReconnectAttempts: number = 5
+  private reconnectDelay: number = 3000
 
   async connect(): Promise<HubConnection> {
     if (this.connection?.state === 'Connected') {
       return this.connection
     }
 
-    this.connection = new HubConnectionBuilder().withUrl(config.signalR.hubUrl).withAutomaticReconnect().build()
-    /* 
-    .withAutomaticReconnect({
-      nextRetryDelayInMilliseconds: (retryContext) => {
-        if (retryContext.previousRetryCount < this.maxReconnectAttempts) {
-          return this.reconnectDelay
-        }
-        return null // 停止重連
-      },
-    })
-    .configureLogging(LogLevel.Information)
-    .build()
-    */
+    this.connection = new HubConnectionBuilder()
+      .withUrl(config.signalR.hubUrl)
+      .withAutomaticReconnect({
+        nextRetryDelayInMilliseconds: (retryContext) => {
+          if (retryContext.previousRetryCount < this.maxReconnectAttempts) {
+            return this.reconnectDelay
+          }
+          return null // 停止重連
+        },
+      })
+      .configureLogging(LogLevel.Information)
+      .build()
     // 註冊事件監聽器
     this.setupEventListeners()
 
