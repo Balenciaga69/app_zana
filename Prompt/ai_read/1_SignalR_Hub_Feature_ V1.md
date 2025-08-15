@@ -1,5 +1,7 @@
 # SignalR Hub Feature V1
 
+## 此 Feature 被 @Balenciaga69 拋棄，他要求重新構思
+
 ## 概述
 
 統一的 WebSocket 通訊中心，負責所有即時功能的協調和管理。採用單一 Hub 設計，避免多 Hub 間的複雜度。

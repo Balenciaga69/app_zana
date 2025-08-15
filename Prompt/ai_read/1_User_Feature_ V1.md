@@ -1,5 +1,7 @@
 ﻿# User Feature V1
 
+## 此 Feature 被 @Balenciaga69 拋棄，他要求重新構思
+
 ## Entities
 
 ### User（用戶本體）
