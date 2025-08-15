@@ -1,7 +1,4 @@
-﻿// Communication 微服務 - SignalR Hub
-// 職責：專注於即時通訊連線管理、訊息傳輸和廣播
-// 邊界：不處理業務邏輯，未來將獨立為微服務
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Monolithic.Shared.Extensions;
 using Monolithic.Shared.Logging;
 
@@ -21,12 +18,18 @@ public partial class CommunicationHub : Hub
     /// </summary>
     public override async Task OnConnectedAsync()
     {
+        _logger.LogInfo("OnConnectedAsync");
         var connectionInfo = ExtractConnectionInfo();
-
         // 發送連線確認事件給客戶端
         await Clients.Caller.SendAsync("ConnectionEstablished", connectionInfo.ConnectionId, DateTime.UtcNow);
 
         await base.OnConnectedAsync();
+    }
+
+    public override async Task OnDisconnectedAsync(Exception exception)
+    {
+        _logger.LogInfo($"OnDisconnectedAsync: {exception}");
+        await base.OnDisconnectedAsync(exception);
     }
 
     /// <summary>
@@ -92,7 +95,6 @@ public partial class CommunicationHub : Hub
             ConnectionId = Context.ConnectionId,
             IpAddress = httpContext != null ? httpContext.GetIpAddress() : null,
             UserAgent = httpContext != null ? httpContext.GetUserAgent() : null,
-            // DeviceFingerprint = httpContext?.GetDeviceFingerprint(), // 如有需要可加上
         };
     }
 }

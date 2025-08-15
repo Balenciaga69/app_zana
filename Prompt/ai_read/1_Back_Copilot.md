@@ -8,7 +8,7 @@
 
 ---
 
-### 技術架構
+### 後端專屬
 
 #### 必備技術棧
 
@@ -34,9 +34,7 @@
 - 避免直接外鍵關聯：只保留 ID 引用，不使用 Navigation Property。
 - 通用欄位：所有 Entity 必須包含 `CreatedAt`、`UpdatedAt`、`Id`。
 
----
-
-### 日誌紀錄規範（Log Guideline）
+#### 日誌紀錄規範（Log Guideline）
 
 - 一般業務、API、Command/Query 處理，統一交由 MediatR Pipeline 自動記錄，不需在 Handler/Controller/Service 額外寫 log。
 - 例外與錯誤，統一由 Middleware 處理。
@@ -44,9 +42,13 @@
 - 禁止在 Controller、Service、Handler 內重複記錄一般流程 log。
 - 日誌格式、TraceId、結構化資料，皆統一用 IAppLogger。
 
+#### 未來規劃（暫不實作）
+
+專案初期暫不導入 K8s、AWS 部署，監控工具如 Grafana、Prometheus、ELK Stack 延後實施。架構上，YARP（API Gateway）與微服務拆分為未來任務。功能面如語音合成（Polly）、QRCode 生成暫不實作。影音、會員、好友制、檔案傳輸等功能已明確取消。DDD、乾淨架構、CQRS、JWT、TDD、AutoMapper皆不採用。
+
 ---
 
-### 目前進度與功能
+### 通用
 
 #### 功能需求
 
@@ -70,6 +72,7 @@
 ### @Copilot Agent 模式須知
 
 - 開發環境：Windows + VSCode + Docker（勿誤用 Linux 語法）
+- 前後端溝通用: Restful API and SignalR
 - 不用自動編譯與測試，如有誤會主動告知
 - 每次大幅修改前需說明：
   - 為什麼要改
@@ -79,6 +82,8 @@
 
 ---
 
-### 未來規劃（暫不實作）
-
-專案初期暫不導入 K8s、AWS 部署，監控工具如 Grafana、Prometheus、ELK Stack 延後實施。架構上，YARP（API Gateway）與微服務拆分為未來任務。功能面如語音合成（Polly）、QRCode 生成暫不實作。影音、會員、好友制、檔案傳輸等功能已明確取消。DDD、乾淨架構、CQRS、JWT、TDD、AutoMapper、FluentValidation 皆不採用。
+### @Balenciaga69 的說明
+- UserV1 Feature 已經拋棄，我們要回歸初衷
+  - API 為了前端需要才開，遇到了再開發，而不是事先規劃好所有 API
+  - 有遇到了再來煩惱，而不是一開始就設計好所有細節
+  - 如果計劃書有標記被棄用或需修改，請直接忽略後重新構思

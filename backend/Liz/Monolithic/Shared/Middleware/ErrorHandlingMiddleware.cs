@@ -46,11 +46,17 @@ public class ErrorHandlingMiddleware
                 ? exception.Message
                 : defaultMessage;
 
-        var response = ApiResponse<object>.Fail(
-            errorCode,
-            message,
-            errors: new { exception.Message, exception.StackTrace }
-        );
+        object errors;
+        if (exception is FluentValidation.ValidationException validationEx)
+        {
+            errors = validationEx.Errors.Select(e => new { e.PropertyName, e.ErrorMessage }).ToList();
+        }
+        else
+        {
+            errors = new { exception.Message, exception.StackTrace };
+        }
+
+        var response = ApiResponse<object>.Fail(errorCode, message, errors: errors);
         response.TraceId = context.TraceIdentifier;
 
         var json = JsonSerializer.Serialize(response);
@@ -64,6 +70,12 @@ public class ErrorHandlingMiddleware
         Exception exception
     )
     {
+        if (exception is FluentValidation.ValidationException)
+        {
+            // 400 BadRequest, InvalidInput, 錯誤訊息統一
+            return (HttpStatusCode.BadRequest, ErrorCode.InvalidInput, "輸入資料驗證失敗");
+        }
+
         return exception switch
         {
             UnauthorizedAccessException => (

@@ -1,54 +1,31 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.SignalR;
-using Monolithic.Features.Communication;
-using Monolithic.Features.User.Repositories;
-using Monolithic.Shared.Extensions;
+﻿using FluentValidation;
+using MediatR;
 
 namespace Monolithic.Features.User.Commands;
 
-public class UpdateNicknameCommand : IRequest
+public record UpdateNicknameCommand(Guid UserId, string NewNickname) : IRequest<bool>
 {
-    public string NewNickname { get; set; } // 新的暱稱
+    // TODO: 更新暱稱的 Command 實作
+}
 
-    public UpdateNicknameCommand(string newNickname)
+public class UpdateNicknameCommandValidator : AbstractValidator<UpdateNicknameCommand>
+{
+    public UpdateNicknameCommandValidator()
     {
-        NewNickname = newNickname;
+        RuleFor(x => x.UserId).NotEmpty();
+        RuleFor(x => x.NewNickname).NotEmpty().MaximumLength(32); // 可依需求調整長度
     }
 }
 
-public class UpdateNicknameCommandHandler : IRequestHandler<UpdateNicknameCommand>
+public class UpdateNicknameCommandHandler : IRequestHandler<UpdateNicknameCommand, bool>
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IHubContext<CommunicationHub> _hubContext;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public UpdateNicknameCommandHandler(
-        IUserRepository userRepository,
-        IHubContext<CommunicationHub> hubContext,
-        IHttpContextAccessor httpContextAccessor
-    )
+    public Task<bool> Handle(UpdateNicknameCommand request, CancellationToken cancellationToken)
     {
-        _userRepository = userRepository;
-        _hubContext = hubContext;
-        _httpContextAccessor = httpContextAccessor;
-    }
-
-    public async Task Handle(UpdateNicknameCommand command, CancellationToken cancellationToken)
-    {
-        // 取得 DeviceFingerprint
-        var deviceFingerprint = _httpContextAccessor.HttpContext?.GetDeviceFingerprint();
-        if (string.IsNullOrEmpty(deviceFingerprint))
-            throw new UnauthorizedAccessException("無法驗證裝置指紋，請重新登入以繼續操作。");
-        if (string.IsNullOrEmpty(command.NewNickname))
-            throw new ArgumentException("新暱稱不能為空。");
-        var user = await _userRepository.GetByDeviceFingerprintAsync(deviceFingerprint);
-        if (user == null)
-            throw new InvalidOperationException("找不到對應的使用者，請確認裝置指紋是否正確。");
-        var oldNickname = user.Nickname;
-        user.Nickname = command.NewNickname;
-        await _userRepository.UpdateAsync(user);
-        // 廣播給所有用戶（全域通知）
-        await _hubContext.Clients.All.SendAsync("NicknameUpdated", user.Id, user.Nickname);
-        // TODO: 若只通知同房間，查詢房間後 group 發送
+        // TODO: 即時更新暱稱
+        // 1. 驗證 newNickname 格式與長度
+        // 2. 取得當前 userId
+        // 3. 更新資料庫/快取中的暱稱
+        // 4. 廣播 NicknameUpdated 事件給相關用戶
+        throw new NotImplementedException();
     }
 }

@@ -1,51 +1,50 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.SignalR;
-using Monolithic.Features.Communication;
-using Monolithic.Features.User.Repositories;
-using Monolithic.Shared.Logging;
+﻿using FluentValidation;
+using MediatR;
 
 namespace Monolithic.Features.User.Commands;
 
-public class RegisterUserCommand : IRequest
+public record RegisterUserCommand(string? ExistingUserId, string DeviceFingerprint) : IRequest<Guid>
 {
-    public string? ExistingUserId { get; set; }
-    public string DeviceFingerprint { get; set; }
-    public string ConnectionId { get; set; }
+    // TODO: 註冊或重新連線用戶的 Command 實作
+}
 
-    public RegisterUserCommand(string? existingUserId, string deviceFingerprint, string connectionId)
+public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
+{
+    public RegisterUserCommandValidator()
     {
-        ExistingUserId = existingUserId;
-        DeviceFingerprint = deviceFingerprint;
-        ConnectionId = connectionId;
+        RuleFor(x => x.DeviceFingerprint)
+            .NotEmpty()
+            .Length(32, 128)
+            .Must(f => !string.IsNullOrWhiteSpace(f))
+            .WithMessage("DeviceFingerprint 不可為空白")
+            .Must(f => !IsAllZeroOrWhitespace(f))
+            .WithMessage("DeviceFingerprint 不可全為 0 或全空白")
+            .Matches("^[a-zA-Z0-9\\-_.:]+$") // 注意：C# 字串中 - 需跳脫
+            .WithMessage("DeviceFingerprint 僅允許英數字與 -_.: 字元");
+        // 若有 existingUserId，建議可加 Guid 格式驗證（視需求）
+    }
+
+    private bool IsAllZeroOrWhitespace(string f)
+    {
+        if (string.IsNullOrWhiteSpace(f))
+        {
+            return true;
+        }
+        var trimmed = f.Trim();
+        return trimmed.All(c => c == '0');
     }
 }
 
-public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand>
+public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Guid>
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IHubContext<CommunicationHub> _hubContext;
-    private readonly IAppLogger<RegisterUserCommandHandler> _logger;
-
-    public RegisterUserCommandHandler(
-        IUserRepository userRepository,
-        IHubContext<CommunicationHub> hubContext,
-        IAppLogger<RegisterUserCommandHandler> logger
-    )
+    public Task<Guid> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        _userRepository = userRepository;
-        _hubContext = hubContext;
-        _logger = logger;
-    }
-
-    public async Task Handle(RegisterUserCommand command, CancellationToken cancellationToken)
-    {
-        // TODO: 實作用戶註冊/重連邏輯
-        // 1. 檢查是否為重連（existingUserId + deviceFingerprint 驗證）
-        // 2. 創建新用戶或恢復現有用戶
-        // 3. 記錄 UserConnection
-        // 4. 發送 UserRegistered 事件
-        await _hubContext
-            .Clients.Client(command.ConnectionId)
-            .SendAsync("UserRegistered", "user123", "匿名用戶", true);
+        // TODO: 註冊或重新連線用戶
+        // 1. 檢查 deviceFingerprint 是否有效
+        // 2. 若 existingUserId 有值則驗證與 deviceFingerprint 綁定關係
+        // 3. 若無 existingUserId 則建立新用戶
+        // 4. 記錄連線資訊（IP、UserAgent、ConnectionId）
+        // 5. 回傳 UserRegistered/ConnectionEstablished 事件
+        throw new NotImplementedException();
     }
 }

@@ -1,7 +1,9 @@
-﻿import { BrowserRouter, Routes, Route } from 'react-router-dom'
+﻿import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { useEffect } from 'react'
+import { signalRService } from './Shared/SignalR/signalrService'
 import ExampleChatRoomPage from './features/ChatRoom/pages/ExampleChatRoomPage'
-import HomePage from './features/Room/pages/HomePage'
 import CreateRoomPage from './features/Room/pages/CreateRoomPage'
+import HomePage from './features/Room/pages/HomePage'
 import JoinRoomPage from './features/Room/pages/JoinRoomPage'
 
 function App() {
