@@ -1,7 +1,6 @@
-import { create } from 'zustand'
+﻿import { create } from 'zustand'
 import type { HubConnection } from '@microsoft/signalr'
-import type { ConnectionState } from './signalrService'
-import { signalRService } from './signalrService'
+import { signalRService, type ConnectionState } from '../services/signalrService'
 
 interface SignalRState {
   // 狀態

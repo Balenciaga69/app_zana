@@ -1,15 +1,15 @@
 ﻿/** Most Common Command
-dotnet ef migrations add "250815_01"
+dotnet ef migrations add "250816_01"
 dotnet csharpier . --config-path "../.csharpierrc"
  */
 
-using System.Reflection;
 using FluentValidation;
 using Monolithic.Features.Communication;
 using Monolithic.Infrastructure.Data;
 using Monolithic.Infrastructure.Extensions;
 using Monolithic.Shared.Middleware;
 using Serilog;
+using System.Reflection;
 using HealthCheckOptions = Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions;
 
 // 讀取 Serilog 設定
@@ -83,7 +83,6 @@ builder.Services.AddControllers(options =>
 var app = builder.Build();
 
 // 註冊全域 Middleware
-app.UseMiddleware<DeviceFingerprintMiddleware>();
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 // 自動遷移資料庫

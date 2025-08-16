@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using MediatR;
+using Microsoft.AspNetCore.SignalR;
 using Monolithic.Shared.Extensions;
 using Monolithic.Shared.Logging;
 
@@ -7,10 +8,12 @@ namespace Monolithic.Features.Communication;
 public partial class CommunicationHub : Hub
 {
     private readonly IAppLogger<CommunicationHub> _logger;
+    private readonly IMediator _mediator;
 
-    public CommunicationHub(IAppLogger<CommunicationHub> logger)
+    public CommunicationHub(IAppLogger<CommunicationHub> logger, IMediator mediator)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
     /// <summary>

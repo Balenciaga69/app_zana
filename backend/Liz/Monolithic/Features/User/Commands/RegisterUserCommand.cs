@@ -1,12 +1,17 @@
 ﻿using FluentValidation;
 using MediatR;
+using Monolithic.Features.User.Repositories;
+using Monolithic.Infrastructure.Data;
+using Monolithic.Infrastructure.Data.Entities;
 
 namespace Monolithic.Features.User.Commands;
 
-public record RegisterUserCommand(string? ExistingUserId, string DeviceFingerprint) : IRequest<Guid>
-{
-    // TODO: 註冊或重新連線用戶的 Command 實作
-}
+public record RegisterUserCommand(
+    string DeviceFingerprint,
+    string ConnectionId,
+    string? IpAddress,
+    string? UserAgent
+) : IRequest<Guid>;
 
 public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
 {
@@ -21,7 +26,9 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
             .WithMessage("DeviceFingerprint 不可全為 0 或全空白")
             .Matches("^[a-zA-Z0-9\\-_.:]+$") // 注意：C# 字串中 - 需跳脫
             .WithMessage("DeviceFingerprint 僅允許英數字與 -_.: 字元");
-        // 若有 existingUserId，建議可加 Guid 格式驗證（視需求）
+
+        RuleFor(x => x.ConnectionId).NotEmpty().WithMessage("ConnectionId 不可為空");
+        // IpAddress, UserAgent 可選，不強制驗證
     }
 
     private bool IsAllZeroOrWhitespace(string f)
@@ -37,14 +44,76 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
 
 public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Guid>
 {
-    public Task<Guid> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    private readonly IUserRepository _userRepository;
+    private readonly IUserConnectionRepository _userConnectionRepository;
+    private readonly AppDbContext _dbContext;
+
+    public RegisterUserCommandHandler(
+        IUserRepository userRepository,
+        IUserConnectionRepository userConnectionRepository,
+        AppDbContext dbContext
+    )
     {
-        // TODO: 註冊或重新連線用戶
-        // 1. 檢查 deviceFingerprint 是否有效
-        // 2. 若 existingUserId 有值則驗證與 deviceFingerprint 綁定關係
-        // 3. 若無 existingUserId 則建立新用戶
-        // 4. 記錄連線資訊（IP、UserAgent、ConnectionId）
-        // 5. 回傳 UserRegistered/ConnectionEstablished 事件
-        throw new NotImplementedException();
+        _userRepository = userRepository;
+        _userConnectionRepository = userConnectionRepository;
+        _dbContext = dbContext;
+    }
+
+    public async Task<Guid> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    {
+        var now = DateTime.UtcNow;
+
+        // 查找是否已有對應 DeviceFingerprint 的 User
+        var existingUser = await _userRepository.GetByDeviceFingerprintAsync(request.DeviceFingerprint);
+
+        UserEntity user;
+
+        if (existingUser == null)
+        {
+            // 若無則建立新的 User
+            user = new UserEntity
+            {
+                Id = Guid.NewGuid(),
+                DeviceFingerprint = request.DeviceFingerprint,
+                IsActive = true,
+                LastActiveAt = now,
+                Nickname = $"匿名用戶{Random.Shared.Next(1000, 9999)}",
+                CreatedAt = now,
+                UpdatedAt = now,
+            };
+
+            await _userRepository.AddAsync(user);
+        }
+        else
+        {
+            // 若有則更新 IsActive 和 LastActiveAt
+            existingUser.IsActive = true;
+            existingUser.LastActiveAt = now;
+            existingUser.UpdatedAt = now;
+
+            await _userRepository.UpdateAsync(existingUser);
+            user = existingUser;
+        }
+
+        // 建立一筆 UserConnection
+        var userConnection = new UserConnectionEntity
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id.ToString(),
+            ConnectionId = request.ConnectionId,
+            ConnectedAt = now,
+            DisconnectedAt = null,
+            IpAddress = request.IpAddress,
+            UserAgent = request.UserAgent,
+            CreatedAt = now,
+            UpdatedAt = now,
+        };
+
+        await _userConnectionRepository.AddAsync(userConnection);
+
+        // 5. 儲存變更
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return user.Id;
     }
 }

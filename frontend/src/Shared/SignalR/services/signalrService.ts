@@ -1,13 +1,21 @@
+﻿import { config } from '@/Shared/config/config'
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
-import { config } from '../config/config'
 
 export type ConnectionState = 'disconnected' | 'connecting' | 'connected' | 'reconnecting' | 'error'
 
+/**
+ * SignalR Service
+ * 用於管理 SignalR 連接和事件
+ */
 export class SignalRService {
   private connection: HubConnection | null = null
   private maxReconnectAttempts: number = 5
   private reconnectDelay: number = 3000
+  private registerUserEventsBound = false
 
+  /**
+   * 建立 SignalR 連接
+   */
   async connect(): Promise<HubConnection> {
     if (this.connection?.state === 'Connected') {
       return this.connection
@@ -33,6 +41,9 @@ export class SignalRService {
     return this.connection
   }
 
+  /**
+   * 斷開 SignalR 連接
+   */
   async disconnect(): Promise<void> {
     if (this.connection) {
       await this.connection.stop()
@@ -40,22 +51,56 @@ export class SignalRService {
     }
   }
 
+  /**
+   * 獲取 SignalR 連接實例
+   */
   getConnection(): HubConnection | null {
     return this.connection
   }
 
+  /**
+   * 設定 SignalR 事件監聽器
+   */
   private setupEventListeners(): void {
     if (!this.connection) return
     this.connection.onclose((error) => {
-      console.log('SignalR Connection closed', error)
+      // eslint-disable-next-line no-console
+      console.debug('SignalR Connection closed', error)
     })
     this.connection.onreconnecting((error) => {
-      console.log('SignalR Reconnecting...', error)
+      // eslint-disable-next-line no-console
+      console.debug('SignalR Reconnecting...', error)
     })
     this.connection.onreconnected((connectionId) => {
-      console.log('SignalR Reconnected', connectionId)
+      // eslint-disable-next-line no-console
+      console.debug('SignalR Reconnected', connectionId)
     })
     // 可擴充事件監聽
+  }
+
+  /**
+   * 註冊/重新連線用戶
+   */
+  async registerUser(deviceFingerprint: string): Promise<void> {
+    if (!this.connection) throw new Error('SignalR connection not established')
+
+    // 僅註冊一次事件監聽
+    if (!this.registerUserEventsBound) {
+      this.connection.on('UserRegistered', (userId: string, nickname: string, isNewUser: boolean) => {
+        // TODO: 將 userId, nickname, isNewUser 存入全域狀態或處理
+        // eslint-disable-next-line no-console
+        console.debug('UserRegistered', { userId, nickname, isNewUser })
+      })
+      this.connection.on('ConnectionEstablished', (connectionId: string, serverTime: string) => {
+        // TODO: 將 connectionId, serverTime 存入全域狀態或處理
+        // eslint-disable-next-line no-console
+        console.debug('ConnectionEstablished', { connectionId, serverTime })
+      })
+      this.registerUserEventsBound = true
+    }
+
+    // 呼叫 RegisterUser 方法
+    await this.connection.invoke('RegisterUser', deviceFingerprint)
   }
 }
 

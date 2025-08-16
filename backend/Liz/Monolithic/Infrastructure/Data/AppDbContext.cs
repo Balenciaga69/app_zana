@@ -8,11 +8,11 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options) { }
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<Room> Rooms { get; set; }
-    public DbSet<RoomParticipant> RoomParticipants { get; set; }
-    public DbSet<Message> Messages { get; set; }
-    public DbSet<UserConnection> UserConnections { get; set; }
+    public DbSet<UserEntity> Users { get; set; }
+    public DbSet<RoomEntity> Rooms { get; set; }
+    public DbSet<RoomParticipantEntity> RoomParticipants { get; set; }
+    public DbSet<MessageEntity> Messages { get; set; }
+    public DbSet<UserConnectionEntity> UserConnections { get; set; }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

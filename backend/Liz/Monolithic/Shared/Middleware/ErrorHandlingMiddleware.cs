@@ -1,6 +1,6 @@
-﻿using System.Net;
+﻿using Monolithic.Shared.Common;
+using System.Net;
 using System.Text.Json;
-using Monolithic.Shared.Common;
 
 namespace Monolithic.Shared.Middleware;
 
@@ -41,24 +41,29 @@ public class ErrorHandlingMiddleware
         var (statusCode, errorCode, defaultMessage) = GetErrorDetails(exception);
         context.Response.StatusCode = (int)statusCode;
 
+        // 如果異常訊息不為空 or 不等於預設訊息 ? 例外訊息 : 預設訊息
         var message =
             (!string.IsNullOrWhiteSpace(exception.Message) && exception.Message != defaultMessage)
                 ? exception.Message
                 : defaultMessage;
 
         object errors;
+        // 如果是 FluentValidation 的驗證異常，則提取錯誤訊息
         if (exception is FluentValidation.ValidationException validationEx)
         {
             errors = validationEx.Errors.Select(e => new { e.PropertyName, e.ErrorMessage }).ToList();
         }
+        // 否則返回異常訊息和堆疊追蹤
         else
         {
             errors = new { exception.Message, exception.StackTrace };
         }
 
+        // 統一 API 響應格式
         var response = ApiResponse<object>.Fail(errorCode, message, errors: errors);
         response.TraceId = context.TraceIdentifier;
 
+        // 將錯誤資訊序列化為 JSON 並寫入響應
         var json = JsonSerializer.Serialize(response);
         await context.Response.WriteAsync(json);
     }

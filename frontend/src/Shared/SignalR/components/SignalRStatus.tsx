@@ -1,5 +1,5 @@
-import { Box, Text, Spinner, Alert, AlertIcon } from '@chakra-ui/react'
-import { useSignalR } from './useSignalR'
+﻿import { Box, Text, Spinner, Alert, AlertIcon } from '@chakra-ui/react'
+import { useSignalR } from '../hooks/useSignalR'
 
 const SignalRStatus = () => {
   const { connectionState, error, isConnected } = useSignalR()

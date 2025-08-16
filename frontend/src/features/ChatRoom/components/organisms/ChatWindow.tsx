@@ -1,18 +1,21 @@
-﻿import { Flex } from '@chakra-ui/react'
-import type { FC, ReactNode } from 'react'
-import { chatWindowStyles } from './ChatWindow.style'
+﻿import type { FC, ReactNode } from 'react'
+import { AppContainer } from '../../../../Shared/components/layouts/AppContainer'
 
 interface ChatWindowProps {
   children: ReactNode
 }
 
+/**
+ * ChatWindow - 聊天室容器元件
+ *
+ * 現在基於 AppContainer 實作，保持向後相容性。
+ * 直接使用 'chat' 變體來獲得原始的聊天室佈局。
+ */
 const ChatWindow: FC<ChatWindowProps> = ({ children }) => {
   return (
-    <Flex sx={chatWindowStyles.container} data-testid='chat-window-container'>
-      <Flex sx={chatWindowStyles.wrapper} data-testid='chat-window-wrapper'>
-        {children}
-      </Flex>
-    </Flex>
+    <AppContainer variant='chat' testId='chat-window'>
+      {children}
+    </AppContainer>
   )
 }
 

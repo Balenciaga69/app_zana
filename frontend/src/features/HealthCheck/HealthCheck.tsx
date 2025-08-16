@@ -1,3 +1,4 @@
+﻿import { Box, Button, Flex } from '@chakra-ui/react'
 import { useState } from 'react'
 
 const API_BASE = import.meta.env.VITE_API_BASE
@@ -24,11 +25,11 @@ export default function HealthCheck() {
   }
 
   return (
-    <div style={{ margin: '1rem 0' }}>
-      <button onClick={checkHealth} disabled={loading}>
+    <Flex p={4} align={'center'} justify='start' gap={4}>
+      <Button onClick={checkHealth} disabled={loading}>
         {loading ? '檢查中...' : '健康檢查'}
-      </button>
-      <span style={{ marginLeft: 12 }}>狀態：{status}</span>
-    </div>
+      </Button>
+      <Box>狀態：{status}</Box>
+    </Flex>
   )
 }

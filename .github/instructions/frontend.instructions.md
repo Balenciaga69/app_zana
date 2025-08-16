@@ -1,4 +1,7 @@
-﻿### 前端專案計畫書：匿名即時聊天室
+---
+applyTo: '**'
+---
+Coding standards, domain knowledge, and preferences that AI should follow.### 前端專案計畫書：匿名即時聊天室
 
 #### 核心理念
 
