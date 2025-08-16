@@ -6,17 +6,23 @@ import CreateRoomPage from './features/Room/pages/CreateRoomPage'
 import HomePage from './features/Room/pages/HomePage'
 import JoinRoomPage from './features/Room/pages/JoinRoomPage'
 import { useSignalR } from './features/SignalR/hooks/useSignalR.ts'
+import { useRegisterUser } from './features/SignalR/hooks/useRegisterUser'
 import theme from './Shared/styles/theme.ts'
 
 function App() {
-  const { connect, disconnect } = useSignalR()
+  const { disconnect, connect } = useSignalR()
+  const { registerUser } = useRegisterUser()
 
   useEffect(() => {
-    connect()
+    const initializeSignalR = async () => {
+      await connect()
+      await registerUser()
+    }
+    initializeSignalR()
     return () => {
       disconnect()
     }
-  }, [connect, disconnect])
+  }, [registerUser, disconnect, connect])
 
   return (
     <StrictMode>
