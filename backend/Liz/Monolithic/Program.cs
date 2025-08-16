@@ -1,14 +1,15 @@
 ﻿/** Most Common Command
-dotnet ef migrations add "250805_01"
+dotnet ef migrations add "250816_01"
 dotnet csharpier . --config-path "../.csharpierrc"
  */
 
+using FluentValidation;
 using Monolithic.Features.Communication;
 using Monolithic.Infrastructure.Data;
 using Monolithic.Infrastructure.Extensions;
-using Monolithic.Shared.Logging;
 using Monolithic.Shared.Middleware;
 using Serilog;
+using System.Reflection;
 using HealthCheckOptions = Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions;
 
 // 讀取 Serilog 設定
@@ -42,19 +43,41 @@ builder.Services.AddAppHealthChecks(builder.Configuration);
 // MediatR 服務註冊
 builder.Services.AddMediatRServices();
 
+// User Feature 服務註冊
+builder.Services.AddUserServices();
+
 // Communication 註冊 (SignalR)
 builder.Services.AddCommunicationServices(builder.Configuration);
+
+// FluentValidation 註冊
+// GetExecutingAssembly() 自動掃描當前組件中的所有 Validator
+
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+// 讀取 CORS 來源
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .WithOrigins(allowedOrigins ?? Array.Empty<string>())
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
 
 // .NET Core 原生註冊
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
 
 // 註冊全域 Filter
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ApiResponseResultFilter>();
-    options.Filters.Add<ApiLoggingActionFilter>();
 });
 
 var app = builder.Build();
@@ -73,6 +96,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
+app.UseCors(); // 必須在 UseAuthentication 之前
 app.UseAuthentication();
 app.UseAuthorization();
 

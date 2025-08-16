@@ -160,6 +160,7 @@ namespace Monolithic.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Nickname")
+                        .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 

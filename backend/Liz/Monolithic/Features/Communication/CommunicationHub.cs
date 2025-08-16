@@ -1,18 +1,19 @@
-﻿// Communication 微服務 - SignalR Hub
-// 職責：專注於即時通訊連線管理、訊息傳輸和廣播
-// 邊界：不處理業務邏輯，未來將獨立為微服務
+﻿using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using Monolithic.Shared.Extensions;
 using Monolithic.Shared.Logging;
 
 namespace Monolithic.Features.Communication;
 
-public class CommunicationHub : Hub
+public partial class CommunicationHub : Hub
 {
     private readonly IAppLogger<CommunicationHub> _logger;
+    private readonly IMediator _mediator;
 
-    public CommunicationHub(IAppLogger<CommunicationHub> logger)
+    public CommunicationHub(IAppLogger<CommunicationHub> logger, IMediator mediator)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
     /// <summary>
@@ -20,55 +21,28 @@ public class CommunicationHub : Hub
     /// </summary>
     public override async Task OnConnectedAsync()
     {
+        _logger.LogInfo("OnConnectedAsync");
         var connectionInfo = ExtractConnectionInfo();
-
-        _logger.LogInfo(
-            "[Communication] 新連線建立",
-            new
-            {
-                ConnectionId = connectionInfo.ConnectionId,
-                UserAgent = connectionInfo.UserAgent,
-                IpAddress = connectionInfo.IpAddress,
-            },
-            connectionInfo.ConnectionId
-        );
-
         // 發送連線確認事件給客戶端
         await Clients.Caller.SendAsync("ConnectionEstablished", connectionInfo.ConnectionId, DateTime.UtcNow);
 
         await base.OnConnectedAsync();
     }
 
-    /// <summary>
-    /// 連線中斷事件
-    /// </summary>
-    public override async Task OnDisconnectedAsync(Exception? exception)
+    public override Task OnDisconnectedAsync(Exception? exception)
     {
-        var connectionId = Context.ConnectionId;
-
-        _logger.LogInfo(
-            "[Communication] 連線中斷",
-            new
-            {
-                ConnectionId = connectionId,
-                Exception = exception?.Message,
-                DisconnectedAt = DateTime.UtcNow,
-            },
-            connectionId
-        );
-
-        await base.OnDisconnectedAsync(exception);
+        _logger.LogInfo($"OnDisconnectedAsync: {exception}");
+        return base.OnDisconnectedAsync(exception);
     }
 
     /// <summary>
     /// 心跳檢查
     /// 用於維持連線活躍度
+    /// 前端尚未用到
     /// </summary>
     public async Task Heartbeat()
     {
         var connectionId = Context.ConnectionId;
-
-        _logger.LogInfo("[Communication] 心跳檢查", new { ConnectionId = connectionId }, connectionId);
 
         await Clients.Caller.SendAsync("HeartbeatResponse", DateTime.UtcNow);
     }
@@ -76,17 +50,12 @@ public class CommunicationHub : Hub
     /// <summary>
     /// 基本連通性測試
     /// 用於驗證 SignalR 連線功能
+    /// 前端尚未用到
     /// </summary>
     public async Task Ping()
     {
         var connectionId = Context.ConnectionId;
         var timestamp = DateTime.UtcNow;
-
-        _logger.LogInfo(
-            "[Communication] Ping 測試",
-            new { ConnectionId = connectionId, Timestamp = timestamp },
-            connectionId
-        );
 
         await Clients.Caller.SendAsync("Pong", timestamp);
     }
@@ -94,6 +63,7 @@ public class CommunicationHub : Hub
     /// <summary>
     /// 取得連線資訊
     /// 僅提供基本的連線狀態資訊
+    /// 前端尚未用到
     /// </summary>
     public async Task GetConnectionInfo()
     {
@@ -113,6 +83,7 @@ public class CommunicationHub : Hub
 
     /// <summary>
     /// 提取連線基本資訊
+    /// 前端尚未用到
     /// </summary>
     private ConnectionInfo ExtractConnectionInfo()
     {
@@ -129,14 +100,15 @@ public class CommunicationHub : Hub
         return new ConnectionInfo
         {
             ConnectionId = Context.ConnectionId,
-            IpAddress = httpContext?.Connection?.RemoteIpAddress?.ToString(),
-            UserAgent = httpContext?.Request?.Headers?.UserAgent.ToString(),
+            IpAddress = httpContext != null ? httpContext.GetIpAddress() : null,
+            UserAgent = httpContext != null ? httpContext.GetUserAgent() : null,
         };
     }
 }
 
 /// <summary>
 /// 連線資訊數據傳輸物件
+/// 前端尚未用到
 /// </summary>
 internal record ConnectionInfo
 {

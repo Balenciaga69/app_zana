@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Monolithic.Infrastructure.Data.Entities.Configurations;
 
-public class UserConnectionConfiguration : IEntityTypeConfiguration<UserConnection>
+public class UserConnectionConfiguration : IEntityTypeConfiguration<UserConnectionEntity>
 {
-    public void Configure(EntityTypeBuilder<UserConnection> builder)
+    public void Configure(EntityTypeBuilder<UserConnectionEntity> builder)
     {
         builder.HasKey(uc => uc.Id);
         builder.Property(uc => uc.ConnectionId).IsRequired().HasMaxLength(128);

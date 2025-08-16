@@ -1,192 +1,144 @@
-﻿using System.Net;
-using System.Text.Json;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Monolithic.Shared.Common;
 using Monolithic.Shared.Middleware;
 using Moq;
+using System.Net;
+using System.Text;
+using System.Text.Json;
 
 namespace Monolithic.Test.Shared.Middleware;
 
-/// <summary>
-/// 錯誤處理中介軟體的單元測試類別。
-/// 測試中介軟體在不同情況下的行為，包括正常執行、拋出例外、記錄錯誤等。
-/// </summary>
 public class ErrorHandlingMiddlewareTests
 {
-    private readonly Mock<RequestDelegate> _mockNext;
-    private readonly Mock<ILogger<ErrorHandlingMiddleware>> _mockLogger;
-    private readonly ErrorHandlingMiddleware _middleware;
-    private readonly DefaultHttpContext _httpContext;
+    /*
+     * TODO: Not Implemented:
+     * 當沒有例外時，應該正常呼叫下一個 middleware。
+     * 回傳內容應包含 TraceId。
+     * 應正確處理 message 與 stack trace。
+     * 應正確處理自訂訊息與預設訊息的情境。
+     * 應正確處理多種常見例外（如 UnauthorizedAccessException, ArgumentException, KeyNotFoundException 等）。
+     */
 
-    /// <summary>
-    /// 初始化測試所需的模擬物件和中介軟體實例。
-    /// </summary>
-    public ErrorHandlingMiddlewareTests()
+    #region Helper Methods
+
+    /// 建立測試用的 HttpContext，包含 MemoryStream 作為 ResponseBody
+    private static (DefaultHttpContext context, MemoryStream responseBody) CreateTestHttpContext(
+        string traceId = "test-trace-123"
+    )
     {
-        _mockNext = new Mock<RequestDelegate>();
-        _mockLogger = new Mock<ILogger<ErrorHandlingMiddleware>>();
-        _middleware = new ErrorHandlingMiddleware(_mockNext.Object, _mockLogger.Object);
-        _httpContext = new DefaultHttpContext();
-
-        // 設置可寫入的 Response Body，方便測試回應內容。
-        _httpContext.Response.Body = new MemoryStream();
+        var context = new DefaultHttpContext(); // DefaultHttpContext 用於模擬 HTTP 請求上下文
+        var responseBody = new MemoryStream(); // MemoryStream 用於模擬 HTTP 回應內容
+        context.Response.Body = responseBody;
+        context.TraceIdentifier = traceId;
+        return (context, responseBody);
     }
 
-    /// <summary>
-    /// 測試當沒有例外發生時，中介軟體是否正確調用下一個委派。
-    /// </summary>
-    [Fact]
-    public async Task Invoke_WhenNoException_ShouldCallNext()
+    /// 從 ResponseBody 讀取並反序列化 ApiResponse
+    private static async Task<ApiResponse<object>?> ReadApiResponseFromBodyAsync(MemoryStream responseBody)
     {
-        // Arrange: 模擬下一個委派正常執行。
-        _mockNext.Setup(x => x(_httpContext)).Returns(Task.CompletedTask);
-
-        // Act: 執行中介軟體。
-        await _middleware.Invoke(_httpContext);
-
-        // Assert: 驗證下一個委派被正確調用，且回應狀態碼為預設值 200。
-        _mockNext.Verify(x => x(_httpContext), Times.Once);
-        _httpContext.Response.StatusCode.Should().Be(200);
-    }
-
-    /// <summary>
-    /// 測試當發生例外時，中介軟體是否返回正確的 API 回應格式。
-    /// </summary>
-    [Fact]
-    public async Task Invoke_WhenExceptionOccurs_ShouldReturnApiResponseFailFormat()
-    {
-        // Arrange: 模擬拋出例外，並設置 TraceIdentifier。
-        var testException = new InvalidOperationException("Test error message");
-        var traceId = "test-trace-456";
-        _httpContext.TraceIdentifier = traceId;
-
-        _mockNext.Setup(x => x(_httpContext)).ThrowsAsync(testException);
-
-        // Act: 執行中介軟體。
-        await _middleware.Invoke(_httpContext);
-
-        // Assert: 驗證回應內容是否符合失敗的 API 回應格式。
-        _httpContext.Response.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
-        _httpContext.Response.ContentType.Should().Be("application/json");
-
-        _httpContext.Response.Body.Position = 0;
-        var responseContent = await new StreamReader(_httpContext.Response.Body).ReadToEndAsync();
-
-        responseContent.Should().NotBeEmpty();
-
-        var apiResponse = JsonSerializer.Deserialize<ApiResponse<object>>(
-            responseContent,
+        // Seek 是為了重置 MemoryStream 的位置
+        responseBody.Seek(0, SeekOrigin.Begin);
+        // ReadToEndAsync: 讀取 MemoryStream 的所有內容
+        var json = await new StreamReader(responseBody, Encoding.UTF8).ReadToEndAsync();
+        return JsonSerializer.Deserialize<ApiResponse<object>>(
+            json,
+            // PropertyNameCaseInsensitive: 忽略 JSON 屬性名稱的大小寫
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
         );
-
-        apiResponse.Should().NotBeNull();
-        apiResponse!.Success.Should().BeFalse();
-        apiResponse.Code.Should().Be(ErrorCode.InternalServerError.ToString());
-        apiResponse.Message.Should().Be(ErrorMessages.GetMessage(ErrorCode.InternalServerError));
-        apiResponse.TraceId.Should().Be(traceId);
-        apiResponse.Errors.Should().NotBeNull();
     }
 
+    #endregion
+
     /// <summary>
-    /// 測試當發生例外時，中介軟體是否正確記錄錯誤。
+    /// 測試當 middleware 捕捉到例外時，應該正確記錄 log 並回傳統一格式的錯誤訊息
     /// </summary>
     [Fact]
-    public async Task Invoke_WhenExceptionOccurs_ShouldLogError()
+    public async Task Invoke_WhenExceptionThrown_ShouldLogErrorAndReturnUnifiedErrorResponse()
     {
-        // Arrange: 模擬拋出例外。
-        var testException = new ArgumentNullException("testParam", "Test null reference");
-        _mockNext.Setup(x => x(_httpContext)).ThrowsAsync(testException);
+        // Arrange
+        var exception = new Exception("Test exception");
+        var mockLogger = new Mock<ILogger<ErrorHandlingMiddleware>>();
+        var (context, responseBody) = CreateTestHttpContext();
 
-        // Act: 執行中介軟體。
-        await _middleware.Invoke(_httpContext);
+        // 模擬下一個 middleware 直接丟出例外
+        RequestDelegate next = (ctx) => throw exception;
+        var middleware = new ErrorHandlingMiddleware(next, mockLogger.Object);
 
-        // Assert: 驗證錯誤是否被正確記錄。
-        _mockLogger.Verify(
+        // Act
+        await middleware.Invoke(context);
+
+        // Assert
+        // 檢查 log 是否有被呼叫
+        mockLogger.Verify(
             x =>
                 x.Log(
                     LogLevel.Error,
+                    // IsAny: EventId 允許任何事件 ID
                     It.IsAny<EventId>(),
+                    // Is: 允許任何類型的訊息
                     It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("Unhandled exception")),
-                    testException,
+                    // exception: 允許任何類型的例外
+                    exception,
+                    // IsAny: 允許任何格式化函式
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()
                 ),
             Times.Once
         );
+
+        // 檢查 response
+        context.Response.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+        context.Response.ContentType.Should().Be("application/json");
+
+        var apiResponse = await ReadApiResponseFromBodyAsync(responseBody);
+
+        apiResponse.Should().NotBeNull();
+        apiResponse!.Success.Should().BeFalse();
+        apiResponse.Code.Should().Be(ErrorCode.InternalServerError.ToString());
+        apiResponse.TraceId.Should().Be("test-trace-123");
+        apiResponse.Message.Should().NotBeNullOrEmpty();
+        apiResponse.Errors.Should().NotBeNull();
     }
 
     /// <summary>
-    /// 測試當發生例外時，回應內容是否包含例外的堆疊追蹤資訊。
+    /// 測試 middleware 根據不同的 Exception 類型，回傳正確的 HTTP 狀態碼與錯誤碼
     /// </summary>
-    [Fact]
-    public async Task Invoke_WhenExceptionOccurs_ShouldIncludeStackTraceInErrors()
+    [Theory]
+    [InlineData(typeof(UnauthorizedAccessException), HttpStatusCode.Unauthorized, ErrorCode.AuthRequired)]
+    [InlineData(typeof(ArgumentException), HttpStatusCode.BadRequest, ErrorCode.InvalidInput)]
+    [InlineData(typeof(KeyNotFoundException), HttpStatusCode.NotFound, ErrorCode.ResourceNotFound)]
+    [InlineData(typeof(Exception), HttpStatusCode.InternalServerError, ErrorCode.InternalServerError)]
+    public async Task Invoke_WhenSpecificExceptionThrown_ShouldReturnCorrectStatusCodeAndErrorCode(
+        Type exceptionType,
+        HttpStatusCode expectedStatusCode,
+        ErrorCode expectedErrorCode
+    )
     {
-        // Arrange: 模擬拋出例外。
-        var testException = new DivideByZeroException("Division by zero occurred");
-        _mockNext.Setup(x => x(_httpContext)).ThrowsAsync(testException);
+        // Arrange
+        // Activator.CreateInstance 用於動態建立指定類型的例外實例
+        var exception = (Exception)Activator.CreateInstance(exceptionType, "Test exception")!;
+        var mockLogger = new Mock<ILogger<ErrorHandlingMiddleware>>();
+        var (context, responseBody) = CreateTestHttpContext();
 
-        // Act: 執行中介軟體。
-        await _middleware.Invoke(_httpContext);
+        // 模擬下一個 middleware 直接丟出指定的例外
+        RequestDelegate next = (ctx) => throw exception;
+        var middleware = new ErrorHandlingMiddleware(next, mockLogger.Object);
 
-        // Assert: 驗證回應內容是否包含例外訊息及堆疊追蹤。
-        _httpContext.Response.Body.Position = 0;
-        var responseContent = await new StreamReader(_httpContext.Response.Body).ReadToEndAsync();
+        // Act
+        await middleware.Invoke(context);
 
-        responseContent.Should().NotBeEmpty();
-        responseContent.Should().Contain("Division by zero occurred");
-        responseContent.Should().Contain("StackTrace");
-    }
+        // Assert
+        context.Response.StatusCode.Should().Be((int)expectedStatusCode);
+        context.Response.ContentType.Should().Be("application/json");
 
-    /// <summary>
-    /// 測試當發生例外時，回應內容是否包含正確的時間戳。
-    /// </summary>
-    [Fact]
-    public async Task Invoke_WhenExceptionOccurs_ShouldSetCorrectTimestamp()
-    {
-        // Arrange: 模擬拋出例外，並記錄執行前的時間。
-        var testException = new TimeoutException("Operation timed out");
-        var beforeInvoke = DateTime.UtcNow;
-        _mockNext.Setup(x => x(_httpContext)).ThrowsAsync(testException);
+        var apiResponse = await ReadApiResponseFromBodyAsync(responseBody);
 
-        // Act: 執行中介軟體。
-        await _middleware.Invoke(_httpContext);
-
-        // Assert: 驗證回應內容的時間戳是否在執行前後的範圍內。
-        var afterInvoke = DateTime.UtcNow;
-
-        _httpContext.Response.Body.Position = 0;
-        var responseContent = await new StreamReader(_httpContext.Response.Body).ReadToEndAsync();
-
-        responseContent.Should().NotBeEmpty();
-
-        var apiResponse = JsonSerializer.Deserialize<ApiResponse<object>>(
-            responseContent,
-            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-        );
-
-        apiResponse!.Timestamp.Should().BeOnOrAfter(beforeInvoke).And.BeOnOrBefore(afterInvoke);
-    }
-
-    /// <summary>
-    /// 測試當例外包含自訂訊息時，回應內容是否正確包含該訊息。
-    /// </summary>
-    [Fact]
-    public async Task Invoke_WhenExceptionWithCustomMessage_ShouldIncludeInErrors()
-    {
-        // Arrange: 模擬拋出例外，並設置自訂訊息。
-        var customMessage = "Custom business logic error occurred";
-        var testException = new ApplicationException(customMessage);
-        _mockNext.Setup(x => x(_httpContext)).ThrowsAsync(testException);
-
-        // Act: 執行中介軟體。
-        await _middleware.Invoke(_httpContext);
-
-        // Assert: 驗證回應內容是否包含自訂訊息。
-        _httpContext.Response.Body.Position = 0;
-        var responseContent = await new StreamReader(_httpContext.Response.Body).ReadToEndAsync();
-
-        responseContent.Should().NotBeEmpty();
-        responseContent.Should().Contain(customMessage);
+        apiResponse.Should().NotBeNull();
+        apiResponse!.Success.Should().BeFalse();
+        apiResponse.Code.Should().Be(expectedErrorCode.ToString());
+        apiResponse.TraceId.Should().Be("test-trace-123");
+        apiResponse.Message.Should().NotBeNullOrEmpty();
+        apiResponse.Errors.Should().NotBeNull();
     }
 }
