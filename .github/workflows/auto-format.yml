@@ -1,4 +1,4 @@
-name: Auto Format on PR to Develop
+﻿name: Auto Format on PR to Develop
 
 on:
   pull_request:

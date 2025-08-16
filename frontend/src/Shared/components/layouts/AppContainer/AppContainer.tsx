@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react'
+﻿import { Flex } from '@chakra-ui/react'
 import type { FC } from 'react'
 import { createAppContainerStyles } from './AppContainer.style'
 import type { AppContainerProps } from './AppContainer.types'

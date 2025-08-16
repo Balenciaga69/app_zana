@@ -1,4 +1,4 @@
-import { useSignalRStore, signalRSelectors } from '../store/signalrStore'
+﻿import { useSignalRStore, signalRSelectors } from '../store/signalrStore'
 
 export const useSignalR = () => {
   const { connectionState, connection, error, isConnecting, connect, disconnect } = useSignalRStore()

@@ -1,4 +1,4 @@
-import FingerprintJS from '@fingerprintjs/fingerprintjs'
+﻿import FingerprintJS from '@fingerprintjs/fingerprintjs'
 
 /**
  * Helper for getting device fingerprint (with localStorage cache)

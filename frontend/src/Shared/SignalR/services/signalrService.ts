@@ -1,4 +1,4 @@
-import { config } from '@/Shared/config/config'
+﻿import { config } from '@/Shared/config/config'
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
 
 export type ConnectionState = 'disconnected' | 'connecting' | 'connected' | 'reconnecting' | 'error'
