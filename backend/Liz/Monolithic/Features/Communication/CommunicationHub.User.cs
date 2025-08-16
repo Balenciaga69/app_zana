@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Monolithic.Features.User.Commands;
 
 namespace Monolithic.Features.Communication;

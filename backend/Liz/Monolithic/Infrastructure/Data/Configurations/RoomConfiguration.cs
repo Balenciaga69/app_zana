@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Monolithic.Infrastructure.Data.Entities.Configurations;
 
-public class RoomConfiguration : IEntityTypeConfiguration<Room>
+public class RoomConfiguration : IEntityTypeConfiguration<RoomEntity>
 {
-    public void Configure(EntityTypeBuilder<Room> builder)
+    public void Configure(EntityTypeBuilder<RoomEntity> builder)
     {
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Name).IsRequired().HasMaxLength(100);

@@ -7,7 +7,6 @@ public static partial class DIExt
     /// </summary>
     public static IServiceCollection AddUserServices(this IServiceCollection services)
     {
-
         return services;
     }
 }

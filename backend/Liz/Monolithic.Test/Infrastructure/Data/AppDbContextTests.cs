@@ -19,7 +19,7 @@ namespace Monolithic.Test.Infrastructure.Data
         {
             // Arrange
             var db = GetInMemoryDbContext();
-            var user = new User
+            var user = new UserEntity
             {
                 DeviceFingerprint = "testDeviceFingerprint",
                 Nickname = "testNickname1",
@@ -51,7 +51,7 @@ namespace Monolithic.Test.Infrastructure.Data
             var model = db.Model;
 
             // 驗證 User 實體的 DeviceFingerprint 欄位有 MaxLength 128 且 Required
-            var userEntity = model.FindEntityType(typeof(User));
+            var userEntity = model.FindEntityType(typeof(UserEntity));
             Assert.NotNull(userEntity);
             var deviceFingerprintProp = userEntity!.FindProperty("DeviceFingerprint");
             Assert.NotNull(deviceFingerprintProp);
@@ -59,7 +59,7 @@ namespace Monolithic.Test.Infrastructure.Data
             Assert.False(deviceFingerprintProp.IsNullable);
 
             // 驗證 Room 實體的 InviteCode 欄位有 MaxLength 32 且 Required
-            var roomEntity = model.FindEntityType(typeof(Room));
+            var roomEntity = model.FindEntityType(typeof(RoomEntity));
             Assert.NotNull(roomEntity);
             var inviteCodeProp = roomEntity!.FindProperty("InviteCode");
             Assert.NotNull(inviteCodeProp);

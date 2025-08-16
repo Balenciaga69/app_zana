@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using MediatR;
+using Microsoft.AspNetCore.SignalR;
 using Monolithic.Shared.Extensions;
 using Monolithic.Shared.Logging;
-using MediatR;
 
 namespace Monolithic.Features.Communication;
 

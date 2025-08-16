@@ -1,6 +1,4 @@
-﻿using Monolithic.Shared.Middleware;
-
-namespace Monolithic.Shared.Extensions;
+﻿namespace Monolithic.Shared.Extensions;
 
 /// <summary>
 /// HttpContext 擴充方法，方便取得 DeviceFingerprint
