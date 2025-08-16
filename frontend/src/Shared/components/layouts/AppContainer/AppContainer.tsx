@@ -5,25 +5,25 @@ import type { AppContainerProps } from './AppContainer.types'
 
 /**
  * AppContainer - 通用應用程式容器元件
- * 
+ *
  * 提供統一的頁面佈局框架，支援多種變體和自訂選項。
  * 基於原始的 ChatWindow 設計，但更加靈活和可重用。
- * 
+ *
  * @example
  * // 聊天室佈局
  * <AppContainer variant="chat">
  *   <ChatContent />
  * </AppContainer>
- * 
+ *
  * @example
  * // 設定頁面佈局
  * <AppContainer variant="settings" showShadow={false}>
  *   <SettingsForm />
  * </AppContainer>
- * 
+ *
  * @example
  * // 自訂樣式
- * <AppContainer 
+ * <AppContainer
  *   variant="default"
  *   wrapperSx={{ bg: 'blue.50' }}
  *   fullscreen
