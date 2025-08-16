@@ -9,7 +9,6 @@ public partial class CommunicationHub : Hub
     public async Task RegisterUser(string deviceFingerprint)
     {
         var userId = await _mediator.Send(new RegisterUserCommand(deviceFingerprint));
-
         await Clients.Caller.SendAsync("UserRegistered", userId.ToString(), null, false);
         await Clients.Caller.SendAsync("ConnectionEstablished", Context.ConnectionId, DateTime.UtcNow);
     }

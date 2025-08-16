@@ -1,15 +1,19 @@
 {
 	"folders": [
 		{
+			"name": "Monolithic",
 			"path": "backend/Liz/Monolithic"
 		},
 		{
+			"name": "frontend",
 			"path": "frontend"
 		},
 		{
+			"name": "Prompt",
 			"path": "Prompt"
 		},
 		{
+			"name": ".github",
 			"path": ".github"
 		}
 	],

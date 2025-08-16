@@ -83,7 +83,6 @@ builder.Services.AddControllers(options =>
 var app = builder.Build();
 
 // 註冊全域 Middleware
-app.UseMiddleware<DeviceFingerprintMiddleware>();
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 // 自動遷移資料庫

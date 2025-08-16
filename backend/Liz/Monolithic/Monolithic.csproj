@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Features\User\Commands\" />
+    <Folder Include="Features\User\Endpoints\" />
     <Folder Include="Features\User\Repositories\" />
     <Folder Include="Features\User\Queries\" />
     <Folder Include="Infrastructure\logs\" />

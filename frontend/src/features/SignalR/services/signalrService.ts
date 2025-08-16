@@ -73,6 +73,15 @@ export class SignalRService {
     })
     // 可擴充事件監聽
   }
+
+  /**
+   * TODO: 註冊/重新連線用戶
+   * 之後這裡要呼叫 SignalR Hub 的 RegisterUser(deviceFingerprint)
+   * 並監聽 UserRegistered/ConnectionEstablished 事件
+   */
+  async registerUser(deviceFingerprint: string): Promise<void> {
+    // TODO: 實作 deviceFingerprint 註冊流程
+  }
 }
 
 export const signalRService = new SignalRService()

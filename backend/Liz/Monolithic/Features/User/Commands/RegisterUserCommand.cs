@@ -1,8 +1,5 @@
 ﻿using FluentValidation;
 using MediatR;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Monolithic.Features.User.Commands;
 
@@ -46,21 +43,12 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
 
     public Task<Guid> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        // 先使用 validator 驗證輸入，若驗證失敗會拋出 ValidationException
-        var validator = new RegisterUserCommandValidator();
-        var validationResult = validator.Validate(request);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }
-
         // TODO: 以下為業務實作要點 - 保留為 TODO（由你要求 persistence 層暫不實作）
         // 1. 使用 repository 查找是否已有對應 DeviceFingerprint 的 User
         // 2. 若無則建立新的 User（設定 IsActive, CreatedAt, Nickname 等）
         // 3. 若有則更新 IsActive = true, LastActiveAt = DateTime.UtcNow
         // 4. 建立一筆 UserConnection（ConnectionId, IpAddress, UserAgent, ConnectedAt）
         // 5. Persist changes (Repository/DbContext.SaveChanges)
-
         // 為了讓流程可測試且不會中斷，暫時回傳一個新的 Guid
         var userId = Guid.NewGuid();
         return Task.FromResult(userId);
