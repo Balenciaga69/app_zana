@@ -1,8 +1,8 @@
 ﻿import { VStack } from '@chakra-ui/react'
 import RoomButton from '../components/atoms/RoomButton'
 import { useNavigate } from 'react-router-dom'
-import SignalRStatus from '@/Shared/SignalR/SignalRStatus'
-import HealthCheck from '@/Shared/HealthCheck'
+import SignalRStatus from '@/features/SignalR/components/SignalRStatus'
+import HealthCheck from '@/features/HealthCheck/HealthCheck'
 
 const HomePage = () => {
   const navigate = useNavigate()

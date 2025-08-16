@@ -1,13 +1,20 @@
+import { config } from '@/Shared/config/config'
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
-import { config } from '../config/config'
 
 export type ConnectionState = 'disconnected' | 'connecting' | 'connected' | 'reconnecting' | 'error'
 
+/**
+ * SignalR Service
+ * 用於管理 SignalR 連接和事件
+ */
 export class SignalRService {
   private connection: HubConnection | null = null
   private maxReconnectAttempts: number = 5
   private reconnectDelay: number = 3000
 
+  /**
+   * 建立 SignalR 連接
+   */
   async connect(): Promise<HubConnection> {
     if (this.connection?.state === 'Connected') {
       return this.connection
@@ -33,6 +40,9 @@ export class SignalRService {
     return this.connection
   }
 
+  /**
+   * 斷開 SignalR 連接
+   */
   async disconnect(): Promise<void> {
     if (this.connection) {
       await this.connection.stop()
@@ -40,10 +50,16 @@ export class SignalRService {
     }
   }
 
+  /**
+   * 獲取 SignalR 連接實例
+   */
   getConnection(): HubConnection | null {
     return this.connection
   }
 
+  /**
+   * 設定 SignalR 事件監聽器
+   */
   private setupEventListeners(): void {
     if (!this.connection) return
     this.connection.onclose((error) => {
