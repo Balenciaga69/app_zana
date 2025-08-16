@@ -26,15 +26,16 @@ public partial class CommunicationHub : Hub
         await base.OnConnectedAsync();
     }
 
-    public override async Task OnDisconnectedAsync(Exception exception)
+    public override Task OnDisconnectedAsync(Exception? exception)
     {
         _logger.LogInfo($"OnDisconnectedAsync: {exception}");
-        await base.OnDisconnectedAsync(exception);
+        return base.OnDisconnectedAsync(exception);
     }
 
     /// <summary>
     /// 心跳檢查
     /// 用於維持連線活躍度
+    /// 前端尚未用到
     /// </summary>
     public async Task Heartbeat()
     {
@@ -46,6 +47,7 @@ public partial class CommunicationHub : Hub
     /// <summary>
     /// 基本連通性測試
     /// 用於驗證 SignalR 連線功能
+    /// 前端尚未用到
     /// </summary>
     public async Task Ping()
     {
@@ -58,6 +60,7 @@ public partial class CommunicationHub : Hub
     /// <summary>
     /// 取得連線資訊
     /// 僅提供基本的連線狀態資訊
+    /// 前端尚未用到
     /// </summary>
     public async Task GetConnectionInfo()
     {
@@ -77,6 +80,7 @@ public partial class CommunicationHub : Hub
 
     /// <summary>
     /// 提取連線基本資訊
+    /// 前端尚未用到
     /// </summary>
     private ConnectionInfo ExtractConnectionInfo()
     {
@@ -101,6 +105,7 @@ public partial class CommunicationHub : Hub
 
 /// <summary>
 /// 連線資訊數據傳輸物件
+/// 前端尚未用到
 /// </summary>
 internal record ConnectionInfo
 {
