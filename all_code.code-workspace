@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "backend/Liz/Monolithic"
+		},
+		{
+			"path": "frontend"
+		},
+		{
+			"path": "Prompt"
+		},
+		{
+			"path": ".github"
+		}
+	],
+	"settings": {}
+}
