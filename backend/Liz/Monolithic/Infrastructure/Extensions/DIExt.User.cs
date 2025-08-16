@@ -1,4 +1,6 @@
-﻿namespace Monolithic.Infrastructure.Extensions;
+﻿using Monolithic.Features.User.Repositories;
+
+namespace Monolithic.Infrastructure.Extensions;
 
 public static partial class DIExt
 {
@@ -7,6 +9,10 @@ public static partial class DIExt
     /// </summary>
     public static IServiceCollection AddUserServices(this IServiceCollection services)
     {
+        // 註冊 Repository
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserConnectionRepository, UserConnectionRepository>();
+
         return services;
     }
 }

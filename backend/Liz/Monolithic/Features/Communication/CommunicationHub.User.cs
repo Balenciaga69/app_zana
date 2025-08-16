@@ -7,7 +7,13 @@ public partial class CommunicationHub : Hub
 {
     public async Task RegisterUser(string deviceFingerprint)
     {
-        var userId = await _mediator.Send(new RegisterUserCommand(deviceFingerprint));
+        var httpContext = Context.GetHttpContext();
+        var ip = httpContext?.Connection.RemoteIpAddress?.ToString();
+        var userAgent = httpContext?.Request.Headers["User-Agent"].ToString();
+
+        var userId = await _mediator.Send(
+            new RegisterUserCommand(deviceFingerprint, Context.ConnectionId, ip, userAgent)
+        );
         await Clients.Caller.SendAsync("UserRegistered", userId.ToString(), null, false);
         await Clients.Caller.SendAsync("ConnectionEstablished", Context.ConnectionId, DateTime.UtcNow);
     }
