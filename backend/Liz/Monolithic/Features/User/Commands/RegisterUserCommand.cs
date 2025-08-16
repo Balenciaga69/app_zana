@@ -1,9 +1,12 @@
 ﻿using FluentValidation;
 using MediatR;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Monolithic.Features.User.Commands;
 
-public record RegisterUserCommand(string? ExistingUserId, string DeviceFingerprint) : IRequest<Guid>
+public record RegisterUserCommand(string DeviceFingerprint) : IRequest<Guid>
 {
     // TODO: 註冊或重新連線用戶的 Command 實作
 }
@@ -21,7 +24,6 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
             .WithMessage("DeviceFingerprint 不可全為 0 或全空白")
             .Matches("^[a-zA-Z0-9\\-_.:]+$") // 注意：C# 字串中 - 需跳脫
             .WithMessage("DeviceFingerprint 僅允許英數字與 -_.: 字元");
-        // 若有 existingUserId，建議可加 Guid 格式驗證（視需求）
     }
 
     private bool IsAllZeroOrWhitespace(string f)
@@ -37,14 +39,30 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
 
 public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Guid>
 {
+    public RegisterUserCommandHandler()
+    {
+        // TODO: 若需要，注入 repository / dbcontext / logger 等
+    }
+
     public Task<Guid> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        // TODO: 註冊或重新連線用戶
-        // 1. 檢查 deviceFingerprint 是否有效
-        // 2. 若 existingUserId 有值則驗證與 deviceFingerprint 綁定關係
-        // 3. 若無 existingUserId 則建立新用戶
-        // 4. 記錄連線資訊（IP、UserAgent、ConnectionId）
-        // 5. 回傳 UserRegistered/ConnectionEstablished 事件
-        throw new NotImplementedException();
+        // 先使用 validator 驗證輸入，若驗證失敗會拋出 ValidationException
+        var validator = new RegisterUserCommandValidator();
+        var validationResult = validator.Validate(request);
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
+
+        // TODO: 以下為業務實作要點 - 保留為 TODO（由你要求 persistence 層暫不實作）
+        // 1. 使用 repository 查找是否已有對應 DeviceFingerprint 的 User
+        // 2. 若無則建立新的 User（設定 IsActive, CreatedAt, Nickname 等）
+        // 3. 若有則更新 IsActive = true, LastActiveAt = DateTime.UtcNow
+        // 4. 建立一筆 UserConnection（ConnectionId, IpAddress, UserAgent, ConnectedAt）
+        // 5. Persist changes (Repository/DbContext.SaveChanges)
+
+        // 為了讓流程可測試且不會中斷，暫時回傳一個新的 Guid
+        var userId = Guid.NewGuid();
+        return Task.FromResult(userId);
     }
 }

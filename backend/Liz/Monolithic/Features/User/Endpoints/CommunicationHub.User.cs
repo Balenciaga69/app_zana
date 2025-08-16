@@ -1,16 +1,22 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.SignalR;
+using Monolithic.Features.User.Commands;
 
 namespace Monolithic.Features.Communication;
 
 public partial class CommunicationHub : Hub
 {
-    public async Task RegisterUser(string? existingUserId, string deviceFingerprint)
+    public async Task RegisterUser(string deviceFingerprint)
     {
-        // TODO: 註冊或重新連線用戶
+        var userId = await _mediator.Send(new RegisterUserCommand(deviceFingerprint));
+
+        await Clients.Caller.SendAsync("UserRegistered", userId.ToString(), null, false);
+        await Clients.Caller.SendAsync("ConnectionEstablished", Context.ConnectionId, DateTime.UtcNow);
     }
 
-    public async Task UpdateNickname(string newNickname)
+    public Task UpdateNickname(string newNickname)
     {
-        // TODO: 即時更新暱稱
+        // TODO: 即時更新暱稱（實作於 Command/Handler 層）
+        return Task.CompletedTask;
     }
 }
