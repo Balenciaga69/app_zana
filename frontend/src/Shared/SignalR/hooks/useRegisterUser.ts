@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
-import { DeviceFingerprintHelper } from '@/features/SignalR/utils/deviceFingerprintHelper'
-import { signalRService } from '@/features/SignalR/services/signalrService'
+import { DeviceFingerprintHelper } from '../utils/deviceFingerprintHelper'
+import { signalRService } from '../services/signalrService'
 
 /**
  * 通用 SignalR 使用者註冊 hook

@@ -5,9 +5,9 @@ import ExampleChatRoomPage from './features/ChatRoom/pages/ExampleChatRoomPage'
 import CreateRoomPage from './features/Room/pages/CreateRoomPage'
 import HomePage from './features/Room/pages/HomePage'
 import JoinRoomPage from './features/Room/pages/JoinRoomPage'
-import { useSignalR } from './features/SignalR/hooks/useSignalR.ts'
-import { useRegisterUser } from './features/SignalR/hooks/useRegisterUser'
 import theme from './Shared/styles/theme.ts'
+import { useSignalR } from './Shared/SignalR/hooks/useSignalR.ts'
+import { useRegisterUser } from './Shared/SignalR/hooks/useRegisterUser.ts'
 
 function App() {
   const { disconnect, connect } = useSignalR()
