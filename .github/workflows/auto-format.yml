@@ -44,7 +44,7 @@ jobs:
           dotnet-version: "8.0.x"
       - run: dotnet tool restore
       - run: dotnet csharpier . --config-path "../.csharpierrc"
-      - run: dotnet format .
+      - run: dotnet format Monolithic.csproj
       - uses: EndBug/add-and-commit@v9
         with:
           message: "chore: auto format backend code after PR to develop"
