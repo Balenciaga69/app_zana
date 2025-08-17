@@ -1,13 +1,13 @@
 ﻿import { ChakraProvider } from '@chakra-ui/react'
 import { StrictMode, useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import ExampleChatRoomPage from './features/ChatRoom/pages/ExampleChatRoomPage'
-import CreateRoomPage from './features/Room/pages/CreateRoomPage'
-import HomePage from './features/Room/pages/HomePage'
-import JoinRoomPage from './features/Room/pages/JoinRoomPage'
-import theme from './Shared/theme.ts'
-import { useSignalR } from './features/SignalR/hooks/useSignalR.ts'
-import { useRegisterUser } from './features/SignalR/hooks/useRegisterUser.ts'
+import ExampleChatRoomPage from '../features/ChatRoom/pages/ExampleChatRoomPage.tsx'
+import CreateRoomPage from '../features/Room/pages/CreateRoomPage.tsx'
+import HomePage from '../features/Room/pages/HomePage.tsx'
+import JoinRoomPage from '../features/Room/pages/JoinRoomPage.tsx'
+import theme from './theme.ts'
+import { useSignalR } from '../features/SignalR/hooks/useSignalR.ts'
+import { useRegisterUser } from '../features/SignalR/hooks/useRegisterUser.ts'
 
 function App() {
   const { disconnect, connect } = useSignalR()

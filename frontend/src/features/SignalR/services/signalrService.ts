@@ -1,6 +1,6 @@
-﻿import { config } from '@/Shared/config/config'
+﻿import { useUserStore } from '@/features/SignalR/store/userStore'
+import { config } from '@/Shared/config'
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
-import { useUserStore } from '@/features/User/store/userStore'
 
 export type ConnectionState = 'disconnected' | 'connecting' | 'connected' | 'reconnecting' | 'error'
 

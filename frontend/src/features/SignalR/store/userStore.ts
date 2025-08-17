@@ -1,7 +1,6 @@
-﻿// filepath: c:\Custom\A-Code\my_SP\app_zana\frontend\src\features\User\store\userStore.ts
+﻿import { signalRService } from '@/features/SignalR/services/signalrService'
+import { DeviceFingerprintHelper } from '@/features/SignalR/utils/deviceFingerprintHelper'
 import { create } from 'zustand'
-import { signalRService } from '@/Shared/SignalR/services/signalrService'
-import { DeviceFingerprintHelper } from '@/Shared/SignalR/utils/deviceFingerprintHelper'
 
 interface UserState {
   // 狀態
