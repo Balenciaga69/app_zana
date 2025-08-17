@@ -15,7 +15,6 @@ export function useRegisterUser() {
     setError(null)
     try {
       const fingerprint = await DeviceFingerprintHelper.getFingerprint()
-      console.info('xZx fingerprint', fingerprint)
       await signalRService.registerUser(fingerprint)
     } catch (err) {
       setError(err instanceof Error ? err : new Error(String(err)))
