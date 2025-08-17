@@ -1,5 +1,6 @@
 ﻿import { config } from '@/Shared/config/config'
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
+import { useUserStore } from '@/features/User/store/userStore'
 
 export type ConnectionState = 'disconnected' | 'connecting' | 'connected' | 'reconnecting' | 'error'
 
@@ -48,6 +49,7 @@ export class SignalRService {
     if (this.connection) {
       await this.connection.stop()
       this.connection = null
+      this.registerUserEventsBound = false
     }
   }
 
@@ -63,18 +65,9 @@ export class SignalRService {
    */
   private setupEventListeners(): void {
     if (!this.connection) return
-    this.connection.onclose((error) => {
-      // eslint-disable-next-line no-console
-      console.debug('SignalR Connection closed', error)
-    })
-    this.connection.onreconnecting((error) => {
-      // eslint-disable-next-line no-console
-      console.debug('SignalR Reconnecting...', error)
-    })
-    this.connection.onreconnected((connectionId) => {
-      // eslint-disable-next-line no-console
-      console.debug('SignalR Reconnected', connectionId)
-    })
+    this.connection.onclose(() => {})
+    this.connection.onreconnecting(() => {})
+    this.connection.onreconnected(() => {})
     // 可擴充事件監聽
   }
 
@@ -86,21 +79,35 @@ export class SignalRService {
 
     // 僅註冊一次事件監聽
     if (!this.registerUserEventsBound) {
-      this.connection.on('UserRegistered', (userId: string, nickname: string, isNewUser: boolean) => {
-        // TODO: 將 userId, nickname, isNewUser 存入全域狀態或處理
-        // eslint-disable-next-line no-console
-        console.debug('UserRegistered', { userId, nickname, isNewUser })
+      this.connection.on('UserRegistered', (userId: string, nickname: string | null, isNewUser: boolean) => {
+        useUserStore.setState({ userId, nickname: nickname ?? null, isNewUser })
       })
       this.connection.on('ConnectionEstablished', (connectionId: string, serverTime: string) => {
-        // TODO: 將 connectionId, serverTime 存入全域狀態或處理
-        // eslint-disable-next-line no-console
-        console.debug('ConnectionEstablished', { connectionId, serverTime })
+        useUserStore.setState({ connectionId, serverTime })
+      })
+      this.connection.on('NicknameUpdated', (userId: string, newNickname: string, serverTime: string) => {
+        // 僅當回傳 userId 與當前相同時才覆蓋
+        const { userId: current } = useUserStore.getState()
+        if (!current || current === userId) {
+          useUserStore.setState({ nickname: newNickname, serverTime })
+        }
+      })
+      this.connection.on('Error', (message: string) => {
+        useUserStore.setState({ error: message })
       })
       this.registerUserEventsBound = true
     }
 
     // 呼叫 RegisterUser 方法
     await this.connection.invoke('RegisterUser', deviceFingerprint)
+  }
+
+  /**
+   * 更新暱稱
+   */
+  async updateNickname(newNickname: string): Promise<void> {
+    if (!this.connection) throw new Error('SignalR connection not established')
+    await this.connection.invoke('UpdateNickname', newNickname)
   }
 }
 
