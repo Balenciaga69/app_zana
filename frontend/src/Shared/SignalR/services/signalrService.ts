@@ -64,16 +64,13 @@ export class SignalRService {
   private setupEventListeners(): void {
     if (!this.connection) return
     this.connection.onclose((error) => {
-      // eslint-disable-next-line no-console
-      console.debug('SignalR Connection closed', error)
+      console.debug(`SignalR Connection closed: ${error}`)
     })
     this.connection.onreconnecting((error) => {
-      // eslint-disable-next-line no-console
-      console.debug('SignalR Reconnecting...', error)
+      console.debug(`SignalR Reconnecting: ${error}`)
     })
     this.connection.onreconnected((connectionId) => {
-      // eslint-disable-next-line no-console
-      console.debug('SignalR Reconnected', connectionId)
+      console.debug(`SignalR Reconnected: ${connectionId}`)
     })
     // 可擴充事件監聽
   }
@@ -88,12 +85,10 @@ export class SignalRService {
     if (!this.registerUserEventsBound) {
       this.connection.on('UserRegistered', (userId: string, nickname: string, isNewUser: boolean) => {
         // TODO: 將 userId, nickname, isNewUser 存入全域狀態或處理
-        // eslint-disable-next-line no-console
         console.debug('UserRegistered', { userId, nickname, isNewUser })
       })
       this.connection.on('ConnectionEstablished', (connectionId: string, serverTime: string) => {
         // TODO: 將 connectionId, serverTime 存入全域狀態或處理
-        // eslint-disable-next-line no-console
         console.debug('ConnectionEstablished', { connectionId, serverTime })
       })
       this.registerUserEventsBound = true
