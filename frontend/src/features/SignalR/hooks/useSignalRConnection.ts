@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
-import SignalRService from '../services/SignalRService'
-import { useSignalRStore } from '../store/signalrSlice'
+import { useSignalRStore } from '../store/signalrStore'
+import SignalRService from '../services/signalrService'
 
 /**
  * SignalR 連線與全域狀態監控 hook
  */
 export function useSignalRConnection() {
-  const setConnectionStatus = useSignalRStore((s) => s.setConnectionStatus)
-  const setLastError = useSignalRStore((s) => s.setLastError)
+  const setConnectionStatus = useSignalRStore((state) => state.setConnectionStatus)
+  const setLastError = useSignalRStore((state) => state.setLastError)
 
   useEffect(() => {
     const service = SignalRService.getInstance()
