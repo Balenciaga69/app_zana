@@ -10,8 +10,9 @@ export function useSignalRConnection() {
   const setLastError = useSignalRStore((state) => state.setLastError)
 
   useEffect(() => {
+    console.info('xZx useSignalRConnection start')
     const service = SignalRService.getInstance()
-    setConnectionStatus('connecting')
+    setConnectionStatus('connected')
     service
       .connect()
       .then(() => setConnectionStatus('connected'))
@@ -22,6 +23,7 @@ export function useSignalRConnection() {
     return () => {
       service.disconnect()
       setConnectionStatus('disconnected')
+      console.info('xZx useSignalRConnection end')
     }
   }, [setConnectionStatus, setLastError])
 }

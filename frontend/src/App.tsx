@@ -6,23 +6,19 @@ import CreateRoomPage from './features/Room/pages/CreateRoomPage'
 import HomePage from './features/Room/pages/HomePage'
 import JoinRoomPage from './features/Room/pages/JoinRoomPage'
 import theme from './Shared/theme.ts'
-import { useSignalR } from './features/SignalR/hooks/useSignalR.ts'
-import { useRegisterUser } from './features/SignalR/hooks/useRegisterUser.ts'
+
+// FIXME: 舊版代碼需要更新
+
+import { useSignalRConnection } from './features/SignalR/hooks/useSignalRConnection'
+import { useRegisterUser } from './features/SignalR/hooks/useRegisterUser'
 
 function App() {
-  const { disconnect, connect } = useSignalR()
+  useSignalRConnection()
   const { registerUser } = useRegisterUser()
 
   useEffect(() => {
-    const initializeSignalR = async () => {
-      await connect()
-      await registerUser()
-    }
-    initializeSignalR()
-    return () => {
-      disconnect()
-    }
-  }, [registerUser, disconnect, connect])
+    registerUser()
+  }, [registerUser])
 
   return (
     <StrictMode>
