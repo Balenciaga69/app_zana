@@ -11,6 +11,7 @@ class SignalRService {
   private connection: HubConnection | null = null
   // 事件監聽器集合
   private listeners: Map<SignalREvent, Set<EventCallback>> = new Map()
+  // 最後註冊的裝置指紋
   private lastRegisteredDeviceFingerprint?: string
 
   private constructor() {}
