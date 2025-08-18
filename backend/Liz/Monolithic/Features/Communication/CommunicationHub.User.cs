@@ -36,11 +36,7 @@ public partial class CommunicationHub : Hub
 
         if (result)
         {
-            await Clients.Caller.SendAsync(
-                "NicknameUpdated",
-                newNickname,
-                DateTime.UtcNow
-            );
+            await Clients.Caller.SendAsync("NicknameUpdated", newNickname);
         }
         else
         {

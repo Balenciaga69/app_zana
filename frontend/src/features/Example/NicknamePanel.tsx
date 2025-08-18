@@ -1,11 +1,12 @@
 ﻿import { useUserStore } from '@/features/SignalR/store/userStore'
-import { Alert, AlertIcon, Box, Button, HStack, Input, Spinner, Text, VStack } from '@chakra-ui/react'
+import { Alert, AlertIcon, Box, Button, HStack, Input, Text, VStack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
+import { useUpdateNickname } from '../SignalR/hooks/useUpdateNickname'
 
 export const NicknamePanel = () => {
-  const { nickname, registering, updatingNickname, error } = useUserStore()
+  const nickname = useUserStore((s) => s.nickname)
   const [value, setValue] = useState(nickname ?? '')
-  const updateNickname = useUserStore((s) => s.updateNickname)
+  const { updateNickname, updating, error } = useUpdateNickname()
 
   useEffect(() => {
     setValue(nickname ?? '')
@@ -16,19 +17,13 @@ export const NicknamePanel = () => {
       <VStack align='stretch' spacing={3}>
         <HStack justify='space-between'>
           <Text fontWeight='bold'>目前暱稱</Text>
-          {registering && (
-            <HStack>
-              <Spinner size='sm' />
-              <Text fontSize='sm'>註冊中...</Text>
-            </HStack>
-          )}
         </HStack>
         <Text data-testid='nickname-value'>{nickname ?? '(尚未設定)'}</Text>
         <HStack>
           <Input placeholder='輸入新暱稱' value={value} onChange={(e) => setValue(e.target.value)} maxLength={20} />
           <Button
             onClick={() => updateNickname(value)}
-            isLoading={updatingNickname}
+            isLoading={updating}
             isDisabled={!value?.trim()}
             colorScheme='teal'
           >

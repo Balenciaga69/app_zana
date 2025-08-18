@@ -32,16 +32,11 @@ class SignalRService {
       .configureLogging(LogLevel.Information)
       .build()
 
-    // 手動註冊常用事件，將 server 事件導向 emit
-    // TODO: @Balenciaga69 未來改成自動註冊所有事件
-    this.connection.on(SignalREvents.MESSAGE_RECEIVED, (payload) => {
-      this.emit(SignalREvents.MESSAGE_RECEIVED, payload)
-    })
-    this.connection.on(SignalREvents.REGISTER_USER, (payload) => {
-      this.emit(SignalREvents.REGISTER_USER, payload)
-    })
-    this.connection.on(SignalREvents.NICKNAME_UPDATED, (payload) => {
-      this.emit(SignalREvents.NICKNAME_UPDATED, payload)
+    // 自動註冊所有 SignalREvents 事件
+    Object.values(SignalREvents).forEach((event) => {
+      this.connection!.on(event, (payload) => {
+        this.emit(event, payload)
+      })
     })
     // ...如有其他事件請自行補上
 

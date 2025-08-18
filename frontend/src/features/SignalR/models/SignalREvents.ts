@@ -3,7 +3,10 @@
  */
 export const SignalREvents = {
   MESSAGE_RECEIVED: 'messageReceived',
+  // nickname
   NICKNAME_UPDATED: 'NicknameUpdated',
+  UPDATE_NICKNAME: 'UpdateNickname',
+  // user
   REGISTER_USER: 'RegisterUser',
   // ...可持續擴充
 } as const

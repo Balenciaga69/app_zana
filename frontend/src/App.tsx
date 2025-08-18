@@ -7,8 +7,6 @@ import HomePage from './features/Room/pages/HomePage'
 import JoinRoomPage from './features/Room/pages/JoinRoomPage'
 import theme from './Shared/theme.ts'
 
-// FIXME: 舊版代碼需要更新
-
 import { useSignalRConnection } from './features/SignalR/hooks/useSignalRConnection'
 import { useRegisterUser } from './features/SignalR/hooks/useRegisterUser'
 

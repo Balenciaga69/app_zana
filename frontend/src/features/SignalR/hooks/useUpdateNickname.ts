@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { SignalREvents } from '../models/SignalREvents'
 import SignalRService from '../services/signalrService'
 import { useUserStore } from '../store/userStore'
@@ -8,11 +8,32 @@ import { useUserStore } from '../store/userStore'
  */
 export function useUpdateNickname() {
   const setNickname = useUserStore((state) => state.setNickname)
+  const [updating, setUpdating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  // 包裝 invoke
+  // 包裝 invoke 並處理 loading/error 狀態
   const updateNickname = useCallback(async (nickname: string) => {
+    setUpdating(true)
+    setError(null)
     const service = SignalRService.getInstance()
-    await service.invoke(SignalREvents.NICKNAME_UPDATED, { nickname })
+    try {
+      await service.invoke(SignalREvents.UPDATE_NICKNAME, { nickname })
+    } catch (err: unknown) {
+      // 預設錯誤訊息
+      let msg = '暱稱更新失敗'
+      // 嘗試從錯誤物件中提取訊息
+      if (
+        err &&
+        typeof err === 'object' &&
+        'message' in err &&
+        typeof (err as { message?: unknown }).message === 'string'
+      ) {
+        msg = (err as { message: string }).message ?? msg
+      }
+      setError(msg)
+    } finally {
+      setUpdating(false)
+    }
   }, [])
 
   useEffect(() => {
@@ -27,5 +48,5 @@ export function useUpdateNickname() {
     }
   }, [setNickname])
 
-  return { updateNickname }
+  return { updateNickname, updating, error }
 }
