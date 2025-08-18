@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { SignalREvents } from '../models/SignalREvents'
 import SignalRService from '../services/signalrService'
 import { useUserStore } from '../store/userStore'
+import { extractErrorMessage } from '../utils/errorMessageHelper'
 
 /**
  * 更新暱稱 hook
@@ -20,18 +21,7 @@ export function useUpdateNickname() {
       await service.invoke(SignalREvents.UPDATE_NICKNAME, nickname)
     } catch (err: unknown) {
       // 預設錯誤訊息
-      let msg = '暱稱更新失敗'
-      // 嘗試從錯誤物件中提取訊息
-      // @Copilot 把這一段邏輯做成獨立方法 開始 然後搬到Utils裡面
-      if (
-        err &&
-        typeof err === 'object' &&
-        'message' in err &&
-        typeof (err as { message?: unknown }).message === 'string'
-      ) {
-        msg = (err as { message: string }).message ?? msg
-      }
-      // @Copilot 把這一段邏輯做成幫助方法 結束
+      const msg = extractErrorMessage(err, '暱稱更新失敗')
       setError(msg)
     } finally {
       setUpdating(false)

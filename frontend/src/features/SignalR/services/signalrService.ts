@@ -11,8 +11,60 @@ class SignalRService {
   private connection: HubConnection | null = null
   // 事件監聽器集合
   private listeners: Map<SignalREvent, Set<EventCallback>> = new Map()
+  private lastRegisteredDeviceFingerprint?: string
 
   private constructor() {}
+
+  /**
+   * retryAsync: 重試函數，支援 exponential backoff
+   */
+  private async retryAsync<T>(fn: () => Promise<T>, maxAttempts = 3, baseDelay = 200): Promise<T> {
+    let attempt = 0
+    while (attempt < maxAttempts) {
+      try {
+        return await fn()
+      } catch (err) {
+        attempt++
+        if (attempt >= maxAttempts) throw err
+        await new Promise((r) => setTimeout(r, baseDelay * Math.pow(2, attempt - 1)))
+      }
+    }
+    throw new Error('retryAsync: should not reach here')
+  }
+
+  /**
+   * registerAllEvents: 註冊所有 SignalR 事件
+   */
+  private registerAllEvents(): void {
+    if (!this.connection) return
+    Object.values(SignalREvents).forEach((event) => {
+      this.connection!.off(event)
+      this.connection!.on(event, (payload) => {
+        this.emit(event, payload)
+      })
+    })
+    this.connection.onclose(() => {})
+    this.connection.onreconnecting(() => {})
+    this.connection.onreconnected(() => this.reRegisterUserIfNeeded())
+  }
+
+  /**
+   * unregisterAllEvents: 移除所有 SignalR 事件
+   */
+  private unregisterAllEvents(): void {
+    if (!this.connection) return
+    Object.values(SignalREvents).forEach((event) => {
+      this.connection!.off(event)
+    })
+  }
+
+  /**
+   * reRegisterUserIfNeeded: 如果有最後註冊的裝置指紋，則重新註冊用戶
+   */
+  private async reRegisterUserIfNeeded(): Promise<void> {
+    if (!this.lastRegisteredDeviceFingerprint) return
+    await this.retryAsync(() => this.registerUser(this.lastRegisteredDeviceFingerprint!), 3, 500)
+  }
 
   // 取得單例實例
   public static getInstance(): SignalRService {
@@ -22,7 +74,7 @@ class SignalRService {
     return SignalRService.instance
   }
 
-  // 建立 SignalR 連線並註冊所有事件
+  // 建立 SignalR 連線並註冊所有事件，含 retry/backoff
   public async connect(): Promise<void> {
     if (this.connection) return
     this.connection = new HubConnectionBuilder()
@@ -30,16 +82,8 @@ class SignalRService {
       .withAutomaticReconnect()
       .configureLogging(LogLevel.Information)
       .build()
-
-    // 自動註冊所有 SignalREvents 事件
-    Object.values(SignalREvents).forEach((event) => {
-      this.connection!.on(event, (payload) => {
-        this.emit(event, payload)
-      })
-    })
-    // ...如有其他事件請自行補上
-
-    await this.connection.start()
+    this.registerAllEvents()
+    await this.retryAsync(() => this.connection!.start(), 5, 500)
   }
 
   // 中斷 SignalR 連線並清理事件
@@ -76,15 +120,15 @@ class SignalRService {
   /**
    * 發送訊息到 SignalR Hub
    */
-  public async invoke(event: SignalREvent, ...args: any[]): Promise<void> {
+  public async invoke(event: SignalREvent, ...args: unknown[]): Promise<void> {
     if (!this.connection) throw new Error('SignalR not connected')
-    await this.connection.invoke(event, ...args)
+    await this.retryAsync(() => this.connection!.invoke(event, ...args), 3, 200)
   }
 
   /**
    * 觸發所有訂閱該事件的 callback
    */
-  private emit(event: SignalREvent, ...args: any[]): void {
+  private emit(event: SignalREvent, ...args: unknown[]): void {
     if (!this.listeners.has(event)) return
     for (const eventCallBack of this.listeners.get(event)!) {
       try {
@@ -93,6 +137,40 @@ class SignalRService {
         // @Balenciaga69 暫時沒想到要怎麼處理錯誤
       }
     }
+  }
+
+  // 註冊用戶，含前端驗證與錯誤導流
+  public async registerUser(deviceFingerprint: string): Promise<void> {
+    if (!this.connection) throw new Error('SignalR not connected')
+    if (!deviceFingerprint || deviceFingerprint.length < 32 || deviceFingerprint.length > 128) {
+      throw new Error('Invalid device fingerprint')
+    }
+    try {
+      this.lastRegisteredDeviceFingerprint = deviceFingerprint
+      await this.connection.invoke(SignalREvents.REGISTER_USER, deviceFingerprint)
+    } catch (err: unknown) {
+      if (
+        typeof err === 'object' &&
+        err !== null &&
+        'message' in err &&
+        typeof (err as { message: unknown }).message === 'string' &&
+        (err as { message: string }).message.includes('aborted')
+      ) {
+        throw new Error('RegisterUser failed: connection aborted')
+      }
+      throw err
+    }
+  }
+
+  // 釋放所有事件與連線
+  public async dispose(): Promise<void> {
+    if (this.connection) {
+      this.unregisterAllEvents()
+      await this.connection.stop()
+      this.connection = null
+    }
+    this.listeners.clear()
+    this.lastRegisteredDeviceFingerprint = undefined
   }
 }
 

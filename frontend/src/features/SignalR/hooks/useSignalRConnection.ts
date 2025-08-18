@@ -22,7 +22,7 @@ export function useSignalRConnection() {
         setLastError(err?.message ?? 'SignalR connect error')
       })
     return () => {
-      service.disconnect()
+      service.dispose()
       setConnectionStatus('disconnected')
     }
   }, [setConnectionStatus, setLastError])
