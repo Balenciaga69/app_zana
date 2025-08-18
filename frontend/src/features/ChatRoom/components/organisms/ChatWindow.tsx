@@ -1,5 +1,5 @@
 ﻿import type { FC, ReactNode } from 'react'
-import { AppContainer } from '../../../../Shared/components/layouts/AppContainer'
+import { AppContainer } from '../../../AppContainer'
 
 interface ChatWindowProps {
   children: ReactNode
@@ -12,11 +12,7 @@ interface ChatWindowProps {
  * 直接使用 'chat' 變體來獲得原始的聊天室佈局。
  */
 const ChatWindow: FC<ChatWindowProps> = ({ children }) => {
-  return (
-    <AppContainer variant='chat' testId='chat-window'>
-      {children}
-    </AppContainer>
-  )
+  return <AppContainer testId='chat-window'>{children}</AppContainer>
 }
 
 export default ChatWindow

@@ -3,7 +3,7 @@ import { VStack } from '@chakra-ui/react'
 import RoomInput from '../components/atoms/RoomInput'
 import RoomButton from '../components/atoms/RoomButton'
 import { useNavigate } from 'react-router-dom'
-import { AppContainer } from '@/Shared/components/layouts/AppContainer'
+import { AppContainer } from '@/features/AppContainer'
 
 const CreateRoomPage = () => {
   const navigate = useNavigate()
@@ -16,7 +16,7 @@ const CreateRoomPage = () => {
   }
 
   return (
-    <AppContainer variant='settings' testId='create-room-page'>
+    <AppContainer testId='create-room-page'>
       <VStack spacing={4} justify='center' flex={1}>
         {/* 房間名稱 */}
         <RoomInput

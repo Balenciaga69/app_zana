@@ -1,10 +1,11 @@
 ﻿import { Box, Text, Spinner, Alert, AlertIcon } from '@chakra-ui/react'
-import { useSignalR } from '../hooks/useSignalR'
+import { useSignalRStore } from '../SignalR/store/SignalRStore'
 
 const SignalRStatus = () => {
-  const { connectionState, error, isConnected } = useSignalR()
+  const connectionStatus = useSignalRStore((s) => s.connectionStatus)
+  const error = useSignalRStore((s) => s.lastError)
 
-  if (connectionState === 'connecting') {
+  if (connectionStatus === 'connecting') {
     return (
       <Box position='fixed' top={4} right={4} zIndex={9999}>
         <Alert status='info' borderRadius='md' maxW='200px'>
@@ -26,7 +27,7 @@ const SignalRStatus = () => {
     )
   }
 
-  if (isConnected) {
+  if (connectionStatus === 'connected') {
     return (
       <Box position='fixed' top={4} right={4} zIndex={9999}>
         <Alert status='success' borderRadius='md' maxW='200px'>

@@ -20,9 +20,9 @@ public partial class CommunicationHub : Hub
 
         Context.Items["UserId"] = userId;
 
-        // TODO:以下內容沒開規格，需要確認
-        await Clients.Caller.SendAsync("UserRegistered", userId.ToString(), null, false);
-        await Clients.Caller.SendAsync("ConnectionEstablished", Context.ConnectionId, DateTime.UtcNow);
+        // TODO:以下內容沒開規格，需要確認(暫時不要返回)
+        // await Clients.Caller.SendAsync("UserRegistered", userId.ToString(), null, false);
+        // await Clients.Caller.SendAsync("ConnectionEstablished", Context.ConnectionId, DateTime.UtcNow);
     }
 
     /// <summary>
@@ -36,12 +36,7 @@ public partial class CommunicationHub : Hub
 
         if (result)
         {
-            await Clients.Caller.SendAsync(
-                "NicknameUpdated",
-                userId.ToString(),
-                newNickname,
-                DateTime.UtcNow
-            );
+            await Clients.Caller.SendAsync("NicknameUpdated", newNickname);
         }
         else
         {

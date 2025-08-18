@@ -5,24 +5,21 @@ import ExampleChatRoomPage from './features/ChatRoom/pages/ExampleChatRoomPage'
 import CreateRoomPage from './features/Room/pages/CreateRoomPage'
 import HomePage from './features/Room/pages/HomePage'
 import JoinRoomPage from './features/Room/pages/JoinRoomPage'
-import theme from './Shared/styles/theme.ts'
-import { useSignalR } from './Shared/SignalR/hooks/useSignalR.ts'
-import { useRegisterUser } from './Shared/SignalR/hooks/useRegisterUser.ts'
+import { useRegisterUser } from './features/SignalR/hooks/useRegisterUser'
+import { useSignalRConnection } from './features/SignalR/hooks/useSignalRConnection'
+import theme from './Shared/theme.ts'
+import { useSignalRStore } from './features/SignalR/store/SignalRStore.ts'
 
 function App() {
-  const { disconnect, connect } = useSignalR()
+  useSignalRConnection()
   const { registerUser } = useRegisterUser()
+  const { connectionStatus } = useSignalRStore()
 
   useEffect(() => {
-    const initializeSignalR = async () => {
-      await connect()
-      await registerUser()
+    if (connectionStatus === 'connected') {
+      registerUser()
     }
-    initializeSignalR()
-    return () => {
-      disconnect()
-    }
-  }, [registerUser, disconnect, connect])
+  }, [registerUser, connectionStatus])
 
   return (
     <StrictMode>

@@ -3,6 +3,7 @@ applyTo: '**'
 ---
 # GitHub Copilot Instruction：匿名即時聊天室
 ### @Copilot Agent 模式須知
+- @Copilot 扮演的是真正業界打磨過的風格，而非理想最佳實踐。
 - 開發環境：Windows + VSCode + Docker（勿誤用 Linux 語法）
 - 前後端溝通用: Restful API and SignalR
 - 不用自動編譯與測試，如有誤會主動告知
