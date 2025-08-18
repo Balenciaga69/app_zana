@@ -23,7 +23,6 @@ const initialState = {
   error: null,
   isConnecting: false,
 }
-
 export const useSignalRStore = create<
   SignalRState & {
     connect: () => Promise<void>
