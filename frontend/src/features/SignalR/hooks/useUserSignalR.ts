@@ -1,17 +1,16 @@
 import { useEffect } from 'react'
 import { SignalREvents } from '../services/SignalREvents'
-import SignalRServiceV2 from '../services/SignalRServiceV2'
-import { useUserStore } from '../store/userStore'
+import SignalRService from '../services/SignalRService'
 
 /**
  * 用戶相關 SignalR 事件 hook
  */
 export function useUserSignalR() {
-  const setUser = useUserStore(s => s.setUser)
-  const setNickname = useUserStore(s => s.setNickname)
+  const setUser = useUserStore((s) => s.setUser)
+  const setNickname = useUserStore((s) => s.setNickname)
 
   useEffect(() => {
-    const service = SignalRServiceV2.getInstance()
+    const service = SignalRService.getInstance()
     // 註冊用戶註冊事件
     const onRegisterUser = (payload: any) => {
       setUser(payload)

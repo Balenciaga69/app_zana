@@ -1,27 +1,29 @@
 // Zustand slice skeleton for SignalR
-import { create, type StateCreator } from 'zustand'
 
-export interface SignalRState {
-  // properties
-  connectionStatus: 'connected' | 'connecting' | 'disconnected' | 'reconnecting' | 'error'
+import { create, type StateCreator } from 'zustand'
+import { type SignalRConnectionStatus } from '../models/SignalRConnectionStatus'
+
+export interface SignalRStore {
+  // 狀態
+  connectionStatus: SignalRConnectionStatus
   connectionId?: string
   reconnectAttempts: number
   lastError?: string
-  // actions
-  setConnectionStatus: (status: SignalRState['connectionStatus']) => void
+  // 動作
+  setConnectionStatus: (status: SignalRConnectionStatus) => void
   setConnectionId: (id?: string) => void
   setLastError: (error?: string) => void
   incrementReconnectAttempts: () => void
   resetReconnectAttempts: () => void
 }
 
-export const createSignalRSlice: StateCreator<SignalRState> = (set, get) => ({
+export const createSignalRSlice: StateCreator<SignalRStore> = (set) => ({
   connectionStatus: 'disconnected',
   connectionId: undefined,
   reconnectAttempts: 0,
   lastError: undefined,
 
-  setConnectionStatus: (status: SignalRState['connectionStatus']) => set({ connectionStatus: status }),
+  setConnectionStatus: (status: SignalRConnectionStatus) => set({ connectionStatus: status }),
 
   setConnectionId: (id?: string) => set({ connectionId: id }),
 
@@ -32,4 +34,4 @@ export const createSignalRSlice: StateCreator<SignalRState> = (set, get) => ({
   resetReconnectAttempts: () => set({ reconnectAttempts: 0 }),
 })
 
-export const useSignalRStore = create<SignalRState>()(createSignalRSlice)
+export const useSignalRStore = create<SignalRStore>()(createSignalRSlice)

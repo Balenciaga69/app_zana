@@ -1,6 +1,7 @@
 ﻿import { useState, useCallback } from 'react'
 import { DeviceFingerprintHelper } from '../utils/deviceFingerprintHelper'
 import { signalRService } from '../services/signalrService'
+import { useUserStore } from '../store/userStore'
 
 /**
  * 通用 SignalR 使用者註冊 hook
@@ -9,7 +10,6 @@ import { signalRService } from '../services/signalrService'
 export function useRegisterUser() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<null | Error>(null)
-
   const registerUser = useCallback(async () => {
     setLoading(true)
     setError(null)

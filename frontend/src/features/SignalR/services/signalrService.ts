@@ -1,114 +1,105 @@
-﻿import { useUserStore } from '@/features/SignalR/store/userStore'
 import { config } from '@/Shared/config'
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
+import { type SignalREvent, SignalREvents } from '../models/SignalREvents'
 
-export type ConnectionState = 'disconnected' | 'connecting' | 'connected' | 'reconnecting' | 'error'
+type EventCallback = (payload: any) => void
 
-/**
- * SignalR Service
- * 用於管理 SignalR 連接和事件
- */
-export class SignalRService {
+class SignalRService {
+  // 單例實例
+  private static instance: SignalRService
+  // SignalR 連接實例
   private connection: HubConnection | null = null
-  private maxReconnectAttempts: number = 5
-  private reconnectDelay: number = 3000
-  private registerUserEventsBound = false
+  // 事件監聽器集合
+  private listeners: Map<SignalREvent, Set<EventCallback>> = new Map()
 
-  /**
-   * 建立 SignalR 連接
-   */
-  async connect(): Promise<HubConnection> {
-    if (this.connection?.state === 'Connected') {
-      return this.connection
+  private constructor() {}
+
+  // 取得單例實例
+  public static getInstance(): SignalRService {
+    if (!SignalRService.instance) {
+      SignalRService.instance = new SignalRService()
     }
+    return SignalRService.instance
+  }
+
+  // 建立 SignalR 連線並註冊所有事件
+  public async connect(): Promise<void> {
+    if (this.connection) return
 
     this.connection = new HubConnectionBuilder()
       .withUrl(config.signalR.hubUrl)
-      // 設定自動重連
-      .withAutomaticReconnect({
-        // 設定重連次數和延遲
-        nextRetryDelayInMilliseconds: (retryContext) => {
-          // 如果重試次數 < 最大重試次數，則返回重連延遲
-          if (retryContext.previousRetryCount < this.maxReconnectAttempts) {
-            return this.reconnectDelay
-          }
-          return null // 停止重連
-        },
-      })
+      .withAutomaticReconnect()
       .configureLogging(LogLevel.Information)
       .build()
-    this.setupEventListeners()
+
+    // 手動註冊常用事件，將 server 事件導向 emit
+    // TODO: @Balenciaga69 未來改成自動註冊所有事件
+    this.connection.on(SignalREvents.MESSAGE_RECEIVED, (payload) => {
+      this.emit(SignalREvents.MESSAGE_RECEIVED, payload)
+    })
+    this.connection.on(SignalREvents.REGISTER_USER, (payload) => {
+      this.emit(SignalREvents.REGISTER_USER, payload)
+    })
+    this.connection.on(SignalREvents.NICKNAME_UPDATED, (payload) => {
+      this.emit(SignalREvents.NICKNAME_UPDATED, payload)
+    })
+    // ...如有其他事件請自行補上
+
     await this.connection.start()
-    return this.connection
   }
 
-  /**
-   * 斷開 SignalR 連接
-   */
-  async disconnect(): Promise<void> {
+  // 中斷 SignalR 連線並清理事件
+  public async disconnect(): Promise<void> {
     if (this.connection) {
       await this.connection.stop()
       this.connection = null
-      this.registerUserEventsBound = false
+    }
+    this.listeners.clear()
+  }
+
+  /**
+   * 註冊事件監聽 callback
+   */
+  public on(event: SignalREvent, callback: EventCallback): void {
+    if (!this.listeners.has(event)) {
+      this.listeners.set(event, new Set())
+    }
+    this.listeners.get(event)!.add(callback)
+  }
+
+  /**
+   * 移除事件監聽 callback
+   */
+  public off(event: SignalREvent, callback: EventCallback): void {
+    if (this.listeners.has(event)) {
+      this.listeners.get(event)!.delete(callback)
+      if (this.listeners.get(event)!.size === 0) {
+        this.listeners.delete(event)
+      }
     }
   }
 
   /**
-   * 獲取 SignalR 連接實例
+   * 發送訊息到 SignalR Hub
    */
-  getConnection(): HubConnection | null {
-    return this.connection
+  public async invoke(event: SignalREvent, payload: any): Promise<void> {
+    if (!this.connection) throw new Error('SignalR not connected')
+    await this.connection.invoke(event, payload)
   }
 
   /**
-   * 設定 SignalR 事件監聽器
+   * 觸發所有訂閱該事件的 callback
    */
-  private setupEventListeners(): void {
-    if (!this.connection) return
-    this.connection.onclose(() => {})
-    this.connection.onreconnecting(() => {})
-    this.connection.onreconnected(() => {})
-    // 可擴充事件監聽
-  }
-
-  /**
-   * 註冊/重新連線用戶
-   */
-  async registerUser(deviceFingerprint: string): Promise<void> {
-    if (!this.connection) throw new Error('SignalR connection not established')
-
-    // 僅註冊一次事件監聽
-    if (!this.registerUserEventsBound) {
-      this.connection.on('UserRegistered', (userId: string, nickname: string | null, isNewUser: boolean) => {
-        useUserStore.setState({ userId, nickname: nickname ?? null, isNewUser })
-      })
-      this.connection.on('ConnectionEstablished', (connectionId: string, serverTime: string) => {
-        useUserStore.setState({ connectionId, serverTime })
-      })
-      this.connection.on('NicknameUpdated', (userId: string, newNickname: string, serverTime: string) => {
-        // 僅當回傳 userId 與當前相同時才覆蓋
-        const { userId: current } = useUserStore.getState()
-        if (!current || current === userId) {
-          useUserStore.setState({ nickname: newNickname, serverTime })
-        }
-      })
-      this.connection.on('Error', (message: string) => {
-        useUserStore.setState({ error: message })
-      })
-      this.registerUserEventsBound = true
+  private emit(event: SignalREvent, payload: any): void {
+    if (!this.listeners.has(event)) return
+    for (const eventCallBack of this.listeners.get(event)!) {
+      try {
+        eventCallBack(payload)
+      } catch {
+        // @Balenciaga69 暫時沒想到要怎麼處理錯誤
+      }
     }
-
-    // 呼叫 RegisterUser 方法
-    await this.connection.invoke('RegisterUser', deviceFingerprint)
-  }
-
-  /**
-   * 更新暱稱
-   */
-  async updateNickname(newNickname: string): Promise<void> {
-    if (!this.connection) throw new Error('SignalR connection not established')
-    await this.connection.invoke('UpdateNickname', newNickname)
   }
 }
 
-export const signalRService = new SignalRService()
+export default SignalRService
