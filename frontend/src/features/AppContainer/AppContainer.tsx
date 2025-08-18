@@ -33,19 +33,14 @@ import type { AppContainerProps } from './AppContainer.types'
  */
 const AppContainer: FC<AppContainerProps> = ({
   children,
-  variant = 'default',
-  containerSx = {},
-  wrapperSx = {},
   testId = 'app-container',
   showShadow = true,
   fullscreen = false,
 }) => {
   // 生成樣式
-  const styles = createAppContainerStyles(variant, {
+  const styles = createAppContainerStyles({
     showShadow,
     fullscreen,
-    containerSx,
-    wrapperSx,
   })
 
   return (

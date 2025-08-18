@@ -24,11 +24,10 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
             .WithMessage("DeviceFingerprint 不可為空白")
             .Must(f => !IsAllZeroOrWhitespace(f))
             .WithMessage("DeviceFingerprint 不可全為 0 或全空白")
-            .Matches("^[a-zA-Z0-9\\-_.:]+$") // 注意：C# 字串中 - 需跳脫
+            .Matches("^[a-zA-Z0-9\\-_.:]+$") // 允許英數字與 -_.: 字元
             .WithMessage("DeviceFingerprint 僅允許英數字與 -_.: 字元");
 
         RuleFor(x => x.ConnectionId).NotEmpty().WithMessage("ConnectionId 不可為空");
-        // IpAddress, UserAgent 可選，不強制驗證
     }
 
     private bool IsAllZeroOrWhitespace(string f)
@@ -63,14 +62,13 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
     {
         var now = DateTime.UtcNow;
 
-        // 查找是否已有對應 DeviceFingerprint 的 User
+        // 撈取或建立 User
         var existingUser = await _userRepository.GetByDeviceFingerprintAsync(request.DeviceFingerprint);
 
         UserEntity user;
 
         if (existingUser == null)
         {
-            // 若無則建立新的 User
             user = new UserEntity
             {
                 Id = Guid.NewGuid(),
@@ -86,7 +84,6 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
         }
         else
         {
-            // 若有則更新 IsActive 和 LastActiveAt
             existingUser.IsActive = true;
             existingUser.LastActiveAt = now;
             existingUser.UpdatedAt = now;
@@ -95,7 +92,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
             user = existingUser;
         }
 
-        // 建立一筆 UserConnection
+        // 生成一筆新的 UserConnectionEntity
         var userConnection = new UserConnectionEntity
         {
             Id = Guid.NewGuid(),
@@ -111,7 +108,6 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
 
         await _userConnectionRepository.AddAsync(userConnection);
 
-        // 5. 儲存變更
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return user.Id;

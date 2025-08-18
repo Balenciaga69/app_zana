@@ -1,6 +1,6 @@
-﻿using MediatR;
+﻿using System.Diagnostics;
+using MediatR;
 using Monolithic.Shared.Logging;
-using System.Diagnostics;
 
 namespace Infrastructure.Behaviors;
 

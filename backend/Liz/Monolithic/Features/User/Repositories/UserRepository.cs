@@ -15,7 +15,14 @@ public class UserRepository : IUserRepository
 
     public async Task<UserEntity?> GetByDeviceFingerprintAsync(string deviceFingerprint)
     {
-        return await _db.Users.FirstOrDefaultAsync(u => u.DeviceFingerprint == deviceFingerprint);
+        return await _db
+            .Users.AsNoTracking()
+            .FirstOrDefaultAsync(u => u.DeviceFingerprint == deviceFingerprint);
+    }
+
+    public async Task<UserEntity?> GetByIdAsync(Guid userId)
+    {
+        return await _db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
     }
 
     public async Task AddAsync(UserEntity user)

@@ -3,7 +3,7 @@ import { VStack } from '@chakra-ui/react'
 import RoomInput from '../components/atoms/RoomInput'
 import RoomButton from '../components/atoms/RoomButton'
 import { useNavigate } from 'react-router-dom'
-import { AppContainer } from '@/Shared/components/layouts/AppContainer'
+import { AppContainer } from '@/features/AppContainer'
 
 const JoinRoomPage = () => {
   const navigate = useNavigate()
@@ -15,7 +15,7 @@ const JoinRoomPage = () => {
     navigate('/example')
   }
   return (
-    <AppContainer variant='settings' testId='join-room-page'>
+    <AppContainer testId='join-room-page'>
       <VStack spacing={4} justify='center' flex={1}>
         {/* 房間網址/代碼 */}
         <RoomInput
