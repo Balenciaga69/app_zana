@@ -5,18 +5,21 @@ import ExampleChatRoomPage from './features/ChatRoom/pages/ExampleChatRoomPage'
 import CreateRoomPage from './features/Room/pages/CreateRoomPage'
 import HomePage from './features/Room/pages/HomePage'
 import JoinRoomPage from './features/Room/pages/JoinRoomPage'
-import theme from './Shared/theme.ts'
-
-import { useSignalRConnection } from './features/SignalR/hooks/useSignalRConnection'
 import { useRegisterUser } from './features/SignalR/hooks/useRegisterUser'
+import { useSignalRConnection } from './features/SignalR/hooks/useSignalRConnection'
+import theme from './Shared/theme.ts'
+import { useSignalRStore } from './features/SignalR/store/SignalRStore.ts'
 
 function App() {
   useSignalRConnection()
   const { registerUser } = useRegisterUser()
+  const { connectionStatus } = useSignalRStore()
 
   useEffect(() => {
-    registerUser()
-  }, [registerUser])
+    if (connectionStatus === 'connected') {
+      registerUser()
+    }
+  }, [registerUser, connectionStatus])
 
   return (
     <StrictMode>

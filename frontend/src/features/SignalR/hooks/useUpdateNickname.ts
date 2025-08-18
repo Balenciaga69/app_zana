@@ -17,11 +17,12 @@ export function useUpdateNickname() {
     setError(null)
     const service = SignalRService.getInstance()
     try {
-      await service.invoke(SignalREvents.UPDATE_NICKNAME, { nickname })
+      await service.invoke(SignalREvents.UPDATE_NICKNAME, nickname)
     } catch (err: unknown) {
       // 預設錯誤訊息
       let msg = '暱稱更新失敗'
       // 嘗試從錯誤物件中提取訊息
+      // @Copilot 把這一段邏輯做成獨立方法 開始 然後搬到Utils裡面
       if (
         err &&
         typeof err === 'object' &&
@@ -30,15 +31,16 @@ export function useUpdateNickname() {
       ) {
         msg = (err as { message: string }).message ?? msg
       }
+      // @Copilot 把這一段邏輯做成幫助方法 結束
       setError(msg)
     } finally {
       setUpdating(false)
     }
   }, [])
 
+  // NicknameUpdated
   useEffect(() => {
     const service = SignalRService.getInstance()
-    // 註冊 NicknameUpdated 事件
     const onNicknameUpdated = (newNickname: string) => {
       setNickname(newNickname)
     }

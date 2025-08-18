@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useSignalRStore } from '../store/signalrStore'
+import { useSignalRStore } from '../store/SignalRStore'
 import SignalRService from '../services/signalrService'
 
 /**
@@ -10,12 +10,13 @@ export function useSignalRConnection() {
   const setLastError = useSignalRStore((state) => state.setLastError)
 
   useEffect(() => {
-    console.info('xZx useSignalRConnection start')
     const service = SignalRService.getInstance()
-    setConnectionStatus('connected')
+    setConnectionStatus('connecting')
     service
       .connect()
-      .then(() => setConnectionStatus('connected'))
+      .then(() => {
+        setConnectionStatus('connected')
+      })
       .catch((err) => {
         setConnectionStatus('error')
         setLastError(err?.message ?? 'SignalR connect error')
@@ -23,7 +24,6 @@ export function useSignalRConnection() {
     return () => {
       service.disconnect()
       setConnectionStatus('disconnected')
-      console.info('xZx useSignalRConnection end')
     }
   }, [setConnectionStatus, setLastError])
 }

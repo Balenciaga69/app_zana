@@ -1,6 +1,5 @@
 ﻿import { Box, Text, Spinner, Alert, AlertIcon } from '@chakra-ui/react'
-
-import { useSignalRStore } from '../SignalR/store/signalrStore'
+import { useSignalRStore } from '../SignalR/store/SignalRStore'
 
 const SignalRStatus = () => {
   const connectionStatus = useSignalRStore((s) => s.connectionStatus)
@@ -27,7 +26,6 @@ const SignalRStatus = () => {
       </Box>
     )
   }
-
 
   if (connectionStatus === 'connected') {
     return (

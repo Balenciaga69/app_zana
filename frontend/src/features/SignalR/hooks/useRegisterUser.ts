@@ -1,18 +1,25 @@
 import { useCallback } from 'react'
 import { SignalREvents } from '../models/SignalREvents'
 import SignalRService from '../services/signalrService'
+import { DeviceFingerprintHelper } from '../utils/deviceFingerprintHelper'
+import { useSignalRStore } from '../store/SignalRStore'
 
 /**
  * 註冊用戶 hook
  */
 export function useRegisterUser() {
-  // TODO: 可依需求注入 userStore
-  const registerUser = useCallback(async (payload?: any) => {
-    console.info('xZx registerUser start')
+  const setConnectionStatus = useSignalRStore((state) => state.setConnectionStatus)
+  const registerUser = useCallback(async () => {
     const service = SignalRService.getInstance()
-    await service.invoke(SignalREvents.REGISTER_USER, payload)
-    // TODO: 可監聽註冊回傳事件，並更新 store
-    console.info('xZx registerUser end')
-  }, [])
+    try {
+      const fingerprint = await DeviceFingerprintHelper.getFingerprint()
+      await service.invoke(SignalREvents.REGISTER_USER, fingerprint)
+    } catch {
+      // 失敗就斷線
+      service.disconnect()
+      setConnectionStatus('disconnected')
+    }
+  }, [setConnectionStatus])
+
   return { registerUser }
 }

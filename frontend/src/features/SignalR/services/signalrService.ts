@@ -2,7 +2,7 @@ import { config } from '@/Shared/config'
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
 import { type SignalREvent, SignalREvents } from '../models/SignalREvents'
 
-type EventCallback = (payload: any) => void
+type EventCallback = (...arg: any[]) => void
 
 class SignalRService {
   // 單例實例
@@ -25,7 +25,6 @@ class SignalRService {
   // 建立 SignalR 連線並註冊所有事件
   public async connect(): Promise<void> {
     if (this.connection) return
-
     this.connection = new HubConnectionBuilder()
       .withUrl(config.signalR.hubUrl)
       .withAutomaticReconnect()
@@ -77,19 +76,19 @@ class SignalRService {
   /**
    * 發送訊息到 SignalR Hub
    */
-  public async invoke(event: SignalREvent, payload: any): Promise<void> {
+  public async invoke(event: SignalREvent, ...args: any[]): Promise<void> {
     if (!this.connection) throw new Error('SignalR not connected')
-    await this.connection.invoke(event, payload)
+    await this.connection.invoke(event, ...args)
   }
 
   /**
    * 觸發所有訂閱該事件的 callback
    */
-  private emit(event: SignalREvent, payload: any): void {
+  private emit(event: SignalREvent, ...args: any[]): void {
     if (!this.listeners.has(event)) return
     for (const eventCallBack of this.listeners.get(event)!) {
       try {
-        eventCallBack(payload)
+        eventCallBack(...args)
       } catch {
         // @Balenciaga69 暫時沒想到要怎麼處理錯誤
       }
