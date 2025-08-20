@@ -45,6 +45,7 @@ public partial class CommunicationHub : Hub
     /// </summary>
     public async Task UpdateNickname(string newNickname)
     {
+        // @Copilot FIXME: 這邊需要移除，換成Restful API 且業務邏輯也換了
         var userId = Context.Items["UserId"] as Guid?;
 
         var result = await _mediator.Send(new UpdateNicknameCommand(userId ?? Guid.Empty, newNickname));

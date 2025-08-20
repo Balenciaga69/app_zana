@@ -26,7 +26,7 @@ public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
         var stopwatch = Stopwatch.StartNew();
         try
         {
-            var response = await next();
+            var response = await next(cancellationToken);
             stopwatch.Stop();
             _logger.LogInfo($"Handled {requestName} in {stopwatch.ElapsedMilliseconds}ms", response, traceId);
             return response;
