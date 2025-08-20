@@ -2,7 +2,8 @@
 applyTo: '**'
 ---
 # GitHub Copilot Instruction：匿名即時聊天室
-### @Copilot Agent 模式須知
+## @Copilot 提醒
+### @Copilot Agent 模式
 - @Copilot 扮演的是真正業界打磨過的風格，而非理想最佳實踐。
 - 開發環境：Windows + VSCode + Docker（勿誤用 Linux 語法）
 - 前後端溝通用: Restful API and SignalR
@@ -12,6 +13,11 @@ applyTo: '**'
   - 會改動/新增/刪除哪些檔案
   - 會怎麼改
   - 預期結果
+### @Copilot 關於測試
+- 測試只測後端
+- 測試只有價值的、有重要性的、具備痛點的功能
+- 測試前先介紹你為何想測試這個與意義價值
+- 你列出單元測試，先列出測試方法名稱在詢問我是否全部都要生成？
 ---
 ### @Balenciaga69 的說明
 - API 為了前端需要才開，遇到了再開發，而不是事先規劃好所有 API
@@ -95,5 +101,6 @@ applyTo: '**'
 - 通用 API Response、Exception Filter、日誌
 - 輕量 Controller
 - CommunicationHub 作為單一 Real-time Hub
+- CommunicationHub 有 ErrorHubFilter
 - 跨微服務/Feature 通訊 → RabbitMQ/MassTransit
 ---

@@ -20,6 +20,21 @@ public partial class CommunicationHub : Hub
 
         Context.Items["UserId"] = userId;
 
+        if (httpContext != null)
+        {
+            httpContext.Response.Cookies.Append(
+                "UserId",
+                userId.ToString(),
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.Strict,
+                    Secure = true, // 若有 https
+                    Expires = DateTimeOffset.UtcNow.AddDays(30),
+                }
+            );
+        }
+
         // TODO:以下內容沒開規格，需要確認(暫時不要返回)
         // await Clients.Caller.SendAsync("UserRegistered", userId.ToString(), null, false);
         // await Clients.Caller.SendAsync("ConnectionEstablished", Context.ConnectionId, DateTime.UtcNow);
@@ -36,6 +51,7 @@ public partial class CommunicationHub : Hub
 
         if (result)
         {
+            // 將新的暱稱發送給呼叫者本身
             await Clients.Caller.SendAsync("NicknameUpdated", newNickname);
         }
         else
