@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Monolithic.Features.Communication;
+using Monolithic.Shared.Common;
 
 namespace Monolithic.Features.User;
 
@@ -24,13 +25,37 @@ public class UserController : ControllerBase
     [HttpPut("nickname")]
     public async Task<IActionResult> UpdateNickname([FromBody] UpdateNicknameRequest request)
     {
-        // TODO: 1. 取得 UserId（可從 Claims, Header, Cookie, 或前端傳遞）
-        // TODO: 2. 執行 UpdateNicknameCommand
-        // TODO: 3. 若成功，通知 CommunicationHub：
-        //   - 通知本人（Clients.User or Clients.Client）
-        //   - 通知同房間活躍用戶（Clients.Group or 自訂邏輯）
-        // TODO: 4. 回傳標準 API Response
-        throw new NotImplementedException();
+        // 取得 UserId（從 Cookie）
+        if (
+            !Request.Cookies.TryGetValue("UserId", out var userIdStr)
+            || !Guid.TryParse(userIdStr, out var userId)
+        )
+        {
+            // 統一 API Response 格式
+            return Unauthorized(
+                ApiResponse<object>.Fail(ErrorCode.AuthRequired, "UserId not found in cookies.")
+            );
+        }
+
+        // 執行 UpdateNicknameCommand
+        var result = await _mediator.Send(new Commands.UpdateNicknameCommand(userId, request.NewNickname));
+        if (!result)
+        {
+            // 統一 API Response 格式
+            return BadRequest(ApiResponse<object>.Fail(ErrorCode.InvalidInput, "Failed to update nickname."));
+        }
+
+        // 通知本人所有連線（Clients.User 不適用匿名，改用 Clients.All + userId mapping）
+        // TODO: @Copilot 這裡業務邏輯未來會變更 可能要思考
+        await _hubContext.Clients.All.SendAsync("NicknameUpdated", userId.ToString(), request.NewNickname);
+
+        // 回傳標準 API Response
+        return Ok(
+            ApiResponse<object>.Ok(
+                new { newNickname = request.NewNickname },
+                "Nickname updated successfully."
+            )
+        );
     }
 }
 

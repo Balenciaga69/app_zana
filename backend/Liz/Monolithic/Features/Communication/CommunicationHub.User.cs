@@ -39,25 +39,4 @@ public partial class CommunicationHub : Hub
         // await Clients.Caller.SendAsync("UserRegistered", userId.ToString(), null, false);
         // await Clients.Caller.SendAsync("ConnectionEstablished", Context.ConnectionId, DateTime.UtcNow);
     }
-
-    /// <summary>
-    /// 更新使用者暱稱
-    /// </summary>
-    public async Task UpdateNickname(string newNickname)
-    {
-        // @Copilot FIXME: 這邊需要移除，換成Restful API 且業務邏輯也換了
-        var userId = Context.Items["UserId"] as Guid?;
-
-        var result = await _mediator.Send(new UpdateNicknameCommand(userId ?? Guid.Empty, newNickname));
-
-        if (result)
-        {
-            // 將新的暱稱發送給呼叫者本身
-            await Clients.Caller.SendAsync("NicknameUpdated", newNickname);
-        }
-        else
-        {
-            throw new HubException("Failed to update nickname");
-        }
-    }
 }

@@ -1,34 +1,37 @@
 import { useCallback, useEffect, useState } from 'react'
+import axios from 'axios'
 import { SignalREvents } from '../models/SignalREvents'
 import SignalRService from '../services/signalrService'
 import { useUserStore } from '../store/userStore'
 import { extractErrorMessage } from '../utils/errorMessageHelper'
 
 /**
- * 更新暱稱 hook
+ * 主動發送：更新暱稱（呼叫 RESTful API）
  */
-export function useUpdateNickname() {
-  const setNickname = useUserStore((state) => state.setNickname)
+export function useSendUpdateNickname() {
   const [updating, setUpdating] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // 包裝 invoke 並處理 loading/error 狀態
   const updateNickname = useCallback(async (nickname: string) => {
     setUpdating(true)
     setError(null)
-    const service = SignalRService.getInstance()
     try {
-      await service.invoke(SignalREvents.UPDATE_NICKNAME, nickname)
+      await axios.put('/api/user/nickname', { newNickname: nickname })
     } catch (err: unknown) {
-      // 預設錯誤訊息
-      const msg = extractErrorMessage(err, '暱稱更新失敗')
-      setError(msg)
+      setError(extractErrorMessage(err, '暱稱更新失敗'))
     } finally {
       setUpdating(false)
     }
   }, [])
 
-  // NicknameUpdated
+  return { updateNickname, updating, error }
+}
+
+/**
+ * 被動監聽：SignalR NicknameUpdated 事件
+ */
+export function useOnNicknameUpdated() {
+  const setNickname = useUserStore((state) => state.setNickname)
   useEffect(() => {
     const service = SignalRService.getInstance()
     const onNicknameUpdated = (newNickname: string) => {
@@ -39,6 +42,4 @@ export function useUpdateNickname() {
       service.off(SignalREvents.NICKNAME_UPDATED, onNicknameUpdated)
     }
   }, [setNickname])
-
-  return { updateNickname, updating, error }
 }
