@@ -1,6 +1,7 @@
 import { config } from '@/Shared/config'
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
 import { type SignalREvent, SignalREvents } from '../models/SignalREvents'
+import { extractErrorMessage } from '../utils/errorMessageHelper'
 
 type EventCallback = (...arg: any[]) => void
 
@@ -89,18 +90,8 @@ class SignalRService {
       this.lastRegisteredDeviceFingerprint = deviceFingerprint
       await this.connection.invoke(SignalREvents.REGISTER_USER, deviceFingerprint)
     } catch (err: unknown) {
-      if (
-        // 檢查錯誤是否為物件
-        typeof err === 'object' &&
-        // 檢查錯誤不為 null
-        err !== null &&
-        // 檢查錯誤物件是否有 message 屬性
-        'message' in err &&
-        // 檢查 message 屬性是否為字串
-        typeof (err as { message: unknown }).message === 'string' &&
-        // 檢查 message 是否包含 aborted 字串
-        (err as { message: string }).message.includes('aborted')
-      ) {
+      const msg = extractErrorMessage(err, '')
+      if (msg.includes('aborted')) {
         // 連線中斷時註冊失敗
         throw new Error('RegisterUser failed: connection aborted')
       }
