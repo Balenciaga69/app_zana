@@ -1,12 +1,12 @@
 ﻿import { useUserStore } from '@/features/SignalR/store/userStore'
 import { Alert, AlertIcon, Box, Button, HStack, Input, Text, VStack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { useUpdateNickname } from '../SignalR/hooks/useUpdateNickname'
+import { useOnNicknameUpdated, useSendUpdateNickname } from '../SignalR/hooks/useUpdateNickname'
 
 export const NicknamePanel = () => {
   const nickname = useUserStore((s) => s.nickname)
   const [value, setValue] = useState(nickname ?? '')
-  const { updateNickname, updating, error } = useUpdateNickname()
+  const { updateNickname, updating, error } = useSendUpdateNickname()
 
   useEffect(() => {
     setValue(nickname ?? '')

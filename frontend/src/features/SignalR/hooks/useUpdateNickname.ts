@@ -4,9 +4,10 @@ import { SignalREvents } from '../models/SignalREvents'
 import SignalRService from '../services/signalrService'
 import { useUserStore } from '../store/userStore'
 import { extractErrorMessage } from '../utils/errorMessageHelper'
+import { config } from '../../../Shared/config'
 
 /**
- * 主動發送：更新暱稱（呼叫 RESTful API）
+ * 主動發送：更新暱稱
  */
 export function useSendUpdateNickname() {
   const [updating, setUpdating] = useState(false)
@@ -16,7 +17,8 @@ export function useSendUpdateNickname() {
     setUpdating(true)
     setError(null)
     try {
-      await axios.put('/api/user/nickname', { newNickname: nickname })
+      console.info('xZx config.api.baseUrl', config.api.baseUrl)
+      await axios.put(`${config.api.baseUrl}/user/nickname`, { newNickname: nickname })
     } catch (err: unknown) {
       setError(extractErrorMessage(err, '暱稱更新失敗'))
     } finally {

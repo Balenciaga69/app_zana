@@ -46,8 +46,8 @@ public static partial class DIExt
             .ReadFrom.Configuration(builder.Configuration)
             .Enrich.FromLogContext()
             .Enrich.WithThreadId()
-            .Enrich.WithEnvironmentName()
-            .Enrich.WithMachineName()
+            //.Enrich.WithEnvironmentName()
+            //.Enrich.WithMachineName()
             .Enrich.WithSensitiveDataMasking(opts =>
             {
                 opts.MaskValue = "***MASKED***";

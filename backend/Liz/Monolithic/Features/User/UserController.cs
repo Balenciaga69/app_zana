@@ -31,7 +31,6 @@ public class UserController : ControllerBase
             || !Guid.TryParse(userIdStr, out var userId)
         )
         {
-            // 統一 API Response 格式
             return Unauthorized(
                 ApiResponse<object>.Fail(ErrorCode.AuthRequired, "UserId not found in cookies.")
             );
@@ -41,7 +40,6 @@ public class UserController : ControllerBase
         var result = await _mediator.Send(new Commands.UpdateNicknameCommand(userId, request.NewNickname));
         if (!result)
         {
-            // 統一 API Response 格式
             return BadRequest(ApiResponse<object>.Fail(ErrorCode.InvalidInput, "Failed to update nickname."));
         }
 
@@ -49,7 +47,6 @@ public class UserController : ControllerBase
         // TODO: @Copilot 這裡業務邏輯未來會變更 可能要思考
         await _hubContext.Clients.All.SendAsync("NicknameUpdated", userId.ToString(), request.NewNickname);
 
-        // 回傳標準 API Response
         return Ok(
             ApiResponse<object>.Ok(
                 new { newNickname = request.NewNickname },

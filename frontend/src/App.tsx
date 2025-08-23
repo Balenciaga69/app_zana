@@ -9,12 +9,14 @@ import { useRegisterUser } from './features/SignalR/hooks/useRegisterUser'
 import { useSignalRConnection } from './features/SignalR/hooks/useSignalRConnection'
 import theme from './Shared/theme.ts'
 import { useSignalRStore } from './features/SignalR/store/SignalRStore.ts'
+import { useOnNicknameUpdated } from './features/SignalR/hooks/useUpdateNickname.ts'
 
 function App() {
+  // 啟動觸發
   useSignalRConnection()
+  useOnNicknameUpdated()
   const { registerUser } = useRegisterUser()
   const { connectionStatus } = useSignalRStore()
-
   useEffect(() => {
     if (connectionStatus === 'connected') {
       registerUser()
